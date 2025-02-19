@@ -1,0 +1,36 @@
+name: Package Shared Projects
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check NuGet version (optional)
+        run: nuget.exe help || echo "nuget.exe not found"
+
+      - name: Install NuGet (if needed)
+        run: |
+          choco install nuget.commandline --version=6.2.1 -y
+          nuget.exe help
+
+      - name: Setup PowerShell Core
+        uses: actions/setup-powershell@v1
+
+      - name: Run packaging script
+        shell: pwsh
+        run: |
+          .\scripts\package.ps1
+
+      - name: Upload NuGet packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: NuGetPackages

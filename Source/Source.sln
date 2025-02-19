@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mal.IngameScript.Coroutines", "Mal.IngameScript.Coroutines", "{3F2882BF-01A9-4E1F-96AE-F8EB8D5228E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mixin", "Mixin", "{28401637-F464-4E13-A913-B849F7CF2CE1}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mal.IngameScript.Coroutines", "Mal.IngameScript.Coroutines\Mixin\Mal.IngameScript.Coroutines.shproj", "{C6E5C7A7-9E10-4C19-9526-708CFA6B13C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_metadata", "_metadata", "{F52FC9D0-9C6B-413E-B18B-1556F481DA09}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{B77A1A32-6EA8-448A-8726-CCF07528DB9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mixin", "Mixin", "{FC9CF0F8-865F-4EB7-8D94-47788FD73884}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Author.IngameScript.MixinName", "Template\Mixin\Author.IngameScript.MixinName.shproj", "{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{28401637-F464-4E13-A913-B849F7CF2CE1} = {3F2882BF-01A9-4E1F-96AE-F8EB8D5228E4}
+		{C6E5C7A7-9E10-4C19-9526-708CFA6B13C6} = {28401637-F464-4E13-A913-B849F7CF2CE1}
+		{FC9CF0F8-865F-4EB7-8D94-47788FD73884} = {B77A1A32-6EA8-448A-8726-CCF07528DB9D}
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F} = {FC9CF0F8-865F-4EB7-8D94-47788FD73884}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Debug|x64.Build.0 = Debug|Any CPU
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Release|x64.ActiveCfg = Release|Any CPU
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
