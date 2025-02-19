@@ -11,18 +11,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check NuGet version (optional)
         run: nuget.exe help || echo "nuget.exe not found"
-
-      - name: Install NuGet (if needed)
-        run: |
-          choco install nuget.commandline --version=6.2.1 -y
-          nuget.exe help
-
-      - name: Setup PowerShell Core
-        uses: actions/setup-powershell@v1
 
       - name: Run packaging script
         shell: pwsh
@@ -30,7 +22,7 @@ jobs:
           .\scripts\package.ps1
 
       - name: Upload NuGet packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: packages
           path: NuGetPackages
