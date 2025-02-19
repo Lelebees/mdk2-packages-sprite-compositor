@@ -9,7 +9,7 @@ provide useful functionality without enforcing a rigid framework.
 MDK2 Packages are distributed as **NuGet packages** hosted on GitHub.  
 To use them, you need to add this repository as a **NuGet source**  
 in your preferred IDE.
-~~~~
+
 ### Adding the GitHub Package Source
 
 #### **Visual Studio**
