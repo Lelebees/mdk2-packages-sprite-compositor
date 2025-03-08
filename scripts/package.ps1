@@ -65,12 +65,13 @@ foreach ($pkg in $packageDirs) {
     if (-not (Test-Path $nugetBuildFolder)) {
         New-Item -ItemType Directory -Path $nugetBuildFolder | Out-Null
     }
-
+    
+    $projFileName = [System.IO.Path]::GetRelativePath($nugetBuildFolder, $projItemsFile.Name)
     # Generate props file for automatic reference
     $propsContent = @"
 <Project>
   <ItemGroup>
-    <Import Project="`$(MSBuildThisFileDirectory)..\`$($projItemsFile.Name)" Label="Shared" />
+    <Import Project="`$(MSBuildThisFileDirectory)..\`$($projFileName)" Label="Shared" />
   </ItemGroup>
 </Project>
 "@
