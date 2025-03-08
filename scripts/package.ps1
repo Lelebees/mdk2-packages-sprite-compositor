@@ -98,6 +98,7 @@ foreach ($pkg in $packageDirs) {
 $releaseNotes
     ]]></releaseNotes>
     <readme>ReadMe.md</readme>
+    <tags>se spaceengineers space engineers mdk2 ingamescript programmableblock programmable block</tags>
   </metadata>
   <files>
     <file src="nuget_build\*.props" target="build" />
