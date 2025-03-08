@@ -58,6 +58,9 @@ namespace IngameScript
             return c.Id;
         }
 
+        public ulong Run(CoroutineFn coroutine, CancellationToken token = default(CancellationToken))
+            => Run(coroutine(token));
+
         struct Coroutine
         {
             public ulong Id;
