@@ -16,6 +16,7 @@
     </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Cancellation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CancellationToken.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CoroutineFn.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Coroutines.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CoroutinesForEach.cs" />

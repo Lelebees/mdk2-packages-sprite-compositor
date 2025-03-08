@@ -23,10 +23,5 @@
         <AdditionalFiles Include="Instructions.readme"/>
         <AdditionalFiles Include="thumb.png"/>
     </ItemGroup>
-    <ItemGroup>
-      <Compile Include="..\Mixin\CancellationToken.cs">
-        <Link>Mixin\CancellationToken.cs</Link>
-      </Compile>
-    </ItemGroup>
     <Import Project="..\Mixin\Mal.IngameScript.Coroutines.projitems" Label="Shared" />
 </Project>
