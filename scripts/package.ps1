@@ -69,10 +69,9 @@ foreach ($pkg in $packageDirs) {
     $projFileName = [System.IO.Path]::GetFileName($projItemsFile.Name)
     # Generate props file for automatic reference
     $propsContent = @"
+<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <ItemGroup>
-    <Import Project="`$(MSBuildThisFileDirectory)..\`$($projFileName)" Label="Shared" />
-  </ItemGroup>
+    <Import Project="`$(MSBuildThisFileDirectory)..\$projFileName" Label="Shared" />
 </Project>
 "@
 
