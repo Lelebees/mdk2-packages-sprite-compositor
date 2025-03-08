@@ -66,7 +66,7 @@ foreach ($pkg in $packageDirs) {
         New-Item -ItemType Directory -Path $nugetBuildFolder | Out-Null
     }
     
-    $projFileName = [System.IO.Path]::GetRelativePath($nugetBuildFolder, $projItemsFile.Name)
+    $projFileName = [System.IO.Path]::GetFileName($projItemsFile.Name)
     # Generate props file for automatic reference
     $propsContent = @"
 <Project>
