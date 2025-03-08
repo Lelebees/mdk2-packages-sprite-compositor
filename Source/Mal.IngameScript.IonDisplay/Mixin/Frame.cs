@@ -19,7 +19,7 @@ namespace IngameScript
                 return;
 
             foreach (var child in _children)
-                Draw(child, add, viewport);
+                Draw(child, add, bounds);
         }
 
         public override Vector2 Measure()

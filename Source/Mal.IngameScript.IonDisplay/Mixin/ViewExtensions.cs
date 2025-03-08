@@ -113,6 +113,13 @@ namespace IngameScript
             return view;
         }
 
+        public static T AutoVirtualSize<T>(this T view) where T : ViewBox
+        {
+            var size = view.Measure();
+            view.VirtualSize = size;
+            return view;
+        }
+        
         public static T AutoSize<T>(this T view) where T : View
         {
             var size = view.Measure();
