@@ -8,16 +8,19 @@
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>IngameScript</Import_RootNamespace>
   </PropertyGroup>
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)PackageVersion.txt" />
+        <Content Include="$(MSBuildThisFileDirectory)ReadMe.md" />
+        <Content Include="$(MSBuildThisFileDirectory)ReleaseNotes.txt" />
+        <Content Include="$(MSBuildThisFileDirectory)Summary.txt" />
+    </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Cancellation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CoroutineFn.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Coroutines.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CoroutinesForEach.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ICancellable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Program.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)When.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)PackageVersion.txt" />
-    <Content Include="$(MSBuildThisFileDirectory)ReadMe.md" />
-    <Content Include="$(MSBuildThisFileDirectory)ReleaseNotes.txt" />
-    <Content Include="$(MSBuildThisFileDirectory)Summary.txt" />
   </ItemGroup>
 </Project>
