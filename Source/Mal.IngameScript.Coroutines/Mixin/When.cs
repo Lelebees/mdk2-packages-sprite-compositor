@@ -3,28 +3,6 @@ using Sandbox.ModAPI.Ingame;
 
 namespace IngameScript
 {
-    /// <summary>
-    ///     The frequency a coroutine runs at.
-    /// </summary>
-    public enum CrFrequency
-    {
-        /// <summary>
-        ///     A coroutine that runs at the highest frequency possible (every tick). Only use for short running coroutines or when
-        ///     absolutely necessary for accuracy.
-        /// </summary>
-        Immediate = 1,
-
-        /// <summary>
-        ///     A coroutine that runs at a normal, safe frequency (every 10 ticks). Use this for most coroutines.
-        /// </summary>
-        Normal = 10,
-
-        /// <summary>
-        ///     A coroutine that runs at a slow frequency (every 100 ticks). Use this for coroutines that don't need to run often.
-        /// </summary>
-        Slow = 100
-    }
-
     public struct When
     {
         /// <summary>
@@ -61,6 +39,12 @@ namespace IngameScript
         /// <param name="frequency">The frequency to wait for.</param>
         /// <returns></returns>
         public static When Returning(CrFrequency frequency = CrFrequency.Normal) => new When(frequency);
+
+        /// <summary>
+        ///     Returns whenever the Main is called next, for whatever reason.
+        /// </summary>
+        /// <returns></returns>
+        public static When Ever() => new When(CrFrequency.Parasitic, 1);
 
         /// <summary>
         ///     Returns at the next scheduled update, at the highest frequency possible.

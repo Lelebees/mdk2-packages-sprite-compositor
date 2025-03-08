@@ -25,7 +25,7 @@ namespace IngameScript
             while (i < _r.Count)
             {
                 var c = _r[i];
-                if ((updateSource & c.W.U) != 0)
+                if (c.W.U == 0 || (updateSource & c.W.U) != 0)
                 {
                     if ((c.W.F != 1 || !_rIds.Contains(c.W.B)) && c.W.C?.Invoke(c.W) != false)
                     {
@@ -38,9 +38,8 @@ namespace IngameScript
 
                         _r[i] = new Coroutine { Id = c.Id, R = c.R, W = c.R.Current };
                     }
-
-                    i++;
                 }
+                i++;
             }
 
             var f = UpdateFrequency.None;
@@ -57,9 +56,8 @@ namespace IngameScript
             _program.Runtime.UpdateFrequency |= c.W.GetUpdateFrequency();
             return c.Id;
         }
-
-        public ulong Run(CoroutineFn coroutine, CancellationToken token = default(CancellationToken))
-            => Run(coroutine(token));
+        
+        public ulong Run(CoroutineFn coroutineFn, CancellationToken token = default(CancellationToken)) => Run(coroutineFn(token));
 
         struct Coroutine
         {

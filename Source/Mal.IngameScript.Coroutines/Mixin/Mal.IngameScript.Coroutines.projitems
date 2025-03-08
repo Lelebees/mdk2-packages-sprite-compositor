@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CoroutineFn.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Coroutines.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CoroutinesForEach.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CrFrequency.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ICancellable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Program.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)When.cs" />
