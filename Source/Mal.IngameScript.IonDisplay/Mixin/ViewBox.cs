@@ -11,6 +11,7 @@ namespace IngameScript
         float _scale;
         public ScaleMode ScaleMode = ScaleMode.Fit;
         public Vector2 VirtualSize;
+        public Thickness Padding;
 
         protected override void OnBeforeFrame()
         {
@@ -61,13 +62,21 @@ namespace IngameScript
             var viewportCenter = viewport.Center;
             var extentOffset = new Vector2(viewportCenter.X - extentCenter.X, viewportCenter.Y - extentCenter.Y);
             var newViewport = new RectangleF(extentOffset.X, extentOffset.Y, extentSize.X, extentSize.Y);
+            
+            // Padding is in the virtual space. 
+            newViewport = new RectangleF(
+                newViewport.X,
+                newViewport.Y,
+                newViewport.Width,
+                newViewport.Height);
+            
             foreach (var child in Children)
                 Draw(child, _baseAdd, newViewport);
         }
 
         void DrawFit(RectangleF viewport)
         {
-            var virtualBounds = new RectangleF(0, 0, VirtualSize.X, VirtualSize.Y);
+            var virtualBounds = new RectangleF(0, 0, VirtualSize.X + Padding.HorizontalThickness, VirtualSize.Y + Padding.VerticalThickness);
             _scale = Math.Min(viewport.Width / virtualBounds.Width, viewport.Height / virtualBounds.Height);
             var scaledBounds = new RectangleF(0, 0, virtualBounds.Width * _scale, virtualBounds.Height * _scale);
             _offset = viewport.Center - scaledBounds.Center;
@@ -77,7 +86,7 @@ namespace IngameScript
 
         void DrawFill(RectangleF viewport)
         {
-            var virtualBounds = new RectangleF(0, 0, VirtualSize.X, VirtualSize.Y);
+            var virtualBounds = new RectangleF(0, 0, VirtualSize.X + Padding.HorizontalThickness, VirtualSize.Y + Padding.VerticalThickness);
             _scale = Math.Max(viewport.Width / virtualBounds.Width, viewport.Height / virtualBounds.Height);
             var scaledBounds = new RectangleF(0, 0, virtualBounds.Width * _scale, virtualBounds.Height * _scale);
             _offset = viewport.Center - scaledBounds.Center;

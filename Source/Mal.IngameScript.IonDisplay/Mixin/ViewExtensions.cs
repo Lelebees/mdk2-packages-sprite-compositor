@@ -213,6 +213,30 @@ namespace IngameScript
             return view;
         }
         
+        public static T Padding<T>(this T view, float left, float top, float right, float bottom) where T : ViewBox
+        {
+            view.Padding = new Thickness(left, top, right, bottom);
+            return view;
+        }
+        
+        public static T Padding<T>(this T view, float uniformSize) where T : ViewBox
+        {
+            view.Padding = new Thickness(uniformSize);
+            return view;
+        }
+        
+        public static T Padding<T>(this T view, float horizontal, float vertical) where T : ViewBox
+        {
+            view.Padding = new Thickness(horizontal, vertical);
+            return view;
+        }
+        
+        public static T Padding<T>(this T view, Thickness padding) where T : ViewBox
+        {
+            view.Padding = padding;
+            return view;
+        }
+
         public static T Flex<T>(this T view) where T : View
         {
             view.Flex = Flexing.Width | Flexing.Height;
