@@ -78,8 +78,9 @@ namespace IngameScript
         {
             var virtualBounds = new RectangleF(0, 0, VirtualSize.X + Padding.HorizontalThickness, VirtualSize.Y + Padding.VerticalThickness);
             _scale = Math.Min(viewport.Width / virtualBounds.Width, viewport.Height / virtualBounds.Height);
-            var scaledBounds = new RectangleF(0, 0, virtualBounds.Width * _scale, virtualBounds.Height * _scale);
+            var scaledBounds = new RectangleF(Padding.Left, Padding.Top, virtualBounds.Width * _scale, virtualBounds.Height * _scale);
             _offset = viewport.Center - scaledBounds.Center;
+            virtualBounds = new RectangleF(Padding.Left, Padding.Top, VirtualSize.X, VirtualSize.Y);
             foreach (var child in Children)
                 Draw(child, Add, virtualBounds);
         }
@@ -90,6 +91,7 @@ namespace IngameScript
             _scale = Math.Max(viewport.Width / virtualBounds.Width, viewport.Height / virtualBounds.Height);
             var scaledBounds = new RectangleF(0, 0, virtualBounds.Width * _scale, virtualBounds.Height * _scale);
             _offset = viewport.Center - scaledBounds.Center;
+            virtualBounds = new RectangleF(Padding.Left, Padding.Top, VirtualSize.X, VirtualSize.Y);
             foreach (var child in Children)
                 Draw(child, Add, virtualBounds);
         }
