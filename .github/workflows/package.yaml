@@ -50,5 +50,5 @@ jobs:
           $sourceUrl = "https://nuget.pkg.github.com/malforge/index.json"
           Get-ChildItem -Path downloaded-packages -Filter *.nupkg | ForEach-Object {
               Write-Host "Publishing package $($_.Name)..."
-              nuget push $_.FullName -Source $sourceUrl -ApiKey $env:GITHUB_TOKEN
+              dotnet nuget push $_.FullName --source $sourceUrl --api-key $env:GITHUB_TOKEN
           }
