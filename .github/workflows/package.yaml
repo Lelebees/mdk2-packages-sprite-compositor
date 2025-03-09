@@ -31,19 +31,19 @@ jobs:
           name: packages
           path: NuGetPackages
   
-  publish:
-    needs: build
-    runs-on: windows-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Download NuGet packages artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: packages
-          path: downloaded-packages
-
 # ... Seriously? GitHub requires authentication for package downloads?
 # Then we will not use this feature.
+#  publish:
+#    needs: build
+#    runs-on: windows-latest
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#    steps:
+#      - name: Download NuGet packages artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: packages
+#          path: downloaded-packages
+#
 #      - name: Publish packages to GitHub NuGet feed
 #        shell: pwsh
 #        env:
