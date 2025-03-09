@@ -30,7 +30,7 @@ namespace IngameScript
             Rotation = 0f;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds, RectangleF viewport)
+        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
         {
             add(new MySprite
             {

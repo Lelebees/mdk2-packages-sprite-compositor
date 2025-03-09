@@ -15,7 +15,7 @@ namespace IngameScript
             return size;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds, RectangleF viewport)
+        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
         {
             if (Children == null || Children.Count == 0)
                 return;

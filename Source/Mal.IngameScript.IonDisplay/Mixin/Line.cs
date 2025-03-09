@@ -21,7 +21,7 @@ namespace IngameScript
             Thickness = 1f;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds, RectangleF viewport)
+        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
         {
             var start = bounds.Position + Start;
             var end = bounds.Position + End;

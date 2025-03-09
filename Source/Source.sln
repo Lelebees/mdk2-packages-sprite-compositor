@@ -29,6 +29,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mal.IngameScript.IonDisplay
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mal.IngameScript.Coroutines.Demo", "Mal.IngameScript.Coroutines\Demo\Mal.IngameScript.Coroutines.Demo.csproj", "{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mal.IngameScript.IonDisplay.Demo", "Mal.IngameScript.IonDisplay\Mal.IngameScript.IonDisplay.Demo\Mal.IngameScript.IonDisplay.Demo.csproj", "{E4300B0C-3C88-41A0-86C6-20646DF6409A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -40,7 +42,8 @@ Global
 		{FC9CF0F8-865F-4EB7-8D94-47788FD73884} = {B77A1A32-6EA8-448A-8726-CCF07528DB9D}
 		{C5ABEDBE-1E39-4437-8F86-84A3759B8C09} = {74AFCD4A-411F-47F7-838B-2483AD9C0AAA}
 		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF} = {28401637-F464-4E13-A913-B849F7CF2CE1}
-		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F} = {C5ABEDBE-1E39-4437-8F86-84A3759B8C09}
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F} = {FC9CF0F8-865F-4EB7-8D94-47788FD73884}
+		{E4300B0C-3C88-41A0-86C6-20646DF6409A} = {C5ABEDBE-1E39-4437-8F86-84A3759B8C09}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -51,5 +54,9 @@ Global
 		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}.Debug|x64.Build.0 = Debug|x64
 		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}.Release|x64.ActiveCfg = Release|x64
 		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}.Release|x64.Build.0 = Release|x64
+		{E4300B0C-3C88-41A0-86C6-20646DF6409A}.Debug|x64.ActiveCfg = Debug|x64
+		{E4300B0C-3C88-41A0-86C6-20646DF6409A}.Debug|x64.Build.0 = Debug|x64
+		{E4300B0C-3C88-41A0-86C6-20646DF6409A}.Release|x64.ActiveCfg = Release|x64
+		{E4300B0C-3C88-41A0-86C6-20646DF6409A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal

@@ -19,7 +19,7 @@ namespace IngameScript
             ScaleMode = ScaleMode.Fit;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds, RectangleF viewport)
+        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
         {
             if (Children == null)
                 return;
@@ -28,13 +28,13 @@ namespace IngameScript
             switch (ScaleMode)
             {
                 case ScaleMode.None:
-                    DrawChildren(viewport);
+                    DrawChildren(bounds);
                     break;
                 case ScaleMode.Fit:
-                    DrawFit(viewport);
+                    DrawFit(bounds);
                     break;
                 case ScaleMode.Fill:
-                    DrawFill(viewport);
+                    DrawFill(bounds);
                     break;
             }
         }

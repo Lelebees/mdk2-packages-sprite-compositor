@@ -13,7 +13,7 @@ namespace IngameScript
 
         protected override void OnBeforeFrame() => _children.Clear();
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds, RectangleF viewport)
+        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
         {
             if (_children == null)
                 return;

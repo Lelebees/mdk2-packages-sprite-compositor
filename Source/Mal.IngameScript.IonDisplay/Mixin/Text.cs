@@ -51,7 +51,7 @@ namespace IngameScript
             Value = null;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds, RectangleF viewport)
+        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
         {
             Measure();
             Vector2 position;

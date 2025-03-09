@@ -50,7 +50,7 @@ namespace IngameScript
                 viewport.Y + bounds.Y,
                 bounds.Width < 0 ? viewport.Width : bounds.Width,
                 bounds.Height < 0 ? viewport.Height : bounds.Height);
-            OnDraw(add, bounds, viewport);
+            OnDraw(add, bounds);
         }
 
         protected static void Draw(View view, Action<MySprite> add, RectangleF viewport)
@@ -59,6 +59,6 @@ namespace IngameScript
                 ((IView)view).Draw(add, viewport);
         }
 
-        protected abstract void OnDraw(Action<MySprite> add, RectangleF bounds, RectangleF viewport);
+        protected abstract void OnDraw(Action<MySprite> add, RectangleF bounds);
     }
 }
