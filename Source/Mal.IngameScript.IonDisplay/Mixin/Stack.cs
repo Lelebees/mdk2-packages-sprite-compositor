@@ -1,6 +1,4 @@
-﻿using System;
-using VRage.Game.GUI.TextPanel;
-using VRageMath;
+﻿using VRageMath;
 
 namespace IngameScript
 {
@@ -15,19 +13,23 @@ namespace IngameScript
             return size;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
+        protected override void OnDraw(DC dc)
         {
             if (Children == null || Children.Count == 0)
                 return;
 
-            var position = bounds.Position;
+            var childDc = OpenChildDc(dc);
+
+            var position = childDc.Bounds.Position;
             foreach (var child in Children)
             {
-                var baseViewport = new RectangleF(position, child.Bounds.Size + child.Margin.Size);
-                var childViewport = new RectangleF(position.X + child.Margin.Left, position.Y + child.Margin.Top, child.Bounds.Width, child.Bounds.Height);
-                Draw(child, add, childViewport);
-                Advance(child, ref position, baseViewport.Size);
+                var baseBounds = new RectangleF(position, child.Bounds.Size + child.Margin.Size);
+                var childBounds = new RectangleF(position.X + child.Margin.Left, position.Y + child.Margin.Top, child.Bounds.Width, child.Bounds.Height);
+                Draw(child, childDc.WithBounds(childBounds));
+                Advance(child, ref position, baseBounds.Size);
             }
+
+            CloseChildDc();
         }
 
         protected abstract void Advance(View child, ref Vector2 position, Vector2 size);

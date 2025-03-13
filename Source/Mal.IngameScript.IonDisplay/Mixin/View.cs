@@ -42,23 +42,23 @@ namespace IngameScript
             return Vector2.Zero;
         }
         
-        void IView.Draw(Action<MySprite> add, RectangleF viewport)
+        void IView.Draw(DC dc)
         {
             var bounds = Bounds;
             bounds = new RectangleF(
-                viewport.X + bounds.X,
-                viewport.Y + bounds.Y,
-                bounds.Width < 0 ? viewport.Width : bounds.Width,
-                bounds.Height < 0 ? viewport.Height : bounds.Height);
-            OnDraw(add, bounds);
+                dc.Bounds.X + bounds.X,
+                dc.Bounds.Y + bounds.Y,
+                bounds.Width < 0 ? dc.Bounds.Width : bounds.Width,
+                bounds.Height < 0 ? dc.Bounds.Height : bounds.Height);
+            OnDraw(dc.WithBounds(bounds));
         }
 
-        protected static void Draw(View view, Action<MySprite> add, RectangleF viewport)
+        protected static void Draw(View view, DC dc)
         {
             if (view.IsVisible)
-                ((IView)view).Draw(add, viewport);
+                ((IView)view).Draw(dc);
         }
 
-        protected abstract void OnDraw(Action<MySprite> add, RectangleF bounds);
+        protected abstract void OnDraw(DC dc);
     }
 }

@@ -21,15 +21,15 @@ namespace IngameScript
             Thickness = 1f;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
+        protected override void OnDraw(DC dc)
         {
-            var start = bounds.Position + Start;
-            var end = bounds.Position + End;
+            var start = dc.Bounds.Position + Start;
+            var end = dc.Bounds.Position + End;
             
             var size = new Vector2((end - start).Length(), Thickness);
             var center = (start + end) / 2;
             var rotation = (float)Math.Atan2(end.Y - start.Y, end.X - start.X);
-            add(new MySprite
+            dc.Add(new MySprite
             {
                 Type = SpriteType.TEXTURE,
                 Data = PatternId,

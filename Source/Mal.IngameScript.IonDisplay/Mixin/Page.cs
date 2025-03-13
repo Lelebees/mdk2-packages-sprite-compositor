@@ -14,7 +14,9 @@ namespace IngameScript
 
     public abstract class Page<TModel> : Page
     {
+        readonly Action<MySprite> _add;
         readonly StringBuilder _buffer = new StringBuilder();
+        readonly Action<RectangleF?> _clip;
         readonly Context _context;
         readonly Dictionary<Type, ICache> _viewCache = new Dictionary<Type, ICache>();
         MySpriteDrawFrame _frame;
@@ -26,6 +28,8 @@ namespace IngameScript
         protected Page()
         {
             _context = new Context(this);
+            _add = Add;
+            _clip = Clip;
         }
 
         T Lease<T>() where T : class, new()
@@ -68,7 +72,10 @@ namespace IngameScript
                 cache.Reset();
         }
 
-        public Frame Frame() => PullView<Frame>();
+        public Frame Frame()
+        {
+            return PullView<Frame>();
+        }
 
         public ViewBox ViewBox(float virtualWidth, float virtualHeight)
         {
@@ -85,7 +92,7 @@ namespace IngameScript
             view.PatternId = patternId ?? CommonPatterns.Square;
             return view;
         }
-        
+
         public Line Line(Color color, string patternId = null)
         {
             var view = PullView<Line>();
@@ -94,7 +101,10 @@ namespace IngameScript
             return view;
         }
 
-        public VStack VStack() => PullView<VStack>();
+        public VStack VStack()
+        {
+            return PullView<VStack>();
+        }
 
         public IReadOnlyList<HStack> Rows<T>(IEnumerable<T> items, Func<T, HStack> rowFn)
         {
@@ -140,7 +150,10 @@ namespace IngameScript
             return rows;
         }
 
-        public HStack HStack() => PullView<HStack>();
+        public HStack HStack()
+        {
+            return PullView<HStack>();
+        }
 
         public Text Text(string value, Color color)
         {
@@ -165,11 +178,30 @@ namespace IngameScript
         {
             BeginFrame(surface);
             var view = Render(surface, model, _viewport);
-            ((IView)view).Draw(Add, _viewport);
+            var dc = new DC(_add, _clip, _viewport);
+            ((IView)view).Draw(dc);
             EndFrame();
         }
 
-        void Add(MySprite sprite) => _frame.Add(sprite);
+        void Add(MySprite sprite)
+        {
+            _frame.Add(sprite);
+        }
+
+        void Clip(RectangleF? clip)
+        {
+            if (clip.HasValue)
+            {
+                _frame.Add(MySprite.CreateClipRect(new Rectangle(
+                    (int)clip.Value.X,
+                    (int)clip.Value.Y,
+                    (int)clip.Value.Width,
+                    (int)clip.Value.Height)
+                ));
+            }
+            else
+                _frame.Add(MySprite.CreateClearClipRect());
+        }
 
         protected abstract View Render(IMyTextSurface surface, TModel model, RectangleF viewport);
 
@@ -196,7 +228,10 @@ namespace IngameScript
                 return view;
             }
 
-            public void Reset() => _index = 0;
+            public void Reset()
+            {
+                _index = 0;
+            }
         }
 
         class Context : IContext
@@ -209,7 +244,11 @@ namespace IngameScript
             }
 
             public IMyTextSurface Surface { get; set; }
-            public T Lease<T>() where T : class, new() => _page.Lease<T>();
+
+            public T Lease<T>() where T : class, new()
+            {
+                return _page.Lease<T>();
+            }
         }
 
         protected static class CommonPatterns

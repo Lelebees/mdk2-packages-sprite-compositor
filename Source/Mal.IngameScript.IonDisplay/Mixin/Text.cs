@@ -51,23 +51,23 @@ namespace IngameScript
             Value = null;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
+        protected override void OnDraw(DC dc)
         {
             Measure();
             Vector2 position;
             switch (Alignment)
             {
                 case TextAlignment.RIGHT:
-                    position = new Vector2(bounds.Right, bounds.Y);
+                    position = new Vector2(dc.Bounds.Right, dc.Bounds.Y);
                     break;
                 case TextAlignment.CENTER:
-                    position = new Vector2(bounds.Center.X, bounds.Y);
+                    position = new Vector2(dc.Bounds.Center.X, dc.Bounds.Y);
                     break;
                 default:
-                    position = bounds.Position;
+                    position = dc.Bounds.Position;
                     break;
             }
-            add(new MySprite
+            dc.Add(new MySprite
             {
                 Type = SpriteType.TEXT,
                 Data = Value,
@@ -76,7 +76,7 @@ namespace IngameScript
                 Color = Color,
                 Alignment = Alignment,
                 FontId = FontId,
-                Size = bounds.Size
+                Size = dc.Bounds.Size
             });
         }
     }

@@ -30,14 +30,14 @@ namespace IngameScript
             Rotation = 0f;
         }
 
-        protected override void OnDraw(Action<MySprite> add, RectangleF bounds)
+        protected override void OnDraw(DC dc)
         {
-            add(new MySprite
+            dc.Add(new MySprite
             {
                 Type = SpriteType.TEXTURE,
                 Data = PatternId,
-                Position = bounds.Center,
-                Size = bounds.Size,
+                Position = dc.Bounds.Center,
+                Size = dc.Bounds.Size,
                 Color = Color,
                 RotationOrScale = _rotationRad,
                 Alignment = TextAlignment.CENTER
