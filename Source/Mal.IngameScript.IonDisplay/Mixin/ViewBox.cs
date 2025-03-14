@@ -6,12 +6,13 @@ namespace IngameScript
 {
     public class ViewBox : Frame
     {
-        Action<MySprite> _baseAdd, _viewAdd;
+        Action<MySprite> /*_baseAdd, */_viewAdd;
         Vector2 _offset;
         float _scale;
         public Thickness Padding;
         public ScaleMode ScaleMode = ScaleMode.Fit;
         public Vector2 VirtualSize;
+        DC _baseDc;
 
         protected override void OnBeforeFrame()
         {
@@ -32,14 +33,14 @@ namespace IngameScript
 
         protected override DC OpenChildDc(DC dc)
         {
-            _baseAdd = dc.Add;
+            _baseDc = dc;
             return base.OpenChildDc(dc.WithAdd(_viewAdd));
         }
 
-        protected override void CloseChildDc(DC dc)
+        protected override void CloseChildDc(DC childDc)
         {
-            base.CloseChildDc(dc);
-            _baseAdd = null;
+            base.CloseChildDc(_baseDc);
+            _baseDc = default(DC);
         }
 
         protected virtual void DrawContent(DC childDc)
@@ -120,7 +121,7 @@ namespace IngameScript
             sprite.Size *= _scale;
             if (sprite.Type == SpriteType.TEXT)
                 sprite.RotationOrScale *= _scale;
-            _baseAdd(sprite);
+            _baseDc.Add(sprite);
         }
     }
 }

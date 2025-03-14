@@ -41,7 +41,7 @@ namespace IngameScript
             var childDc = OpenChildDc(dc);
             foreach (var child in _children)
                 Draw(child, childDc);
-            CloseChildDc(childDc);
+            CloseChildDc(dc);
         }
 
         protected virtual void CloseChildDc(DC dc)
