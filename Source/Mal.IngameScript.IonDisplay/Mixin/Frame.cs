@@ -48,11 +48,10 @@ namespace IngameScript
         {
             if (!ClipToBounds) return;
             var clip = Context.PopClip();
-            if (!clip.HasValue) return;
-            dc.Add(new MySprite(SpriteType.CLIP_RECT,
-                position: new Vector2(clip.Value.X, clip.Value.Y),
-                size: new Vector2(clip.Value.Width, clip.Value.Height)
-            ));
+            if (clip.HasValue)
+                dc.Add(new MySprite(SpriteType.CLIP_RECT, position: new Vector2(clip.Value.X, clip.Value.Y), size: new Vector2(clip.Value.Width, clip.Value.Height)));
+            else
+                dc.Add(new MySprite(SpriteType.CLIP_RECT));
         }
 
         protected virtual DC OpenChildDc(DC dc)

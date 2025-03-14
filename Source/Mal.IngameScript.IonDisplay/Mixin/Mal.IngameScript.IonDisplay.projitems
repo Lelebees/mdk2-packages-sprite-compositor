@@ -3,7 +3,7 @@
     <PropertyGroup>
         <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
         <HasSharedItems>true</HasSharedItems>
-        <SharedGUID>8a3cdcc5-4b55-4d87-a415-698a0e1ff06f</SharedGUID>
+        <SharedGUID>D8D37CEC-E9CC-496B-9AFC-69D5350A0C93</SharedGUID>
     </PropertyGroup>
     <ItemGroup>
         <Content Include="$(MSBuildThisFileDirectory)PackageVersion.txt"/>

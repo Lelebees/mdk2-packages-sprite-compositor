@@ -1,3 +1,6 @@
+- 1.0.0-alpha.13
+   Still didn't reset clipping correctly.
+
  - 1.0.0-alpha.12
    Didn't reset clipping correctly.
  
