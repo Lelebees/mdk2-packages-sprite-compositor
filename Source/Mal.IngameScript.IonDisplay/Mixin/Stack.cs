@@ -29,7 +29,7 @@ namespace IngameScript
                 Advance(child, ref position, baseBounds.Size);
             }
 
-            CloseChildDc();
+            CloseChildDc(childDc);
         }
 
         protected abstract void Advance(View child, ref Vector2 position, Vector2 size);

@@ -317,5 +317,11 @@ namespace IngameScript
             view.Classes.Add(className);
             return view;
         }
+        
+        public static T Clipped<T>(this T view) where T : Frame
+        {
+            view.ClipToBounds = true;
+            return view;
+        }
     }
 }

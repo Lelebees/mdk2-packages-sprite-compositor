@@ -16,7 +16,6 @@ namespace IngameScript
     {
         readonly Action<MySprite> _add;
         readonly StringBuilder _buffer = new StringBuilder();
-        readonly Action<RectangleF?> _clip;
         readonly Context _context;
         readonly Dictionary<Type, ICache> _viewCache = new Dictionary<Type, ICache>();
         MySpriteDrawFrame _frame;
@@ -29,7 +28,6 @@ namespace IngameScript
         {
             _context = new Context(this);
             _add = Add;
-            _clip = Clip;
         }
 
         T Lease<T>() where T : class, new()
@@ -57,7 +55,7 @@ namespace IngameScript
             _frame = surface.DrawFrame();
             // Workaround: Every 5 seconds (300 frames), toggle the injection flag to force a resynchronization
             // with the server.
-            _context.Surface = surface;
+            _context.Begin(surface);
             if (_tickCount % 300 == 0)
                 _inject = !_inject;
             if (_inject)
@@ -67,6 +65,7 @@ namespace IngameScript
 
         void EndFrame()
         {
+            _context.End();
             _frame.Dispose();
             foreach (var cache in _viewCache.Values)
                 cache.Reset();
@@ -178,7 +177,7 @@ namespace IngameScript
         {
             BeginFrame(surface);
             var view = Render(surface, model, _viewport);
-            var dc = new DC(_add, _clip, _viewport);
+            var dc = new DC(_add, _viewport);
             ((IView)view).Draw(dc);
             EndFrame();
         }
@@ -187,22 +186,7 @@ namespace IngameScript
         {
             _frame.Add(sprite);
         }
-
-        void Clip(RectangleF? clip)
-        {
-            if (clip.HasValue)
-            {
-                _frame.Add(MySprite.CreateClipRect(new Rectangle(
-                    (int)clip.Value.X,
-                    (int)clip.Value.Y,
-                    (int)clip.Value.Width,
-                    (int)clip.Value.Height)
-                ));
-            }
-            else
-                _frame.Add(MySprite.CreateClearClipRect());
-        }
-
+        
         protected abstract View Render(IMyTextSurface surface, TModel model, RectangleF viewport);
 
         interface ICache
@@ -236,6 +220,7 @@ namespace IngameScript
 
         class Context : IContext
         {
+            readonly Stack<RectangleF> _clipStack = new Stack<RectangleF>();
             readonly Page<TModel> _page;
 
             public Context(Page<TModel> page)
@@ -243,11 +228,41 @@ namespace IngameScript
                 _page = page;
             }
 
-            public IMyTextSurface Surface { get; set; }
+            public IMyTextSurface Surface { get; private set; }
 
             public T Lease<T>() where T : class, new()
             {
                 return _page.Lease<T>();
+            }
+
+            public RectangleF PushClip(RectangleF bounds)
+            {
+                if (_clipStack.Count == 0)
+                {
+                    _clipStack.Push(bounds);
+                    return bounds;
+                }
+
+                RectangleF a = _clipStack.Peek(), c;
+                RectangleF.Intersect(ref a, ref bounds, out c);
+                _clipStack.Push(c);
+                return c;
+            }
+
+            public RectangleF? PopClip()
+            {
+                _clipStack.Pop();
+                return _clipStack.Count > 0 ? _clipStack.Peek() : (RectangleF?)null;
+            }
+
+            public void Begin(IMyTextSurface surface)
+            {
+                Surface = surface;
+            }
+
+            public void End()
+            {
+                _clipStack.Clear();
             }
         }
 

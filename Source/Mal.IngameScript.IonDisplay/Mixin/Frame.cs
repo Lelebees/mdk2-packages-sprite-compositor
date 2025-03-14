@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
 namespace IngameScript
@@ -7,15 +8,8 @@ namespace IngameScript
     public class Frame : View, IContainer
     {
         readonly List<View> _children = new List<View>();
-        readonly Action<RectangleF?> _clip;
-        DC _dc;
 
-        public bool Clip;
-
-        public Frame()
-        {
-            _clip = ClipFn;
-        }
+        public bool ClipToBounds;
 
         public IReadOnlyList<View> Children => _children;
 
@@ -39,51 +33,43 @@ namespace IngameScript
             _children.Clear();
         }
 
-        void ClipFn(RectangleF? clip)
-        {
-            if (clip == null)
-            {
-                _dc.Clip(_dc.Bounds);
-                return;
-            }
-
-            RectangleF a = _dc.Bounds, b = clip.Value, c;
-            RectangleF.Intersect(ref a, ref b, out c);
-            _dc.Clip(c);
-        }
-
         protected override void OnDraw(DC dc)
         {
             if (_children == null)
                 return;
 
             var childDc = OpenChildDc(dc);
-
             foreach (var child in _children)
                 Draw(child, childDc);
-
-            CloseChildDc();
+            CloseChildDc(childDc);
         }
 
-        protected void CloseChildDc()
+        protected virtual void CloseChildDc(DC dc)
         {
-            if (Clip) _dc.Clip(null);
-            _dc = default(DC);
+            if (!ClipToBounds) return;
+            var clip = Context.PopClip();
+            if (!clip.HasValue) return;
+            dc.Add(new MySprite(SpriteType.CLIP_RECT,
+                position: new Vector2(clip.Value.X, clip.Value.Y),
+                size: new Vector2(clip.Value.Width, clip.Value.Height)
+            ));
         }
 
-        protected DC OpenChildDc(DC dc)
+        protected virtual DC OpenChildDc(DC dc)
         {
-            if (!Clip) return dc;
-            _dc = dc;
-            _dc.Clip(dc.Bounds);
-            return dc.WithClip(_clip);
+            if (!ClipToBounds) return dc;
+            var clip = Context.PushClip(dc.Bounds);
+            dc.Add(new MySprite(SpriteType.CLIP_RECT,
+                position: new Vector2(clip.X, clip.Y),
+                size: new Vector2(clip.Width, clip.Height)
+            ));
+            return dc;
         }
 
         public override Vector2 Measure()
         {
             if (_children == null || _children.Count == 0)
                 return Vector2.Zero;
-
             var extents = _children[0].Bounds;
             for (var i = 1; i < _children.Count; i++)
             {
@@ -94,7 +80,6 @@ namespace IngameScript
                     Math.Max(extents.Right, child.Bounds.Right),
                     Math.Max(extents.Bottom, child.Bounds.Bottom));
             }
-
             return extents.Size;
         }
     }

@@ -9,9 +9,9 @@ namespace IngameScript
         Action<MySprite> _baseAdd, _viewAdd;
         Vector2 _offset;
         float _scale;
+        public Thickness Padding;
         public ScaleMode ScaleMode = ScaleMode.Fit;
         public Vector2 VirtualSize;
-        public Thickness Padding;
 
         protected override void OnBeforeFrame()
         {
@@ -21,14 +21,29 @@ namespace IngameScript
             _viewAdd = Add;
         }
 
-        protected override void OnDraw(DC dc)
+        protected sealed override void OnDraw(DC dc)
         {
             if (Children == null)
                 return;
-
             var childDc = OpenChildDc(dc);
-            
+            DrawContent(childDc);
+            CloseChildDc(childDc);
+        }
+
+        protected override DC OpenChildDc(DC dc)
+        {
             _baseAdd = dc.Add;
+            return base.OpenChildDc(dc.WithAdd(_viewAdd));
+        }
+
+        protected override void CloseChildDc(DC dc)
+        {
+            base.CloseChildDc(dc);
+            _baseAdd = null;
+        }
+
+        protected virtual void DrawContent(DC childDc)
+        {
             switch (ScaleMode)
             {
                 case ScaleMode.None:
@@ -41,8 +56,6 @@ namespace IngameScript
                     DrawFill(childDc);
                     break;
             }
-            
-            CloseChildDc();
         }
 
         void DrawChildren(DC dc)
@@ -67,14 +80,14 @@ namespace IngameScript
             var viewportCenter = dc.Bounds.Center;
             var extentOffset = new Vector2(viewportCenter.X - extentCenter.X, viewportCenter.Y - extentCenter.Y);
             var newBounds = new RectangleF(extentOffset.X, extentOffset.Y, extentSize.X, extentSize.Y);
-            
+
             // Padding is in the virtual space. 
             newBounds = new RectangleF(
                 newBounds.X,
                 newBounds.Y,
                 newBounds.Width,
                 newBounds.Height);
-            
+
             foreach (var child in Children)
                 Draw(child, dc.WithBounds(newBounds));
         }
