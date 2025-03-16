@@ -127,17 +127,17 @@ namespace IngameScript
             return view;
         }
 
-        public static T AutoSizeWidth<T>(this T view) where T : View
+        public static T AutoSizeWidth<T>(this T view, float height = -1) where T : View
         {
             var size = view.Measure();
-            view.Bounds = new RectangleF(view.Bounds.Position, new Vector2(size.X, view.Bounds.Height));
+            view.Bounds = new RectangleF(view.Bounds.Position, new Vector2(size.X, height < 0? view.Bounds.Height: height));
             return view;
         }
 
-        public static T AutoSizeHeight<T>(this T view) where T : View
+        public static T AutoSizeHeight<T>(this T view, float width = -1) where T : View
         {
             var size = view.Measure();
-            view.Bounds = new RectangleF(view.Bounds.Position, new Vector2(view.Bounds.Width, size.Y));
+            view.Bounds = new RectangleF(view.Bounds.Position, new Vector2(width < 1? view.Bounds.Width : width, size.Y));
             return view;
         }
 
