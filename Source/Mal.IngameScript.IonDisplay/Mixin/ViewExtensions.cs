@@ -51,9 +51,21 @@ namespace IngameScript
             return view;
         }
 
-        public static T Rotated<T>(this T view, float rotation) where T : Box
+        public static T RotatedImg<T>(this T view, float rotation) where T : Box
         {
             view.Rotation = rotation;
+            return view;
+        }
+        
+        public static T MirroredImg<T>(this T view) where T : Box
+        {
+            view.Mirror = true;
+            return view;
+        }
+        
+        public static T FlippedImg<T>(this T view) where T : Box
+        {
+            view.Flip = true;
             return view;
         }
 
