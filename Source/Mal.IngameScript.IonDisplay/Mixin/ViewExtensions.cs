@@ -7,8 +7,8 @@ namespace IngameScript
 {
     public static class ViewExtensions
     {
-        public static T CenteredAt<T>(this T view, float width, float height) where T : View
-            => CenteredAt(view, new Vector2(width, height));
+        public static T CenteredAt<T>(this T view, float x, float y) where T : View
+            => CenteredAt(view, new Vector2(x, y));
 
         public static T CenteredAt<T>(this T view, Vector2 position) where T : View
         {
@@ -51,6 +51,15 @@ namespace IngameScript
             return view;
         }
 
+        public static T AutoSize<T>(this T view, float fixedWidth = -1f, float fixedHeight = -1f) where T : View
+        {
+            var size = view.Measure();
+            if (fixedWidth >= 0) size.X = fixedWidth;
+            if (fixedHeight >= 0) size.Y = fixedHeight;
+            view.Bounds = new RectangleF(view.Bounds.Position, size);
+            return view;
+        }
+        
         public static T RotatedImg<T>(this T view, float rotation) where T : Box
         {
             view.Rotation = rotation;
@@ -132,27 +141,6 @@ namespace IngameScript
             return view;
         }
         
-        public static T AutoSize<T>(this T view) where T : View
-        {
-            var size = view.Measure();
-            view.Bounds = new RectangleF(view.Bounds.Position, size);
-            return view;
-        }
-
-        public static T AutoSizeWidth<T>(this T view, float height = -1) where T : View
-        {
-            var size = view.Measure();
-            view.Bounds = new RectangleF(view.Bounds.Position, new Vector2(size.X, height < 0? view.Bounds.Height: height));
-            return view;
-        }
-
-        public static T AutoSizeHeight<T>(this T view, float width = -1) where T : View
-        {
-            var size = view.Measure();
-            view.Bounds = new RectangleF(view.Bounds.Position, new Vector2(width < 1? view.Bounds.Width : width, size.Y));
-            return view;
-        }
-
         public static T FontSize<T>(this T view, float fontSize) where T : Text
         {
             view.FontSize = fontSize;

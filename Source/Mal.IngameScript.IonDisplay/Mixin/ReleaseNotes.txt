@@ -1,3 +1,6 @@
+- 1.0.0.alpha.16
+   Found a better syntax for auto-sizing.
+
 - 1.0.0.alpha.15
    Box image MirrorImg and FlipImg. Rotated is renamed to RotatedImg.
 
