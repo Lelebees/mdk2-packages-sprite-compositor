@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sandbox.ModAPI.Ingame;
 
 namespace IngameScript
 {
-    internal partial class Program : MyGridProgram
+    public partial class Program : MyGridProgram
     {
+        readonly Cancellation _mainCrCancellation;
         bool _didRaiseCommand;
         string _raisedCommandGiven;
-        readonly Cancellation _mainCrCancellation;
 
         public Program()
         {
@@ -47,17 +48,14 @@ namespace IngameScript
 
             if ((updateSource & UpdateType.Trigger) != 0)
             {
-                if (string.Equals(argument, "raise", System.StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(argument, "raise", StringComparison.OrdinalIgnoreCase))
                     Coroutines.Run(SequenceCr());
-                else if (string.Equals(argument, "command", System.StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(argument, "command", StringComparison.OrdinalIgnoreCase))
                 {
                     _didRaiseCommand = true;
                     _raisedCommandGiven = argument;
                 }
-                else if (string.Equals(argument, "cancel", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    _mainCrCancellation.Cancel();
-                }
+                else if (string.Equals(argument, "cancel", StringComparison.OrdinalIgnoreCase)) _mainCrCancellation.Cancel();
             }
         }
 

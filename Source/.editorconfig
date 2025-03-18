@@ -3,3 +3,4 @@ csharp_style_expression_bodied_methods = true
 resharper_csharp_empty_block_style = together_same_line
 csharp_empty_block_style = together_same_line
 empty_block_style = together_same_line
+dotnet_style_require_accessibility_modifiers = omit_if_default:suggestion
