@@ -11,7 +11,7 @@ namespace IngameScript
         public Vector2 Start { get; set; }
         public Vector2 End { get; set; }
         public float Thickness { get; set; }
-        
+
         protected override void OnBeforeFrame()
         {
             Start = Vector2.Zero;
@@ -25,7 +25,7 @@ namespace IngameScript
         {
             var start = dc.Bounds.Position + Start;
             var end = dc.Bounds.Position + End;
-            
+
             var size = new Vector2((end - start).Length(), Thickness);
             var center = (start + end) / 2;
             var rotation = (float)Math.Atan2(end.Y - start.Y, end.X - start.X);

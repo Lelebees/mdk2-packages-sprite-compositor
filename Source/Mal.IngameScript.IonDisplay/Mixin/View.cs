@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
 namespace IngameScript
 {
     public abstract class View : IView
     {
+        public readonly HashSet<string> Classes = new HashSet<string>(StringComparer.Ordinal);
         public RectangleF Bounds;
         public IContext Context;
+        public Flexing Flex;
         public bool IsVisible = true;
         public Thickness Margin;
-        public Flexing Flex;
-        public readonly HashSet<string> Classes = new HashSet<string>(StringComparer.Ordinal);
         public View Parent;
 
         void IView.BeginFrame(IContext context)
@@ -27,21 +26,6 @@ namespace IngameScript
             OnBeforeFrame();
         }
 
-        protected abstract void OnBeforeFrame();
-
-        public Vector2 Measure(bool withMargins)
-        {
-            var size = Measure();
-            if (withMargins)
-                size += Margin.Size;
-            return size;
-        }
-        
-        public virtual Vector2 Measure()
-        {
-            return Vector2.Zero;
-        }
-        
         void IView.Draw(DC dc)
         {
             var bounds = Bounds;
@@ -52,6 +36,18 @@ namespace IngameScript
                 bounds.Height < 0 ? dc.Bounds.Height : bounds.Height);
             OnDraw(dc.WithBounds(bounds));
         }
+
+        protected abstract void OnBeforeFrame();
+
+        public Vector2 Measure(bool withMargins)
+        {
+            var size = Measure();
+            if (withMargins)
+                size += Margin.Size;
+            return size;
+        }
+
+        public virtual Vector2 Measure() => Vector2.Zero;
 
         protected static void Draw(View view, DC dc)
         {

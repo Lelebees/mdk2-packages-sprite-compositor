@@ -5,10 +5,7 @@ namespace IngameScript
 {
     public class VStack : Stack
     {
-        protected override void Advance(View child, ref Vector2 position, Vector2 size)
-        {
-            position.Y += size.Y;
-        }
+        protected override void Advance(View child, ref Vector2 position, Vector2 size) => position.Y += size.Y;
 
         protected override void MutateSizeOnMeasure(View child, ref Vector2 size)
         {

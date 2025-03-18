@@ -10,7 +10,7 @@ namespace IngameScript
             foreach (var item in source)
                 yield return item;
         }
-        
+
         public static IEnumerable<T> InjectAfter<T>(this IEnumerable<T> source, T value)
         {
             foreach (var item in source)

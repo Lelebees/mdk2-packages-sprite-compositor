@@ -1,5 +1,4 @@
-﻿using System;
-using VRage.Game.GUI.TextPanel;
+﻿using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
 namespace IngameScript

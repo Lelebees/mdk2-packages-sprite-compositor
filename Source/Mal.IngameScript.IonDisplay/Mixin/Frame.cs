@@ -28,10 +28,7 @@ namespace IngameScript
             }
         }
 
-        protected override void OnBeforeFrame()
-        {
-            _children.Clear();
-        }
+        protected override void OnBeforeFrame() => _children.Clear();
 
         protected override void OnDraw(DC dc)
         {
@@ -79,6 +76,7 @@ namespace IngameScript
                     Math.Max(extents.Right, child.Bounds.Right),
                     Math.Max(extents.Bottom, child.Bounds.Bottom));
             }
+
             return extents.Size;
         }
     }

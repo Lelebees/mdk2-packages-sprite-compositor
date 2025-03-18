@@ -20,13 +20,10 @@ namespace IngameScript
         public float FontSize { get; set; }
         public bool IsVisible { get; set; }
         public float Opacity { get; set; }
-        
+
         public abstract void Apply(View view);
 
-        public static SelectorBuilder<T, T> For<T>() where T : View
-        {
-            return new SelectorBuilder<T, T>(0, null, ImmutableArray<string>.Empty);
-        }
+        public static SelectorBuilder<T, T> For<T>() where T : View => new SelectorBuilder<T, T>(0, null, ImmutableArray<string>.Empty);
 
         class StyleImpl<T> : Style where T : View
         {
@@ -57,18 +54,13 @@ namespace IngameScript
             public Type Type => typeof(T);
             public IStyleSelector Parent { get; }
 
-            public virtual bool Matches(View view)
-            {
-                return view is T && view.Classes.ContainsAll(Classes) && (Parent == null || Parent.Matches(view));
-            }
+            public virtual bool Matches(View view) => view is T && view.Classes.ContainsAll(Classes) && (Parent == null || Parent.Matches(view));
         }
 
         class DescendantStyleSelector<T> : StyleSelector<T> where T : View
         {
-            public DescendantStyleSelector(IStyleSelector parent, ImmutableArray<string> classes) : base(parent, classes)
-            {
-            }
-            
+            public DescendantStyleSelector(IStyleSelector parent, ImmutableArray<string> classes) : base(parent, classes) { }
+
             public override bool Matches(View view)
             {
                 while (view != null)
@@ -77,16 +69,15 @@ namespace IngameScript
                         return true;
                     view = view.Parent;
                 }
+
                 return false;
             }
         }
 
         class ChildStyleSelector<T> : StyleSelector<T> where T : View
         {
-            public ChildStyleSelector(IStyleSelector parent, ImmutableArray<string> classes) : base(parent, classes)
-            {
-            }
-            
+            public ChildStyleSelector(IStyleSelector parent, ImmutableArray<string> classes) : base(parent, classes) { }
+
             public override bool Matches(View view)
             {
                 var parent = view.Parent;
@@ -120,40 +111,19 @@ namespace IngameScript
                 }
             }
 
-            public SelectorBuilder<T, TAncestor> DescendantOf<TAncestor>() where TAncestor : View
-            {
-                return new SelectorBuilder<T, TAncestor>(1, FinalizeSelector(), ImmutableArray<string>.Empty);
-            }
+            public SelectorBuilder<T, TAncestor> DescendantOf<TAncestor>() where TAncestor : View => new SelectorBuilder<T, TAncestor>(1, FinalizeSelector(), ImmutableArray<string>.Empty);
 
-            public SelectorBuilder<T, View> DescendantOf(string className)
-            {
-                return DescendantOf<View>().WithClass(className);
-            }
+            public SelectorBuilder<T, View> DescendantOf(string className) => DescendantOf<View>().WithClass(className);
 
-            public SelectorBuilder<T, TParent> ChildOf<TParent>() where TParent : View
-            {
-                return new SelectorBuilder<T, TParent>(2, FinalizeSelector(), ImmutableArray<string>.Empty);
-            }
+            public SelectorBuilder<T, TParent> ChildOf<TParent>() where TParent : View => new SelectorBuilder<T, TParent>(2, FinalizeSelector(), ImmutableArray<string>.Empty);
 
-            public SelectorBuilder<T, View> ChildOf(string className)
-            {
-                return ChildOf<View>().WithClass(className);
-            }
+            public SelectorBuilder<T, View> ChildOf(string className) => ChildOf<View>().WithClass(className);
 
-            public SelectorBuilder<T, T2> WithClass(string className)
-            {
-                return new SelectorBuilder<T, T2>(_type, _styleSelector, _classes.Add(className));
-            }
+            public SelectorBuilder<T, T2> WithClass(string className) => new SelectorBuilder<T, T2>(_type, _styleSelector, _classes.Add(className));
 
-            public StyleBuilder<T> Style()
-            {
-                return new StyleBuilder<T>(FinalizeSelector(), ImmutableArray<Action<T>>.Empty);
-            }
-            
-            public StyleBuilder<T> Apply(Action<T> action)
-            {
-                return new StyleBuilder<T>(FinalizeSelector(), ImmutableArray.Create(action));
-            }
+            public StyleBuilder<T> Style() => new StyleBuilder<T>(FinalizeSelector(), ImmutableArray<Action<T>>.Empty);
+
+            public StyleBuilder<T> Apply(Action<T> action) => new StyleBuilder<T>(FinalizeSelector(), ImmutableArray.Create(action));
         }
 
         public struct StyleBuilder<T> where T : View
@@ -167,10 +137,7 @@ namespace IngameScript
                 _actions = actions;
             }
 
-            public StyleBuilder<T> And(Action<T> action)
-            {
-                return new StyleBuilder<T>(_styleSelector, _actions.Add(action));
-            }
+            public StyleBuilder<T> And(Action<T> action) => new StyleBuilder<T>(_styleSelector, _actions.Add(action));
 
             public Style RegisterIn(StyleSheet styleSheet)
             {

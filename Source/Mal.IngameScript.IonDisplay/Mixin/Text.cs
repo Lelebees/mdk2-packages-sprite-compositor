@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -35,10 +34,10 @@ namespace IngameScript
                 _measuredFontSize = FontSize;
                 _measuredFontId = FontId;
                 _measuredValue = value;
-                _fontScale =  FontSize / surface.MeasureStringInPixels(M, FontId, 1).Y;
+                _fontScale = FontSize / surface.MeasureStringInPixels(M, FontId, 1).Y;
                 _measuredSize = surface.MeasureStringInPixels(Buffer.Clear().Append(value), FontId, _fontScale);
             }
-            
+
             return _measuredSize;
         }
 
@@ -67,6 +66,7 @@ namespace IngameScript
                     position = dc.Bounds.Position;
                     break;
             }
+
             dc.Add(new MySprite
             {
                 Type = SpriteType.TEXT,

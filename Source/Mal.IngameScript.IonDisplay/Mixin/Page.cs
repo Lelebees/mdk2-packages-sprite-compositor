@@ -7,10 +7,7 @@ using VRageMath;
 
 namespace IngameScript
 {
-    public abstract class Page
-    {
-        //public abstract void Render(object model, IMyTextSurface surface);
-    }
+    public abstract class Page { }
 
     public abstract class Page<TModel> : Page
     {
@@ -19,9 +16,7 @@ namespace IngameScript
         readonly Context _context;
         readonly Dictionary<Type, ICache> _viewCache = new Dictionary<Type, ICache>();
         MySpriteDrawFrame _frame;
-
         bool _inject;
-        long _tickCount;
         RectangleF _viewport;
 
         protected Page()
@@ -53,14 +48,15 @@ namespace IngameScript
                 (textureSize - surfaceSize) / 2,
                 surfaceSize);
             _frame = surface.DrawFrame();
-            // Workaround: Every 5 seconds (300 frames), toggle the injection flag to force a resynchronization
-            // with the server.
             _context.Begin(surface);
-            if (_tickCount % 300 == 0)
-                _inject = !_inject;
+            ForceSync();
+        }
+
+        void ForceSync()
+        {
+            _inject = !_inject;
             if (_inject)
                 _frame.Add(new MySprite());
-            _tickCount++;
         }
 
         void EndFrame()
@@ -71,10 +67,7 @@ namespace IngameScript
                 cache.Reset();
         }
 
-        public Frame Frame()
-        {
-            return PullView<Frame>();
-        }
+        public Frame Frame() => PullView<Frame>();
 
         public ViewBox ViewBox(float virtualWidth, float virtualHeight)
         {
@@ -100,10 +93,7 @@ namespace IngameScript
             return view;
         }
 
-        public VStack VStack()
-        {
-            return PullView<VStack>();
-        }
+        public VStack VStack() => PullView<VStack>();
 
         public IReadOnlyList<HStack> Rows<T>(IEnumerable<T> items, Func<T, HStack> rowFn)
         {
@@ -149,10 +139,7 @@ namespace IngameScript
             return rows;
         }
 
-        public HStack HStack()
-        {
-            return PullView<HStack>();
-        }
+        public HStack HStack() => PullView<HStack>();
 
         public Text Text(string value, Color color)
         {
@@ -170,23 +157,19 @@ namespace IngameScript
             return view;
         }
 
-        // public sealed override void Render(object model, IMyTextSurface surface)
-        //     => Render((TModel)model, surface);
-
-        public void Render(TModel model, IMyTextSurface surface)
+        public void Render(TModel model, IMyTextSurface surface, bool force = false)
         {
             BeginFrame(surface);
+            if (force)
+                ForceSync();
             var view = Render(surface, model, _viewport);
             var dc = new DC(_add, _viewport);
             ((IView)view).Draw(dc);
             EndFrame();
         }
 
-        void Add(MySprite sprite)
-        {
-            _frame.Add(sprite);
-        }
-        
+        void Add(MySprite sprite) => _frame.Add(sprite);
+
         protected abstract View Render(IMyTextSurface surface, TModel model, RectangleF viewport);
 
         interface ICache
@@ -212,10 +195,7 @@ namespace IngameScript
                 return view;
             }
 
-            public void Reset()
-            {
-                _index = 0;
-            }
+            public void Reset() => _index = 0;
         }
 
         class Context : IContext
@@ -230,10 +210,7 @@ namespace IngameScript
 
             public IMyTextSurface Surface { get; private set; }
 
-            public T Lease<T>() where T : class, new()
-            {
-                return _page.Lease<T>();
-            }
+            public T Lease<T>() where T : class, new() => _page.Lease<T>();
 
             public RectangleF PushClip(RectangleF bounds)
             {
@@ -255,15 +232,9 @@ namespace IngameScript
                 return _clipStack.Count > 0 ? _clipStack.Peek() : (RectangleF?)null;
             }
 
-            public void Begin(IMyTextSurface surface)
-            {
-                Surface = surface;
-            }
+            public void Begin(IMyTextSurface surface) => Surface = surface;
 
-            public void End()
-            {
-                _clipStack.Clear();
-            }
+            public void End() => _clipStack.Clear();
         }
 
         protected static class CommonPatterns

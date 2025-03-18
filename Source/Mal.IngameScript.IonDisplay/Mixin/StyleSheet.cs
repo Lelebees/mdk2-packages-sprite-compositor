@@ -19,7 +19,7 @@ namespace IngameScript
 
             styles.Add(style);
         }
-        
+
         public void Apply(View view)
         {
             List<Style> styles;

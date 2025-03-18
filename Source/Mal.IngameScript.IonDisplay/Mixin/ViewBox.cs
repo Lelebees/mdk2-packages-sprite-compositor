@@ -6,13 +6,16 @@ namespace IngameScript
 {
     public class ViewBox : Frame
     {
-        Action<MySprite> /*_baseAdd, */_viewAdd;
+        DC _baseDc;
         Vector2 _offset;
         float _scale;
+
+        Action<MySprite> /*_baseAdd, */
+            _viewAdd;
+
         public Thickness Padding;
         public ScaleMode ScaleMode = ScaleMode.Fit;
         public Vector2 VirtualSize;
-        DC _baseDc;
 
         protected override void OnBeforeFrame()
         {

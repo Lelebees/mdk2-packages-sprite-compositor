@@ -39,6 +39,7 @@ namespace IngameScript
                         _r[i] = new Coroutine { Id = c.Id, R = c.R, W = c.R.Current };
                     }
                 }
+
                 i++;
             }
 
@@ -56,8 +57,10 @@ namespace IngameScript
             _program.Runtime.UpdateFrequency |= c.W.GetUpdateFrequency();
             return c.Id;
         }
-        
+
         public ulong Run(CoroutineFn coroutineFn, CancellationToken token = default(CancellationToken)) => Run(coroutineFn(token));
+
+        public bool IsCompleted(ulong id) => !_rIds.Contains(id);
 
         struct Coroutine
         {
@@ -65,7 +68,5 @@ namespace IngameScript
             public IEnumerator<When> R;
             public When W;
         }
-
-        public bool IsCompleted(ulong id) => !_rIds.Contains(id);
     }
 }

@@ -1,3 +1,7 @@
+- 1.0.0-alpha.17
+   Reformatting.
+   Added a way to force a resync/re-render of a page (to work around the desync problem).
+
 - 1.0.0.alpha.16
    Found a better syntax for auto-sizing.
 
@@ -10,13 +14,12 @@
 - 1.0.0-alpha.13
    Still didn't reset clipping correctly.
 
- - 1.0.0-alpha.12
+- 1.0.0-alpha.12
    Didn't reset clipping correctly.
  
- - 1.0.0-alpha.11
+- 1.0.0-alpha.11
    Fixed clip support... you know... not working at all.
  
- - 1.0.0-alpha.10
+- 1.0.0-alpha.10
    Added clip support for Frame derived views
    
-  

@@ -59,19 +59,19 @@ namespace IngameScript
             view.Bounds = new RectangleF(view.Bounds.Position, size);
             return view;
         }
-        
+
         public static T RotatedImg<T>(this T view, float rotation) where T : Box
         {
             view.Rotation = rotation;
             return view;
         }
-        
+
         public static T MirroredImg<T>(this T view) where T : Box
         {
             view.Mirror = true;
             return view;
         }
-        
+
         public static T FlippedImg<T>(this T view) where T : Box
         {
             view.Flip = true;
@@ -87,35 +87,35 @@ namespace IngameScript
             x = (float)(position.X * Math.Cos(angle) - position.Y * Math.Sin(angle));
             y = (float)(position.X * Math.Sin(angle) + position.Y * Math.Cos(angle));
             view.Start = new Vector2(x, y) + center;
-            
+
             position = view.End;
             position -= center;
             x = (float)(position.X * Math.Cos(angle) - position.Y * Math.Sin(angle));
             y = (float)(position.X * Math.Sin(angle) + position.Y * Math.Cos(angle));
             view.End = new Vector2(x, y) + center;
-            
+
             return view;
         }
-        
+
         public static Line Thickness(this Line view, float thickness)
         {
             view.Thickness = thickness;
             return view;
         }
-        
+
         public static Line Between(this Line view, float x1, float y1, float x2, float y2)
         {
             view.Start = new Vector2(x1, y1);
             view.End = new Vector2(x2, y2);
             return view;
         }
-        
+
         public static T RotatedAround<T>(this T view, float rotation, float x, float y, bool affectPattern = true) where T : View
         {
             var line = view as Line;
             if (line != null)
                 return RotateAround(line, rotation, x, y) as T;
-            
+
             var position = view.Bounds.Position;
             var center = new Vector2(x, y);
             position -= center;
@@ -131,6 +131,7 @@ namespace IngameScript
                 if (box != null)
                     box.Rotation = (box.Rotation + rotation) % 360;
             }
+
             return view;
         }
 
@@ -140,7 +141,7 @@ namespace IngameScript
             view.VirtualSize = size;
             return view;
         }
-        
+
         public static T FontSize<T>(this T view, float fontSize) where T : Text
         {
             view.FontSize = fontSize;
@@ -188,49 +189,49 @@ namespace IngameScript
             view.IsVisible = state;
             return view;
         }
-        
+
         public static T Margin<T>(this T view, float left, float top, float right, float bottom) where T : View
         {
             view.Margin = new Thickness(left, top, right, bottom);
             return view;
         }
-        
+
         public static T Margin<T>(this T view, float uniformSize) where T : View
         {
             view.Margin = new Thickness(uniformSize);
             return view;
         }
-        
+
         public static T Margin<T>(this T view, float horizontal, float vertical) where T : View
         {
             view.Margin = new Thickness(horizontal, vertical);
             return view;
         }
-        
+
         public static T Margin<T>(this T view, Thickness margin) where T : View
         {
             view.Margin = margin;
             return view;
         }
-        
+
         public static T Padding<T>(this T view, float left, float top, float right, float bottom) where T : ViewBox
         {
             view.Padding = new Thickness(left, top, right, bottom);
             return view;
         }
-        
+
         public static T Padding<T>(this T view, float uniformSize) where T : ViewBox
         {
             view.Padding = new Thickness(uniformSize);
             return view;
         }
-        
+
         public static T Padding<T>(this T view, float horizontal, float vertical) where T : ViewBox
         {
             view.Padding = new Thickness(horizontal, vertical);
             return view;
         }
-        
+
         public static T Padding<T>(this T view, Thickness padding) where T : ViewBox
         {
             view.Padding = padding;
@@ -254,19 +255,19 @@ namespace IngameScript
             view.Flex = Flexing.Height;
             return view;
         }
-        
+
         public static T Add<T>(this T view, params View[] children) where T : Frame
         {
             ((IContainer)view).AddRange(children);
             return view;
         }
-        
+
         public static T Add<T>(this T view, IEnumerable<View> children) where T : Frame
         {
             ((IContainer)view).AddRange(children);
             return view;
         }
-        
+
         public static T Rows<T, TData>(this T view, IEnumerable<TData> items, Func<TData, HStack> rowFn) where T : Frame
         {
             var firstRow = view.Children.Count;
@@ -308,16 +309,16 @@ namespace IngameScript
 
                 row.Bounds = new RectangleF(0, 0, width, row.Bounds.Height);
             }
-            
+
             return view;
         }
-        
+
         public static T Class<T>(this T view, string className) where T : View
         {
             view.Classes.Add(className);
             return view;
         }
-        
+
         public static T Clipped<T>(this T view) where T : Frame
         {
             view.ClipToBounds = true;

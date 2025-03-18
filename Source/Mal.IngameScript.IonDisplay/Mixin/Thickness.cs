@@ -57,9 +57,6 @@ namespace IngameScript
 
         public static bool operator !=(Thickness left, Thickness right) => !left.Equals(right);
 
-        public override string ToString() 
-        {
-            return $"{{ Left={Left}, Top={Top}, Right={Right}, Bottom={Bottom} }}";
-        }
+        public override string ToString() => $"{{ Left={Left}, Top={Top}, Right={Right}, Bottom={Bottom} }}";
     }
 }

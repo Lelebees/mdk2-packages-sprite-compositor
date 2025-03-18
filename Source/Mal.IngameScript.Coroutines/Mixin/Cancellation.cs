@@ -28,11 +28,8 @@ namespace IngameScript
             IsCancellationRequested = true;
             CancelRequested?.Invoke(this);
         }
-        
-        public void Reset()
-        {
-            IsCancellationRequested = false;
-        }
+
+        public void Reset() => IsCancellationRequested = false;
 
         public event Action<ICancellable> CancelRequested;
 
@@ -61,9 +58,7 @@ namespace IngameScript
 
             public bool IsCancellationRequested => _token1.IsCancellationRequested || _token2.IsCancellationRequested;
 
-            public void Cancel()
-            {
-            }
+            public void Cancel() { }
         }
     }
 }
