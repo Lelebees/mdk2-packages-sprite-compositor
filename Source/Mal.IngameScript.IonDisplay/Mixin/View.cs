@@ -8,16 +8,16 @@ namespace IngameScript
     {
         public readonly HashSet<string> Classes = new HashSet<string>(StringComparer.Ordinal);
         public RectangleF Bounds;
-        public IContext Context;
+        public IIon Context;
         public Flexing Flex;
         public bool IsVisible = true;
         public Thickness Margin;
         public View Parent;
 
-        void IView.BeginFrame(IContext context)
+        void IView.BeginFrame(IIon ion)
         {
             Bounds = new RectangleF(0, 0, -1, -1);
-            Context = context;
+            Context = ion;
             IsVisible = true;
             Margin = new Thickness(0);
             Flex = Flexing.None;

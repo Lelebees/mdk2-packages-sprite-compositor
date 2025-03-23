@@ -2,7 +2,7 @@
 
 namespace IngameScript
 {
-    public interface IContainer : IView
+    public interface IContainer
     {
         void Add(View view);
         void AddRange(IEnumerable<View> views);

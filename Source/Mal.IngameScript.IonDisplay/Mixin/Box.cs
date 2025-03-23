@@ -21,9 +21,7 @@ namespace IngameScript
                 _rotationRad = MathHelper.ToRadians(value);
             }
         }
-
-        public Page Page { get; set; }
-
+        
         protected override void OnBeforeFrame()
         {
             Color = Color.White;

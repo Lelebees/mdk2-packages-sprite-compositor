@@ -22,15 +22,15 @@ Easily draw text and sprites on the screen using an MVU-inspired architecture.
 ```csharp
     public class CoolPage: Page<Program>
     {
-        protected override View Render(IMyTextSurface surface, Program model, RectangleF viewport)
+        protected override View Render(IIon ion, Program model)
         {
             // Creates a view box that is 100x100 pixels in size, but will be scaled to fit the 
             // surface while maintaining the aspect ratio.
             // Centers the text "Hello World" in the view box.
             
-            return ViewBox(100, 100)
+            return ion.ViewBox(100, 100)
                 .Add(
-                    Text("Hello World", Color.White)
+                    ion.Text("Hello World", Color.White)
                         .CenteredAt(50, 50)
                         .Font("Monospace")
                         .FontSize(2)

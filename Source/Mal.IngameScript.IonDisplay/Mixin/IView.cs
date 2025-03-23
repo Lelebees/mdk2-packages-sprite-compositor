@@ -6,7 +6,7 @@ namespace IngameScript
 {
     public interface IView
     {
-        void BeginFrame(IContext context);
+        void BeginFrame(IIon ion);
         void Draw(DC dc);
     }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
@@ -12,7 +11,6 @@ namespace IngameScript
     public abstract class Page<TModel> : Page
     {
         readonly Action<MySprite> _add;
-        readonly StringBuilder _buffer = new StringBuilder();
         readonly Context _context;
         readonly Dictionary<Type, ICache> _viewCache = new Dictionary<Type, ICache>();
         MySpriteDrawFrame _frame;
@@ -48,7 +46,7 @@ namespace IngameScript
                 (textureSize - surfaceSize) / 2,
                 surfaceSize);
             _frame = surface.DrawFrame();
-            _context.Begin(surface);
+            _context.Begin(surface, _viewport);
             ForceSync();
         }
 
@@ -67,110 +65,20 @@ namespace IngameScript
                 cache.Reset();
         }
 
-        public Frame Frame() => PullView<Frame>();
-
-        public ViewBox ViewBox(float virtualWidth, float virtualHeight)
-        {
-            var view = PullView<ViewBox>();
-            view.VirtualSize = new Vector2(virtualWidth, virtualHeight);
-            return view;
-        }
-
-        public Box Box(Color color, string patternId = null)
-        {
-            var view = PullView<Box>();
-            view.Page = this;
-            view.Color = color;
-            view.PatternId = patternId ?? CommonPatterns.Square;
-            return view;
-        }
-
-        public Line Line(Color color, string patternId = null)
-        {
-            var view = PullView<Line>();
-            view.Color = color;
-            view.PatternId = patternId ?? CommonPatterns.Square;
-            return view;
-        }
-
-        public VStack VStack() => PullView<VStack>();
-
-        public IReadOnlyList<HStack> Rows<T>(IEnumerable<T> items, Func<T, HStack> rowFn)
-        {
-            var rows = new List<HStack>();
-            var columnWidths = new List<float>();
-            foreach (var item in items)
-            {
-                var row = rowFn(item);
-                float rowHeight = 0;
-                for (var i = 0; i < row.Children.Count; i++)
-                {
-                    var child = row.Children[i];
-                    if (child == null)
-                        continue;
-                    if (columnWidths.Count <= i) columnWidths.Add(0);
-                    columnWidths[i] = Math.Max(columnWidths[i], child.Bounds.Width);
-                    rowHeight = Math.Max(rowHeight, child.Bounds.Height + child.Margin.VerticalThickness);
-                }
-
-                row.Bounds = new RectangleF(0, 0, 0, rowHeight);
-                rows.Add(row);
-            }
-
-            foreach (var row in rows)
-            {
-                var width = 0f;
-                for (var j = 0; j < row.Children.Count; j++)
-                {
-                    var child = row.Children[j];
-                    if (child == null)
-                        continue;
-                    width += columnWidths[j] + child.Margin.HorizontalThickness;
-                    child.Bounds = new RectangleF(
-                        child.Bounds.X,
-                        child.Bounds.Y,
-                        columnWidths[j],
-                        child.Bounds.Height);
-                }
-
-                row.Bounds = new RectangleF(0, 0, width, row.Bounds.Height);
-            }
-
-            return rows;
-        }
-
-        public HStack HStack() => PullView<HStack>();
-
-        public Text Text(string value, Color color)
-        {
-            var view = PullView<Text>();
-            view.Value = value;
-            view.Color = color;
-            return view;
-        }
-
-        public Text Text(Func<StringBuilder, StringBuilder> valueFn, Color color)
-        {
-            var view = PullView<Text>();
-            view.Value = valueFn(_buffer.Clear()).ToString();
-            view.Color = color;
-            return view;
-        }
-
         public void Render(TModel model, IMyTextSurface surface, bool force = false)
         {
             BeginFrame(surface);
             if (force)
                 ForceSync();
-            var view = Render(surface, model, _viewport);
+            IView view = Render(_context, model);
             var dc = new DC(_add, _viewport);
-            ((IView)view).Draw(dc);
+            view.Draw(dc);
             EndFrame();
         }
 
         void Add(MySprite sprite) => _frame.Add(sprite);
 
-        protected abstract View Render(IMyTextSurface surface, TModel model, RectangleF viewport);
+        protected abstract View Render(IIon ion, TModel model);
 
         interface ICache
         {
@@ -180,17 +88,16 @@ namespace IngameScript
 
         class Cache<T> : ICache where T : class, new()
         {
-            readonly List<T> _views = new List<T>();
+            readonly List<T> _items = new List<T>();
             int _index;
 
             public object Lease()
             {
                 T view;
-                if (_index < _views.Count)
-                    view = _views[_index];
+                if (_index < _items.Count)
+                    view = _items[_index];
                 else
-                    _views.Add(view = new T());
-
+                    _items.Add(view = new T());
                 _index++;
                 return view;
             }
@@ -198,7 +105,7 @@ namespace IngameScript
             public void Reset() => _index = 0;
         }
 
-        class Context : IContext
+        class Context : IIon
         {
             readonly Stack<RectangleF> _clipStack = new Stack<RectangleF>();
             readonly Page<TModel> _page;
@@ -209,8 +116,8 @@ namespace IngameScript
             }
 
             public IMyTextSurface Surface { get; private set; }
-
             public T Lease<T>() where T : class, new() => _page.Lease<T>();
+            public T View<T>() where T : View, new() => _page.PullView<T>();
 
             public RectangleF PushClip(RectangleF bounds)
             {
@@ -232,25 +139,16 @@ namespace IngameScript
                 return _clipStack.Count > 0 ? _clipStack.Peek() : (RectangleF?)null;
             }
 
-            public void Begin(IMyTextSurface surface) => Surface = surface;
+            public void Begin(IMyTextSurface surface, RectangleF viewport)
+            {
+                Surface = surface;
+                Viewport = viewport;
+                Theme.UpdateFrom(surface);
+            }
 
+            public Theme Theme { get; set; } = new Theme();
+            public RectangleF Viewport { get; private set; }
             public void End() => _clipStack.Clear();
-        }
-
-        protected static class CommonPatterns
-        {
-            public const string Circle = "Circle";
-            public const string SemiCircle = "SemiCircle";
-            public const string CircleHollow = "CircleHollow";
-            public const string Square = "SquareSimple";
-            public const string SquareHollow = "SquareHollow";
-            public const string Triangle = "Triangle";
-            public const string RightTriangle = "RightTriangle";
-
-            public const string BusyIndicator = "Screen_LoadingBar";
-            public const string BracketL = "DecorativeBracketLeft";
-            public const string BracketR = "DecorativeBracketRight";
-            public const string Grid = "Grid";
         }
     }
 }
