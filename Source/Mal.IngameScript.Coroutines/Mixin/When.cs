@@ -11,7 +11,7 @@ namespace IngameScript
         /// <param name="coroutineId">The coroutine to wait for. Easiest way is to pass in Coroutine.Run(TheCrToRun()) directly.</param>
         /// <param name="frequency">The frequency to check for completion.</param>
         /// <returns></returns>
-        public static When Completed(ulong coroutineId, CrFrequency frequency = CrFrequency.Normal) => new When(frequency, 1, coroutineId);
+        public static When Completed(ulong coroutineId, UpdateType frequency = UpdateType.Update10) => new When(frequency, 1, coroutineId);
 
         /// <summary>
         ///     Returns when the given condition is true. Checks at the given frequency.
@@ -19,7 +19,7 @@ namespace IngameScript
         /// <param name="condition">The condition to check.</param>
         /// <param name="frequency">The frequency to check the condition.</param>
         /// <returns></returns>
-        public static When True(Func<When, bool> condition, CrFrequency frequency = CrFrequency.Normal) => new When(frequency, c: condition);
+        public static When True(Func<When, bool> condition, UpdateType frequency = UpdateType.Update10) => new When(frequency, c: condition);
 
         /// <summary>
         ///     Returns when the given condition is true. Checks at the given frequency.
@@ -27,35 +27,42 @@ namespace IngameScript
         /// <param name="condition">The condition to check.</param>
         /// <param name="frequency">The frequency to check the condition.</param>
         /// <returns></returns>
-        public static When True(Func<bool> condition, CrFrequency frequency = CrFrequency.Normal) => new When(frequency, c: _ => condition());
+        public static When True(Func<bool> condition, UpdateType frequency = UpdateType.Update10) => new When(frequency, c: _ => condition());
 
         /// <summary>
-        ///     Returns at the next scheduled update at the given frequency.
+        ///   Returns when the next update of the given type occurs.
+        /// </summary>
+        /// <param name="updateType"></param>
+        /// <returns></returns>
+        public static When Next(UpdateType updateType) => new When(updateType);
+        
+        /// <summary>
+        /// Returns when the next update1 tick occurs.
         /// </summary>
         /// <remarks>
-        ///     Warning: Be careful with <see cref="Sandbox.ModAPI.Ingame.UpdateType.Update1" /> Only use for short running
-        ///     coroutines or when absolutely necessary for accuracy.
+        /// Be careful with this method. Updating every tick is something to be deliberate about, as it can cause performance issues.
         /// </remarks>
-        /// <param name="frequency">The frequency to wait for.</param>
         /// <returns></returns>
-        public static When Returning(CrFrequency frequency = CrFrequency.Normal) => new When(frequency);
-
+        public static When NextUpdate1() => new When(UpdateType.Update1);
+        
         /// <summary>
-        ///     Returns whenever the Main is called next, for whatever reason.
-        /// </summary>
-        /// <returns></returns>
-        public static When Ever() => new When(CrFrequency.Parasitic, 1);
-
-        /// <summary>
-        ///     Returns at the next scheduled update, at the highest frequency possible.
+        /// Returns when the next update10 tick occurs.
         /// </summary>
         /// <remarks>
-        ///     Warning: Be careful with <see cref="Sandbox.ModAPI.Ingame.UpdateType.Update1" /> Only use for short running
-        ///     coroutines or when absolutely necessary for accuracy.
+        /// This is the most common update frequency to use.
         /// </remarks>
         /// <returns></returns>
-        public static When Ready() => new When(CrFrequency.Immediate);
-
+        public static When NextUpdate() => new When(UpdateType.Update10);
+        
+        /// <summary>
+        /// Returns when the next update100 tick occurs.
+        /// </summary>
+        /// <remarks>
+        /// Use this for data polls where the frequency is not critical.
+        /// </remarks>
+        /// <returns></returns>
+        public static When NextUpdate100() => new When(UpdateType.Update100);
+        
         /// <summary>
         ///     How often to run the coroutine.
         /// </summary>
@@ -79,14 +86,18 @@ namespace IngameScript
         /// <summary>
         ///     Creates a new When object. It is recommended to use the static methods instead.
         /// </summary>
-        public When(CrFrequency u, uint f = 0, ulong b = 0, Func<When, bool> c = null)
+        public When(UpdateType u, uint f = 0, ulong b = 0, Func<When, bool> c = null)
         {
-            U = u == CrFrequency.Immediate ? UpdateType.Update1 : u == CrFrequency.Slow ? UpdateType.Update100 : UpdateType.Update10;
+            U = u;
             F = f;
             B = b;
             C = c;
         }
 
-        public UpdateFrequency GetUpdateFrequency() => U == UpdateType.Update1 ? UpdateFrequency.Update1 : U == UpdateType.Update100 ? UpdateFrequency.Update100 : UpdateFrequency.Update10;
+        /// <summary>
+        /// Gets the UpdateFrequency which corresponds to the registered UpdateType.
+        /// </summary>
+        /// <returns></returns>
+        public UpdateFrequency GetUpdateFrequency() => U == UpdateType.Update1 ? UpdateFrequency.Update1 : U == UpdateType.Update100 ? UpdateFrequency.Update100 : U == UpdateType.Update10 ? UpdateFrequency.Update10 : UpdateFrequency.None;
     }
 }

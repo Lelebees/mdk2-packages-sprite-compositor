@@ -51,7 +51,7 @@ namespace IngameScript
 
         public ulong Run(IEnumerator<When> coroutine)
         {
-            var c = new Coroutine { Id = ++__idSrc, R = coroutine, W = new When(CrFrequency.Immediate) };
+            var c = new Coroutine { Id = ++__idSrc, R = coroutine, W = new When(UpdateType.Update1) };
             _r.Add(c);
             _rIds.Add(c.Id);
             _program.Runtime.UpdateFrequency |= c.W.GetUpdateFrequency();

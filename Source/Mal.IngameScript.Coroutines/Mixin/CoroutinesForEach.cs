@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sandbox.ModAPI.Ingame;
 
 namespace IngameScript
 {
@@ -9,11 +10,11 @@ namespace IngameScript
 #if !MAL_SPACEENGINEERS_INGAMESCRIPT_OBJECTPOOL
         static readonly Queue<List<ulong>> ListPool = new Queue<List<ulong>>();
 #endif
-        public static void ForEach<T>(this Coroutines coroutines, IReadOnlyList<T> blocks, Action<T> action, CrFrequency updateFrequency = CrFrequency.Immediate, int batchSize = 25) => coroutines.Run(ForEachCoroutine(blocks, action, updateFrequency, batchSize));
+        public static void ForEach<T>(this Coroutines coroutines, IReadOnlyList<T> blocks, Action<T> action, UpdateType updateType = UpdateType.Update1, int batchSize = 25) => coroutines.Run(ForEachCoroutine(blocks, action, updateType, batchSize));
 
-        public static void WhenAll<T>(this Coroutines coroutines, IEnumerable<ulong> coroutineIds, Action<T> action, CrFrequency updateFrequency = CrFrequency.Immediate, int batchSize = 25) => coroutines.Run(WhenAllCoroutine(coroutines, coroutineIds, action, updateFrequency));
+        public static void WhenAll<T>(this Coroutines coroutines, IEnumerable<ulong> coroutineIds, Action<T> action, UpdateType updateType = UpdateType.Update1, int batchSize = 25) => coroutines.Run(WhenAllCoroutine(coroutines, coroutineIds, action, updateType));
 
-        static IEnumerator<When> WhenAllCoroutine<T>(Coroutines coroutines, IEnumerable<ulong> coroutineIds, Action<T> action, CrFrequency updateFrequency)
+        static IEnumerator<When> WhenAllCoroutine<T>(Coroutines coroutines, IEnumerable<ulong> coroutineIds, Action<T> action, UpdateType updateType)
         {
 #if MAL_SPACEENGINEERS_INGAMESCRIPT_OBJECTPOOL
             var list = ObjectPool.Get<List<ulong>>();
@@ -27,7 +28,7 @@ namespace IngameScript
                 {
                     if (list.All(coroutines.IsCompleted))
                         break;
-                    yield return When.Returning(updateFrequency);
+                    yield return When.Next(updateType);
                 }
             }
             finally
@@ -37,13 +38,13 @@ namespace IngameScript
             }
         }
 
-        static IEnumerator<When> ForEachCoroutine<T>(IReadOnlyList<T> blocks, Action<T> action, CrFrequency updateFrequency, int batchSize)
+        static IEnumerator<When> ForEachCoroutine<T>(IReadOnlyList<T> blocks, Action<T> action, UpdateType updateType, int batchSize)
         {
             for (var index = 0; index < blocks.Count; index++)
             {
                 action(blocks[index]);
                 if (index % batchSize == 0)
-                    yield return When.Returning(updateFrequency);
+                    yield return When.Next(updateType);
             }
         }
     }

@@ -21,7 +21,7 @@ namespace IngameScript
             while (!token.IsCancellationRequested)
             {
                 Echo("Hello, World!");
-                yield return When.Returning();
+                yield return When.NextUpdate();
             }
         }
 
