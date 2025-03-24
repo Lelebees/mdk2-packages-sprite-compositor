@@ -1,3 +1,6 @@
+- 1.0.0-alpha.18
+   Text measuring is now done through the ion context so the ems can be cached.
+   
 - 1.0.0-alpha.17
    Reformatting.
    Added a way to force a resync/re-render of a page (to work around the desync problem).
