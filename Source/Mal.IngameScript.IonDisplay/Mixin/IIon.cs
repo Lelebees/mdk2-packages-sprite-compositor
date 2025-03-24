@@ -1,4 +1,5 @@
 ﻿using Sandbox.ModAPI.Ingame;
+using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
 
 namespace IngameScript
@@ -12,5 +13,6 @@ namespace IngameScript
         T View<T>() where T : View, new();
         RectangleF PushClip(RectangleF dcBounds);
         RectangleF? PopClip();
+        Vector2 MeasureString(StringSegment stringSegment, string fontId, float fontSize);
     }
 }

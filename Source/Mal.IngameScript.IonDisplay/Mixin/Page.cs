@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game.GUI.TextPanel;
+using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
 
 namespace IngameScript
@@ -107,7 +109,9 @@ namespace IngameScript
 
         class Context : IIon
         {
+            readonly StringBuilder _buf = new StringBuilder();
             readonly Stack<RectangleF> _clipStack = new Stack<RectangleF>();
+            readonly Dictionary<string, float> _em = new Dictionary<string, float>();
             readonly Page<TModel> _page;
 
             public Context(Page<TModel> page)
@@ -139,6 +143,17 @@ namespace IngameScript
                 return _clipStack.Count > 0 ? _clipStack.Peek() : (RectangleF?)null;
             }
 
+            public Vector2 MeasureString(StringSegment stringSegment, string fontId, float fontSize)
+            {
+                float emScale;
+                if (!_em.TryGetValue(fontId, out emScale)) _em[fontId] = emScale = 1 / Surface.MeasureStringInPixels(_buf.Clear().Append('M'), fontId, 1).Y;
+                _buf.Clear().Append(stringSegment.Text, stringSegment.Start, stringSegment.Length);
+                return Surface.MeasureStringInPixels(_buf, fontId, fontSize * emScale);
+            }
+
+            public Theme Theme { get; set; } = new Theme();
+            public RectangleF Viewport { get; private set; }
+
             public void Begin(IMyTextSurface surface, RectangleF viewport)
             {
                 Surface = surface;
@@ -146,8 +161,6 @@ namespace IngameScript
                 Theme.UpdateFrom(surface);
             }
 
-            public Theme Theme { get; set; } = new Theme();
-            public RectangleF Viewport { get; private set; }
             public void End() => _clipStack.Clear();
         }
     }

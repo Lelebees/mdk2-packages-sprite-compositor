@@ -1,13 +1,11 @@
-﻿using System.Text;
-using VRage.Game.GUI.TextPanel;
+﻿using VRage.Game.GUI.TextPanel;
+using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
 
 namespace IngameScript
 {
     public class Text : View
     {
-        static readonly StringBuilder M = new StringBuilder("M");
-        static readonly StringBuilder Buffer = new StringBuilder();
         float _fontScale;
         string _measuredFontId;
         float _measuredFontSize;
@@ -15,18 +13,13 @@ namespace IngameScript
         string _measuredValue;
 
         public TextAlignment Alignment = TextAlignment.LEFT;
-
         public Color Color = Color.White;
-
         public string FontId = "White";
-
         public float FontSize = 24f;
-
         public string Value;
 
         public override Vector2 Measure()
         {
-            var surface = Context.Surface;
             var value = Value ?? "";
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (_measuredFontSize != FontSize || _measuredFontId != FontId || _measuredValue != value)
@@ -34,8 +27,8 @@ namespace IngameScript
                 _measuredFontSize = FontSize;
                 _measuredFontId = FontId;
                 _measuredValue = value;
-                _fontScale = FontSize / surface.MeasureStringInPixels(M, FontId, 1).Y;
-                _measuredSize = surface.MeasureStringInPixels(Buffer.Clear().Append(value), FontId, _fontScale);
+                _measuredSize = Context.MeasureString(new StringSegment(value), FontId, FontSize);
+                _fontScale = _measuredSize.Y / FontSize;
             }
 
             return _measuredSize;
