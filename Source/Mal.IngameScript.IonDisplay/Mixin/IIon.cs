@@ -14,5 +14,6 @@ namespace IngameScript
         RectangleF PushClip(RectangleF dcBounds);
         RectangleF? PopClip();
         Vector2 MeasureString(StringSegment stringSegment, string fontId, float fontSize);
+        Vector2 MeasureString(StringSegment stringSegment, string fontId, float fontSize, out float scale);
     }
 }

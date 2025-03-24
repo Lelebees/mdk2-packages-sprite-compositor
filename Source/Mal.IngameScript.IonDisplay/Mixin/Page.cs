@@ -146,9 +146,16 @@ namespace IngameScript
             public Vector2 MeasureString(StringSegment stringSegment, string fontId, float fontSize)
             {
                 float emScale;
+                return MeasureString(stringSegment, fontId, fontSize, out emScale);
+            }
+
+            public Vector2 MeasureString(StringSegment stringSegment, string fontId, float fontSize, out float scale)
+            {
+                float emScale;
                 if (!_em.TryGetValue(fontId, out emScale)) _em[fontId] = emScale = 1 / Surface.MeasureStringInPixels(_buf.Clear().Append('M'), fontId, 1).Y;
                 _buf.Clear().Append(stringSegment.Text, stringSegment.Start, stringSegment.Length);
-                return Surface.MeasureStringInPixels(_buf, fontId, fontSize * emScale);
+                scale = emScale * fontSize;
+                return Surface.MeasureStringInPixels(_buf, fontId, scale);
             }
 
             public Theme Theme { get; set; } = new Theme();

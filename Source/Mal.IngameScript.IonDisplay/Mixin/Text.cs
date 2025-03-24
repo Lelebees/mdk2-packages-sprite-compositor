@@ -27,8 +27,7 @@ namespace IngameScript
                 _measuredFontSize = FontSize;
                 _measuredFontId = FontId;
                 _measuredValue = value;
-                _measuredSize = Context.MeasureString(new StringSegment(value), FontId, FontSize);
-                _fontScale = _measuredSize.Y / FontSize;
+                _measuredSize = Context.MeasureString(new StringSegment(value), FontId, FontSize, out _fontScale);
             }
 
             return _measuredSize;
