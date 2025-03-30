@@ -2,9 +2,9 @@ name: Package Shared Projects
 
 on:
   push:
-    branches: [ main ]
+    branches: [ * ]
   pull_request:
-    branches: [ main ]
+    branches: [ * ]
 
 permissions:
   contents: read
@@ -31,8 +31,6 @@ jobs:
           name: packages
           path: NuGetPackages
   
-# ... Seriously? GitHub requires authentication for package downloads?
-# Then we will not use this feature.
 #  publish:
 #    needs: build
 #    runs-on: windows-latest
