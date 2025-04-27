@@ -2,9 +2,9 @@ name: Package Shared Projects
 
 on:
   push:
-    branches: [ * ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ * ]
+    branches: [ '*' ]
 
 permissions:
   contents: read
