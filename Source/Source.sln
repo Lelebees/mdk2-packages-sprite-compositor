@@ -2,9 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mal.IngameScript.Coroutines", "Mal.IngameScript.Coroutines", "{3F2882BF-01A9-4E1F-96AE-F8EB8D5228E4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mixin", "Mixin", "{28401637-F464-4E13-A913-B849F7CF2CE1}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mal.IngameScript.Coroutines", "Mal.IngameScript.Coroutines\Mixin\Mal.IngameScript.Coroutines.shproj", "{C6E5C7A7-9E10-4C19-9526-708CFA6B13C6}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mal.IngameScript.Coroutines", "Mal.IngameScript.Coroutines\Mal.IngameScript.Coroutines\Mal.IngameScript.Coroutines.shproj", "{C6E5C7A7-9E10-4C19-9526-708CFA6B13C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_metadata", "_metadata", "{F52FC9D0-9C6B-413E-B18B-1556F481DA09}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,19 +16,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_metadata", "_metadata", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{B77A1A32-6EA8-448A-8726-CCF07528DB9D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mixin", "Mixin", "{FC9CF0F8-865F-4EB7-8D94-47788FD73884}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Author.IngameScript.MixinName", "Template\Mixin\Author.IngameScript.MixinName.shproj", "{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Author.IngameScript.MixinName", "Template\Author.IngameScript.MixinName\Author.IngameScript.MixinName.shproj", "{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mal.IngameScript.IonDisplay", "Mal.IngameScript.IonDisplay", "{74AFCD4A-411F-47F7-838B-2483AD9C0AAA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mixin", "Mixin", "{C5ABEDBE-1E39-4437-8F86-84A3759B8C09}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mal.IngameScript.IonDisplay", "Mal.IngameScript.IonDisplay\Mal.IngameScript.IonDisplay\Mal.IngameScript.IonDisplay.shproj", "{D8D37CEC-E9CC-496B-9AFC-69D5350A0C93}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mal.IngameScript.IonDisplay", "Mal.IngameScript.IonDisplay\Mixin\Mal.IngameScript.IonDisplay.shproj", "{D8D37CEC-E9CC-496B-9AFC-69D5350A0C93}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mal.IngameScript.Coroutines.Demo", "Mal.IngameScript.Coroutines\Demo\Mal.IngameScript.Coroutines.Demo.csproj", "{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mal.IngameScript.Coroutines.Demo", "Mal.IngameScript.Coroutines\Mal.IngameScript.Coroutines.Demo\Mal.IngameScript.Coroutines.Demo.csproj", "{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mal.IngameScript.IonDisplay.Demo", "Mal.IngameScript.IonDisplay\Mal.IngameScript.IonDisplay.Demo\Mal.IngameScript.IonDisplay.Demo.csproj", "{E4300B0C-3C88-41A0-86C6-20646DF6409A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mal.IngameScript.Console", "Mal.IngameScript.Console", "{282F9AE4-5A97-4B12-B6A7-6A5B37CD1047}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Mal.IngameScript.Console", "Mal.IngameScript.Console\Mal.IngameScript.Console\Mal.IngameScript.Console.shproj", "{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mal.IngameScript.Console.Demo", "Mal.IngameScript.Console\Mal.IngameScript.Console.Demo\Mal.IngameScript.Console.Demo.csproj", "{90C0287D-69BB-41C4-81B7-0AD3ABEF5E03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,20 +38,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{28401637-F464-4E13-A913-B849F7CF2CE1} = {3F2882BF-01A9-4E1F-96AE-F8EB8D5228E4}
-		{C6E5C7A7-9E10-4C19-9526-708CFA6B13C6} = {28401637-F464-4E13-A913-B849F7CF2CE1}
-		{FC9CF0F8-865F-4EB7-8D94-47788FD73884} = {B77A1A32-6EA8-448A-8726-CCF07528DB9D}
-		{C5ABEDBE-1E39-4437-8F86-84A3759B8C09} = {74AFCD4A-411F-47F7-838B-2483AD9C0AAA}
-		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF} = {28401637-F464-4E13-A913-B849F7CF2CE1}
-		{E4300B0C-3C88-41A0-86C6-20646DF6409A} = {C5ABEDBE-1E39-4437-8F86-84A3759B8C09}
-		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F} = {FC9CF0F8-865F-4EB7-8D94-47788FD73884}
-		{D8D37CEC-E9CC-496B-9AFC-69D5350A0C93} = {C5ABEDBE-1E39-4437-8F86-84A3759B8C09}
+		{90C0287D-69BB-41C4-81B7-0AD3ABEF5E03} = {282F9AE4-5A97-4B12-B6A7-6A5B37CD1047}
+		{D8D37CEC-E9CC-496B-9AFC-69D5350A0C93} = {74AFCD4A-411F-47F7-838B-2483AD9C0AAA}
+		{E4300B0C-3C88-41A0-86C6-20646DF6409A} = {74AFCD4A-411F-47F7-838B-2483AD9C0AAA}
+		{C6E5C7A7-9E10-4C19-9526-708CFA6B13C6} = {3F2882BF-01A9-4E1F-96AE-F8EB8D5228E4}
+		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF} = {3F2882BF-01A9-4E1F-96AE-F8EB8D5228E4}
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F} = {B77A1A32-6EA8-448A-8726-CCF07528DB9D}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Debug|x64.Build.0 = Debug|Any CPU
-		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Release|x64.ActiveCfg = Release|Any CPU
-		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Release|x64.Build.0 = Release|Any CPU
 		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}.Debug|x64.ActiveCfg = Debug|x64
 		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}.Debug|x64.Build.0 = Debug|x64
 		{1A49CBF7-4BEA-4C3E-AEE9-5627EF98ADBF}.Release|x64.ActiveCfg = Release|x64
@@ -60,5 +54,13 @@ Global
 		{E4300B0C-3C88-41A0-86C6-20646DF6409A}.Debug|x64.Build.0 = Debug|x64
 		{E4300B0C-3C88-41A0-86C6-20646DF6409A}.Release|x64.ActiveCfg = Release|x64
 		{E4300B0C-3C88-41A0-86C6-20646DF6409A}.Release|x64.Build.0 = Release|x64
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Debug|x64.Build.0 = Debug|Any CPU
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Release|x64.ActiveCfg = Release|Any CPU
+		{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}.Release|x64.Build.0 = Release|Any CPU
+		{90C0287D-69BB-41C4-81B7-0AD3ABEF5E03}.Debug|x64.ActiveCfg = Debug|x64
+		{90C0287D-69BB-41C4-81B7-0AD3ABEF5E03}.Debug|x64.Build.0 = Debug|x64
+		{90C0287D-69BB-41C4-81B7-0AD3ABEF5E03}.Release|x64.ActiveCfg = Release|x64
+		{90C0287D-69BB-41C4-81B7-0AD3ABEF5E03}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal

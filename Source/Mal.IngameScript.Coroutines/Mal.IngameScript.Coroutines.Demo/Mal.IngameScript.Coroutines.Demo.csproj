@@ -23,5 +23,5 @@
         <AdditionalFiles Include="Instructions.readme"/>
         <AdditionalFiles Include="thumb.png"/>
     </ItemGroup>
-    <Import Project="..\Mixin\Mal.IngameScript.Coroutines.projitems" Label="Shared"/>
+    <Import Project="..\Mal.IngameScript.Coroutines\Mal.IngameScript.Coroutines.projitems" Label="Shared"/>
 </Project>

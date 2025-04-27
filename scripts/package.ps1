@@ -18,15 +18,21 @@ $packageDirs = Get-ChildItem -Path $sourcePath -Directory | Where-Object {
 foreach ($pkg in $packageDirs) {
     Write-Host "Processing package: $($pkg.Name)"
 
-    $packageFolder = Join-Path $pkg.FullName "Mixin"
-    if (-not (Test-Path $packageFolder)) {
-        Write-Error "Skipping $($pkg.Name): No 'Mixin' folder found."
+    # Find all .shproj files under this package directory
+    $shprojFiles = Get-ChildItem -Path $pkg.FullName -Filter "*.shproj" -File -Recurse
+    if (-not $shprojFiles) {
+        Write-Error "Skipping $($pkg.Name): No .shproj files found."
         continue
     }
 
-    # Expected files
-    $shprojFile       = Get-ChildItem -Path $packageFolder -Filter "*.shproj"    | Select-Object -First 1
-    $projItemsFile    = Get-ChildItem -Path $packageFolder -Filter "*.projitems" | Select-Object -First 1
+    # Pick the first .shproj and consider its directory the package folder
+    $shprojFile    = $shprojFiles | Select-Object -First 1
+    $packageFolder = $shprojFile.DirectoryName
+
+    # Look for the companion .projitems in the same folder
+    $projItemsFile = Get-ChildItem -Path $packageFolder -Filter "*.projitems" | Select-Object -First 1
+
+    # Metadata files (all expected to live alongside the .shproj)
     $versionFile      = Join-Path $packageFolder "PackageVersion.txt"
     $releaseNotesFile = Join-Path $packageFolder "ReleaseNotes.txt"
     $readmeFile       = Join-Path $packageFolder "ReadMe.md"
@@ -34,7 +40,6 @@ foreach ($pkg in $packageDirs) {
     $licenseFile      = Join-Path $packageFolder "LICENSE"
 
     # Validate required files
-    if (-not $shprojFile)       { Write-Error "Missing .shproj in $($pkg.Name). Skipping..."; continue }
     if (-not $projItemsFile)    { Write-Error "Missing .projitems in $($pkg.Name). Skipping..."; continue }
     if (-not (Test-Path $versionFile))      { Write-Error "Missing PackageVersion.txt in $($pkg.Name). Skipping..."; continue }
     if (-not (Test-Path $releaseNotesFile)) { Write-Error "Missing ReleaseNotes.txt in $($pkg.Name). Skipping..."; continue }
@@ -65,20 +70,18 @@ foreach ($pkg in $packageDirs) {
     if (-not (Test-Path $nugetBuildFolder)) {
         New-Item -ItemType Directory -Path $nugetBuildFolder | Out-Null
     }
-    
-    $projFileName = [System.IO.Path]::GetFileName($projItemsFile.Name)
+
     # Generate props file for automatic reference
+    $projFileName = [System.IO.Path]::GetFileName($projItemsFile.Name)
     $propsContent = @"
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <Import Project="`$(MSBuildThisFileDirectory)..\$projFileName" Label="Shared" />
 </Project>
 "@
-
-    $propsFileName  = "$packageId.props"
-    $propsFilePath  = Join-Path $nugetBuildFolder $propsFileName
+    $propsFileName = "$packageId.props"
+    $propsFilePath = Join-Path $nugetBuildFolder $propsFileName
     $propsContent | Out-File -FilePath $propsFilePath -Encoding utf8
-
     Write-Host "Generated $propsFileName for $packageId"
 
     # Generate .nuspec
@@ -106,13 +109,11 @@ $releaseNotes
   </files>
 </package>
 "@
-
     $nuspecPath = Join-Path $packageFolder "$packageId.nuspec"
     $nuspecContent | Out-File -FilePath $nuspecPath -Encoding utf8
-
     Write-Host "Generated $($packageId).nuspec"
 
-    # Pack using nuget.exe (assumes nuget.exe is in PATH)
+    # Pack using nuget.exe
     Write-Host "Packing $packageId..."
     nuget pack $nuspecPath -OutputDirectory $outputPath
 }

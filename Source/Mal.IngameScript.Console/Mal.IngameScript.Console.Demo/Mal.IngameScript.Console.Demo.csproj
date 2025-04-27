@@ -23,5 +23,5 @@
         <AdditionalFiles Include="Instructions.readme"/>
         <AdditionalFiles Include="thumb.png"/>
     </ItemGroup>
-    <Import Project="..\Mal.IngameScript.IonDisplay\Mal.IngameScript.IonDisplay.projitems" Label="Shared"/>
+    <Import Project="..\Mal.IngameScript.Console\Mal.IngameScript.Console.projitems" Label="Shared" />
 </Project>
