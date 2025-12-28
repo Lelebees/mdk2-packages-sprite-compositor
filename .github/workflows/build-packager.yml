@@ -1,0 +1,48 @@
+name: Build Packager
+
+on:
+  push:
+    paths:
+      - 'packager/**'
+      - '.github/workflows/build-packager.yml'
+  pull_request:
+    paths:
+      - 'packager/**'
+      - '.github/workflows/build-packager.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      working-directory: packager
+      run: dotnet restore
+    
+    - name: Build for Windows (win-x64)
+      working-directory: packager
+      run: dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
+    
+    - name: Build for Linux (linux-x64)
+      working-directory: packager
+      run: dotnet publish -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true
+    
+    - name: Create NuGet package
+      working-directory: packager
+      run: dotnet pack -c Release --no-build
+    
+    - name: Upload packager NuGet package
+      uses: actions/upload-artifact@v4
+      with:
+        name: packager-nuget
+        path: packager/**/*.nupkg
+        if-no-files-found: error

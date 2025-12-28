@@ -82,8 +82,6 @@ StyleCopReport.xml
 *.pgc
 *.pgd
 *.rsp
-# but not Directory.Build.rsp, as it configures directory-level build defaults
-!Directory.Build.rsp
 *.sbr
 *.tlb
 *.tli
@@ -191,7 +189,7 @@ publish/
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
-# in these scripts will be unencrypted
+# in these files will be unencrypted
 PublishScripts/
 
 # NuGet Packages
@@ -303,7 +301,7 @@ node_modules/
 *.dsw
 *.dsp
 
-# Visual Studio 6 technical files
+# Visual Studio 6 technical files 
 *.ncb
 *.aps
 
@@ -398,11 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/**/.idea/**/*
-
-# Current Project
-/NugetPackages/**/*
-/**/bin/**/*
-/**/obj/**/*
-/**/Mixin/nuget_build
-/**/Mixin/*.nuspec
+.idea/

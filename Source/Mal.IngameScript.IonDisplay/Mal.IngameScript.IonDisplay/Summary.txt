@@ -1,1 +1,0 @@
-Provides a framework for creating LCD displays in an easy way.

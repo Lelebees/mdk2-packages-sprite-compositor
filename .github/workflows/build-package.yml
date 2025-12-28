@@ -1,0 +1,59 @@
+name: Build Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: 'Package name to build (folder name in packages/)'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Verify package exists
+      run: |
+        if (-not (Test-Path "packages\${{ github.event.inputs.package_name }}")) {
+          Write-Error "Package '${{ github.event.inputs.package_name }}' not found in packages/ directory"
+          exit 1
+        }
+    
+    - name: Find shared project
+      id: find-shproj
+      run: |
+        $shproj = Get-ChildItem -Path "packages\${{ github.event.inputs.package_name }}" -Recurse -Filter "*.shproj" | Select-Object -First 1
+        if (-not $shproj) {
+          Write-Error "No .shproj file found in packages/${{ github.event.inputs.package_name }}"
+          exit 1
+        }
+        echo "shproj_path=$($shproj.FullName)" >> $env:GITHUB_OUTPUT
+        Write-Host "Found shared project: $($shproj.FullName)"
+    
+    - name: Build packager tool
+      working-directory: packager
+      run: dotnet build -c Release
+    
+    - name: Create output directory
+      run: New-Item -Path "output" -ItemType Directory -Force
+    
+    - name: Run packager tool
+      run: |
+        $packagerExe = "packager\Mdk.SharedNuGet\bin\Release\net8.0\Mdk.SharedNuGet.exe"
+        & $packagerExe --shared "${{ steps.find-shproj.outputs.shproj_path }}" --output "output"
+    
+    - name: Upload package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.inputs.package_name }}-nuget
+        path: output/**/*.nupkg
+        if-no-files-found: error
