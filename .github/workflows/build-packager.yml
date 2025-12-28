@@ -11,6 +11,10 @@ on:
       - '.github/workflows/build-packager.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -46,3 +50,25 @@ jobs:
         name: packager-nuget
         path: packager/**/*.nupkg
         if-no-files-found: error
+  
+  publish:
+    needs: build
+    runs-on: windows-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Download NuGet package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: packager-nuget
+          path: packager-nuget
+      
+      - name: Publish to GitHub Packages
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $sourceUrl = "https://nuget.pkg.github.com/malforge/index.json"
+          Get-ChildItem -Path packager-nuget -Filter *.nupkg -Recurse | ForEach-Object {
+              Write-Host "Publishing package $($_.Name) to GitHub Packages..."
+              dotnet nuget push $_.FullName --source $sourceUrl --api-key $env:GITHUB_TOKEN --skip-duplicate
+          }
