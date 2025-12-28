@@ -1,16 +1,58 @@
 name: Build Package
 
 on:
+  push:
+    paths:
+      - 'packages/**'
+      - '.github/workflows/build-package.yml'
+  pull_request:
+    paths:
+      - 'packages/**'
+      - '.github/workflows/build-package.yml'
   workflow_dispatch:
     inputs:
       package_name:
         description: 'Package name to build (folder name in packages/)'
-        required: true
+        required: false
         type: string
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.changed-packages.outputs.packages }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+    
+    - name: Detect changed packages
+      id: changed-packages
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.package_name }}" ]; then
+          echo "packages=[\"${{ github.event.inputs.package_name }}\"]" >> $GITHUB_OUTPUT
+        else
+          # Get changed files in packages/ directory
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD | grep '^packages/' || true)
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "packages=[]" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Extract unique package folder names
+          PACKAGES=$(echo "$CHANGED_FILES" | cut -d'/' -f2 | sort -u | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
+          echo "Changed packages: $PACKAGES"
+        fi
+
   build:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.packages != '[]'
     runs-on: windows-latest
+    strategy:
+      matrix:
+        package_name: ${{ fromJson(needs.detect-changes.outputs.packages) }}
     
     steps:
     - name: Checkout code
@@ -23,17 +65,17 @@ jobs:
     
     - name: Verify package exists
       run: |
-        if (-not (Test-Path "packages\${{ github.event.inputs.package_name }}")) {
-          Write-Error "Package '${{ github.event.inputs.package_name }}' not found in packages/ directory"
+        if (-not (Test-Path "packages\${{ matrix.package_name }}")) {
+          Write-Error "Package '${{ matrix.package_name }}' not found in packages/ directory"
           exit 1
         }
     
     - name: Find shared project
       id: find-shproj
       run: |
-        $shproj = Get-ChildItem -Path "packages\${{ github.event.inputs.package_name }}" -Recurse -Filter "*.shproj" | Select-Object -First 1
+        $shproj = Get-ChildItem -Path "packages\${{ matrix.package_name }}" -Recurse -Filter "*.shproj" | Select-Object -First 1
         if (-not $shproj) {
-          Write-Error "No .shproj file found in packages/${{ github.event.inputs.package_name }}"
+          Write-Error "No .shproj file found in packages/${{ matrix.package_name }}"
           exit 1
         }
         echo "shproj_path=$($shproj.FullName)" >> $env:GITHUB_OUTPUT
@@ -54,6 +96,6 @@ jobs:
     - name: Upload package artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.event.inputs.package_name }}-nuget
+        name: ${{ matrix.package_name }}-nuget
         path: output/**/*.nupkg
         if-no-files-found: error
