@@ -1,14 +1,17 @@
 name: Build Package
 
+# TODO: Re-enable after packager NuGet package is published
+# This workflow depends on the Malforge.Mdk.SharedNuGet package being available
+
 on:
-  push:
-    paths:
-      - 'packages/**'
-      - '.github/workflows/build-package.yml'
-  pull_request:
-    paths:
-      - 'packages/**'
-      - '.github/workflows/build-package.yml'
+  # push:
+  #   paths:
+  #     - 'packages/**'
+  #     - '.github/workflows/build-package.yml'
+  # pull_request:
+  #   paths:
+  #     - 'packages/**'
+  #     - '.github/workflows/build-package.yml'
   workflow_dispatch:
     inputs:
       package_name:
