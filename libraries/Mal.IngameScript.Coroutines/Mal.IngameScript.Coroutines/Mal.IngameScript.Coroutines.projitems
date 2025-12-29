@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+        <HasSharedItems>true</HasSharedItems>
+        <SharedGUID>61eba249-19f3-48b6-a25b-a4cee90168ba</SharedGUID>
+    </PropertyGroup>
+    <PropertyGroup Label="Configuration">
+        <Import_RootNamespace>IngameScript</Import_RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)_authors" />
+    <Content Include="$(MSBuildThisFileDirectory)_version" />
+    <Content Include="$(MSBuildThisFileDirectory)_releasenotes" />
+    <Content Include="$(MSBuildThisFileDirectory)_description" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="$(MSBuildThisFileDirectory)Cancellation.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)CancellationToken.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)CoroutineFn.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)Coroutines.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)CoroutinesForEach.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)ICancellable.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)Program.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)When.cs"/>
+    </ItemGroup>
+</Project>

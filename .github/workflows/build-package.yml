@@ -3,16 +3,16 @@ name: Build Package
 on:
   push:
     paths:
-      - 'packages/**'
+      - 'libraries/**'
       - '.github/workflows/build-package.yml'
   pull_request:
     paths:
-      - 'packages/**'
+      - 'libraries/**'
       - '.github/workflows/build-package.yml'
   workflow_dispatch:
     inputs:
       package_name:
-        description: 'Package name to build (folder name in packages/), or leave empty to build all'
+        description: 'Package name to build (folder name in libraries/), or leave empty to build all'
         required: false
         type: string
 
@@ -40,13 +40,13 @@ jobs:
             echo "packages=[\"${{ github.event.inputs.package_name }}\"]" >> $GITHUB_OUTPUT
           else
             # Build all packages when manually triggered without package name
-            PACKAGES=$(find packages -mindepth 1 -maxdepth 1 -type d ! -name ".idea" -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            PACKAGES=$(find libraries -mindepth 1 -maxdepth 1 -type d ! -name ".idea" -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
             echo "Building all packages: $PACKAGES"
           fi
         else
-          # Get changed files in packages/ directory
-          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD | grep '^packages/' || true)
+          # Get changed files in libraries/ directory
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD | grep '^libraries/' || true)
           if [ -z "$CHANGED_FILES" ]; then
             echo "packages=[]" >> $GITHUB_OUTPUT
             exit 0
@@ -83,38 +83,39 @@ jobs:
           --password ${{ secrets.GITHUB_TOKEN }} `
           --store-password-in-clear-text
     
-    - name: Install packager tool
-      run: dotnet tool install --global Mal.Mdk2.SharedNugetBuilder
-    
-    - name: Verify package exists
+    - name: Find demo project
+      id: find-demo
       run: |
-        if (-not (Test-Path "packages\${{ matrix.package_name }}")) {
-          Write-Error "Package '${{ matrix.package_name }}' not found in packages/ directory"
+        $demoProj = Get-ChildItem -Path "libraries\${{ matrix.package_name }}" -Recurse -Filter "*.Demo.csproj" | Select-Object -First 1
+        if (-not $demoProj) {
+          Write-Error "No demo project (*.Demo.csproj) found in libraries/${{ matrix.package_name }}"
           exit 1
         }
+        echo "demo_path=$($demoProj.FullName)" >> $env:GITHUB_OUTPUT
+        Write-Host "Found demo project: $($demoProj.FullName)"
     
-    - name: Find shared project
-      id: find-shproj
+    - name: Restore demo project
+      run: dotnet restore "${{ steps.find-demo.outputs.demo_path }}"
+    
+    - name: Build demo project in Release (triggers packager)
+      run: dotnet build "${{ steps.find-demo.outputs.demo_path }}" -c Release
+    
+    - name: Find generated NuGet package
+      id: find-nupkg
       run: |
-        $shproj = Get-ChildItem -Path "packages\${{ matrix.package_name }}" -Recurse -Filter "*.shproj" | Select-Object -First 1
-        if (-not $shproj) {
-          Write-Error "No .shproj file found in packages/${{ matrix.package_name }}"
+        $nupkg = Get-ChildItem -Path "libraries\${{ matrix.package_name }}" -Recurse -Filter "*.nupkg" | Select-Object -First 1
+        if (-not $nupkg) {
+          Write-Error "No .nupkg file generated for ${{ matrix.package_name }}"
           exit 1
         }
-        echo "shproj_path=$($shproj.FullName)" >> $env:GITHUB_OUTPUT
-        Write-Host "Found shared project: $($shproj.FullName)"
-    
-    - name: Create output directory
-      run: New-Item -Path "output" -ItemType Directory -Force
-    
-    - name: Run packager tool
-      run: mdk2-sharednuget --shared "${{ steps.find-shproj.outputs.shproj_path }}" --output "output"
+        echo "nupkg_path=$($nupkg.FullName)" >> $env:GITHUB_OUTPUT
+        Write-Host "Found package: $($nupkg.FullName)"
     
     - name: Upload package artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.package_name }}-nuget
-        path: output/**/*.nupkg
+        path: ${{ steps.find-nupkg.outputs.nupkg_path }}
         if-no-files-found: error
   
   publish:
