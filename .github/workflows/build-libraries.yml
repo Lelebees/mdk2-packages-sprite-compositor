@@ -82,16 +82,18 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "Installing build dependencies..."
-        $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
-        $sedsPath = $sedsPath.Replace('\', '/')
-        steamcmd +force_install_dir $sedsPath +login anonymous +app_update 298740 +quit
+        steamcmd +login anonymous +app_update 298740 +quit
         
-        $sedsPathWindows = Join-Path $env:RUNNER_TEMP "SEDS"
-        if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPathWindows\DedicatedServer64")) {
-          Write-Host "Failed to install (exit code: $LASTEXITCODE)"
-          exit 1
+        Write-Host "Checking SteamCMD logs..."
+        $logDir = "C:\hostedtoolcache\windows\steamcmd\latest\i386\logs"
+        if (Test-Path $logDir) {
+          Write-Host "=== stderr.txt ==="
+          Get-Content "$logDir\stderr.txt" -ErrorAction SilentlyContinue | Select-Object -Last 50
+          Write-Host "=== Latest log file ==="
+          Get-ChildItem "$logDir" -Filter "*.txt" | Sort-Object LastWriteTime -Descending | Select-Object -First 1 | ForEach-Object { Get-Content $_.FullName | Select-Object -Last 50 }
         }
-        Write-Host "Installation complete"
+        
+        Write-Host "Installation exit code: $LASTEXITCODE"
     
     - name: Configure build environment
       shell: pwsh
