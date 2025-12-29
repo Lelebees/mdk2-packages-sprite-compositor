@@ -79,12 +79,13 @@ jobs:
       uses: CyberAndrii/setup-steamcmd@v1
     
     - name: Install build dependencies
-      run: steamcmd +login anonymous +app_update 298740 +quit
+      shell: powershell
+      run: steamcmd +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
     
     - name: Configure build environment
       shell: pwsh
       run: |
-        $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
+        $sedsPath = "$env:GITHUB_WORKSPACE\se"
         $binPath = Join-Path $sedsPath "DedicatedServer64"
         
         # Find the demo project for this package
