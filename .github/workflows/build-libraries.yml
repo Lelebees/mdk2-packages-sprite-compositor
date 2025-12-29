@@ -75,33 +75,10 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Setup SteamCMD
+    - name: Setup SteamCMD and Install SEDS
       uses: CyberAndrii/setup-steamcmd@v1
-    
-    - name: Cache build dependencies
-      id: cache-seds
-      uses: actions/cache@v4
       with:
-        path: ${{ runner.temp }}\SEDS
-        key: seds-298740-v1
-    
-    - name: Install build dependencies
-      if: steps.cache-seds.outputs.cache-hit != 'true'
-      shell: pwsh
-      run: |
-        Write-Host "Setting up build dependencies..."
-        
-        $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
-        
-        # Install Space Engineers Dedicated Server (App ID: 298740)
-        steamcmd +force_install_dir $sedsPath +login anonymous +app_update 298740 validate +quit
-        
-        if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
-          Write-Host "Failed to install build dependencies (exit code: $LASTEXITCODE)"
-          exit 1
-        }
-        
-        Write-Host "Build dependencies installed"
+        arguments: +force_install_dir ${{ runner.temp }}\SEDS +login anonymous +app_update 298740 validate +quit
     
     - name: Configure build environment
       shell: pwsh
