@@ -12,7 +12,7 @@
       <MdkPackagerPath>$(MSBuildThisFileDirectory)..\tools\net8.0\$(MdkPackagerRid)\$(MdkPackagerExe)</MdkPackagerPath>
       
       <!-- Build command with optional flags -->
-      <MdkPackagerArgs>--demo "$(MSBuildProjectFullPath)"</MdkPackagerArgs>
+      <MdkPackagerArgs>--demo "$(MSBuildProjectFullPath)" --ide-output</MdkPackagerArgs>
       <MdkPackagerArgs Condition="'$(Configuration)' == 'Debug'">$(MdkPackagerArgs) --dry-run</MdkPackagerArgs>
       <MdkPackagerArgs Condition="'$(MdkAutoBumpVersion)' == 'true'">$(MdkPackagerArgs) --auto-bump</MdkPackagerArgs>
       <MdkPackagerArgs Condition="'$(MdkForceRebuild)' == 'true'">$(MdkPackagerArgs) --force</MdkPackagerArgs>

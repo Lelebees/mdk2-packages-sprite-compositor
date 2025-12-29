@@ -32,6 +32,10 @@ var autoBumpOption = new Option<bool>(
     "--auto-bump",
     "Automatically increment the build version number (e.g., 1.0.0 -> 1.0.1)");
 
+var ideOutputOption = new Option<bool>(
+    "--ide-output",
+    "Format output for IDE integration (MSBuild-compatible errors/warnings)");
+
 rootCommand.AddOption(demoOption);
 rootCommand.AddOption(sharedOption);
 rootCommand.AddOption(outputOption);
@@ -39,30 +43,32 @@ rootCommand.AddOption(dependencyOption);
 rootCommand.AddOption(forceOption);
 rootCommand.AddOption(dryRunOption);
 rootCommand.AddOption(autoBumpOption);
+rootCommand.AddOption(ideOutputOption);
 
-rootCommand.SetHandler(handleCommand, demoOption, sharedOption, outputOption, dependencyOption, forceOption, dryRunOption, autoBumpOption);
+rootCommand.SetHandler(handleCommand, demoOption, sharedOption, outputOption, dependencyOption, forceOption, dryRunOption, autoBumpOption, ideOutputOption);
 
 return await rootCommand.InvokeAsync(args);
 
-async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output, string[] dependencies, bool force, bool dryRun, bool autoBump)
+async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output, string[] dependencies, bool force, bool dryRun, bool autoBump, bool ideOutput)
 {
+    IOutput outputter = ideOutput ? new IdeOutput() : new CliOutput();
     if (demo == null && shared == null)
     {
-        Console.Error.WriteLine("Error: Either --demo or --shared must be specified.");
+        outputter.Error("Either --demo or --shared must be specified.");
         Environment.ExitCode = 1;
         return;
     }
 
     if (demo != null && shared != null)
     {
-        Console.Error.WriteLine("Error: Cannot specify both --demo and --shared.");
+        outputter.Error("Cannot specify both --demo and --shared.");
         Environment.ExitCode = 1;
         return;
     }
 
     if (shared != null && output == null)
     {
-        Console.Error.WriteLine("Error: --output is required when using --shared mode.");
+        outputter.Error("--output is required when using --shared mode.");
         Environment.ExitCode = 1;
         return;
     }
