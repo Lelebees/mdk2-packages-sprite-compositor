@@ -75,14 +75,14 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Cache Space Engineers Dedicated Server
+    - name: Cache build dependencies
       id: cache-seds
       uses: actions/cache@v4
       with:
         path: D:\SEDS
         key: seds-298740-v1
     
-    - name: Install Space Engineers Dedicated Server
+    - name: Install build dependencies
       if: steps.cache-seds.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
@@ -98,17 +98,20 @@ jobs:
         
         # Install Space Engineers Dedicated Server (App ID: 298740)
         $sedsPath = "D:\SEDS"
+        $logFile = "$env:TEMP\steamcmd_install.log"
         
-        $output = & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 validate +quit 2>&1
-        if ($LASTEXITCODE -ne 0) {
+        & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 validate +quit 2>&1 | Tee-Object -FilePath $logFile | Out-Null
+        
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
           Write-Error "Failed to install build dependencies"
-          Write-Host $output
+          Write-Host "Installation log:"
+          Get-Content $logFile
           exit 1
         }
         
         Write-Host "Build dependencies installed"
     
-    - name: Configure MDK local settings
+    - name: Configure build environment
       shell: pwsh
       run: |
         $sedsPath = "D:\SEDS"
