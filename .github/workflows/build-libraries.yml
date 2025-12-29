@@ -75,6 +75,56 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
+    - name: Cache Space Engineers Dedicated Server
+      id: cache-seds
+      uses: actions/cache@v4
+      with:
+        path: D:\SEDS
+        key: seds-298740-v1
+    
+    - name: Install Space Engineers Dedicated Server
+      if: steps.cache-seds.outputs.cache-hit != 'true'
+      shell: pwsh
+      run: |
+        Write-Host "Setting up build dependencies..."
+        
+        # Download SteamCMD
+        $steamCmdZip = "$env:TEMP\steamcmd.zip"
+        $steamCmdDir = "$env:TEMP\steamcmd"
+        New-Item -Path $steamCmdDir -ItemType Directory -Force | Out-Null
+        
+        Invoke-WebRequest -Uri "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip" -OutFile $steamCmdZip -UseBasicParsing
+        Expand-Archive -Path $steamCmdZip -DestinationPath $steamCmdDir -Force
+        
+        # Install Space Engineers Dedicated Server (App ID: 298740)
+        $sedsPath = "D:\SEDS"
+        Write-Host "Installing to $sedsPath (this may take a few minutes)..."
+        
+        & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 validate +quit
+        
+        Write-Host "Installation complete"
+    
+    - name: Configure MDK local settings
+      shell: pwsh
+      run: |
+        $sedsPath = "D:\SEDS"
+        $binPath = Join-Path $sedsPath "DedicatedServer64"
+        
+        # Find the demo project for this package
+        $demoProj = Get-ChildItem -Path "libraries\${{ matrix.package_name }}" -Recurse -Filter "*.Demo.csproj" | Select-Object -First 1
+        if ($demoProj) {
+          $mdkLocalIni = Join-Path $demoProj.Directory.FullName "mdk.local.ini"
+          
+          # Create mdk.local.ini with Space Engineers path
+          @"
+[mdk]
+output = auto
+binarypath = $binPath
+"@ | Set-Content -Path $mdkLocalIni -Encoding UTF8
+          
+          Write-Host "Created $mdkLocalIni pointing to $binPath"
+        }
+    
     - name: Add GitHub Packages source
       run: |
         dotnet nuget add source "https://nuget.pkg.github.com/malforge/index.json" `
