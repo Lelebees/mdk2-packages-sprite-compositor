@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mdk.SharedNuGet", "Mdk.SharedNuGet\Mdk.SharedNuGet.csproj", "{4B6F929D-A793-49C0-9BE1-6DEE3956B57D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mal.Mdk2.SharedNugetBuilder", "Mal.Mdk2.SharedNugetBuilder\Mal.Mdk2.SharedNugetBuilder.csproj", "{4B6F929D-A793-49C0-9BE1-6DEE3956B57D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

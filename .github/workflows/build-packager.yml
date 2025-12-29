@@ -30,18 +30,18 @@ jobs:
     
     - name: Restore dependencies
       working-directory: packager
-      run: dotnet restore
+      run: dotnet restore Mal.Mdk2.SharedNugetBuilder.sln
     
     - name: Build for Windows (win-x64)
-      working-directory: packager
+      working-directory: packager/Mal.Mdk2.SharedNugetBuilder
       run: dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
     
     - name: Build for Linux (linux-x64)
-      working-directory: packager
+      working-directory: packager/Mal.Mdk2.SharedNugetBuilder
       run: dotnet publish -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true
     
     - name: Create NuGet package
-      working-directory: packager
+      working-directory: packager/Mal.Mdk2.SharedNugetBuilder
       run: dotnet pack -c Release --no-build
     
     - name: Upload packager NuGet package

@@ -7,8 +7,8 @@
     <Nullable>enable</Nullable>
     
     <!-- NuGet Package Settings -->
-    <PackageId>Malforge.Mdk.SharedNuGet</PackageId>
-    <Version>1.0.0</Version>
+    <PackageId>Mal.Mdk2.SharedNugetBuilder</PackageId>
+    <Version>1.0.1</Version>
     <Authors>Malware</Authors>
     <Description>A tool for packaging .NET Shared Projects (.shproj) as NuGet packages. Supports both manual packaging and automatic demo-driven mode.</Description>
     <PackageProjectUrl>https://github.com/malware-dev/mdk2-nuget</PackageProjectUrl>
@@ -16,6 +16,8 @@
     <PackageTags>mdk;mdk2;shared-project;nuget;space-engineers</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>PACKAGER-README.md</PackageReadmeFile>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>mdk2-sharednuget</ToolCommandName>
     
     <!-- Include build output in package -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -24,7 +26,7 @@
 
   <ItemGroup>
     <None Include="..\PACKAGER-README.md" Pack="true" PackagePath="\" />
-    <None Include="build\Malforge.Mdk.SharedNuGet.targets" Pack="true" PackagePath="build\" />
+    <None Include="build\Mal.Mdk2.SharedNugetBuilder.targets" Pack="true" PackagePath="build\" />
   </ItemGroup>
   
   <!-- Include platform-specific executables -->

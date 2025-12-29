@@ -6,8 +6,8 @@
       <MdkPackagerRid Condition="$([MSBuild]::IsOSPlatform('Windows'))">win-x64</MdkPackagerRid>
       <MdkPackagerRid Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</MdkPackagerRid>
       
-      <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Windows'))">Mdk.SharedNuGet.exe</MdkPackagerExe>
-      <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Linux'))">Mdk.SharedNuGet</MdkPackagerExe>
+      <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Windows'))">Mal.Mdk2.SharedNugetBuilder.exe</MdkPackagerExe>
+      <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Linux'))">Mal.Mdk2.SharedNugetBuilder</MdkPackagerExe>
       
       <MdkPackagerPath>$(MSBuildThisFileDirectory)..\tools\net8.0\$(MdkPackagerRid)\$(MdkPackagerExe)</MdkPackagerPath>
       

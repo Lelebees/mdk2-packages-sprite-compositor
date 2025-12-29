@@ -76,7 +76,7 @@ jobs:
           --store-password-in-clear-text
     
     - name: Install packager tool
-      run: dotnet tool install --global Malforge.Mdk.SharedNuGet
+      run: dotnet tool install --global Mal.Mdk2.SharedNugetBuilder
     
     - name: Verify package exists
       run: |
@@ -100,7 +100,7 @@ jobs:
       run: New-Item -Path "output" -ItemType Directory -Force
     
     - name: Run packager tool
-      run: mdk-sharednuget --shared "${{ steps.find-shproj.outputs.shproj_path }}" --output "output"
+      run: mdk2-sharednuget --shared "${{ steps.find-shproj.outputs.shproj_path }}" --output "output"
     
     - name: Upload package artifact
       uses: actions/upload-artifact@v4
