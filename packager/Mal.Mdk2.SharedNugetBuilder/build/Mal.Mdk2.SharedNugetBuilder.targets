@@ -22,13 +22,7 @@
     
     <Exec Command="&quot;$(MdkPackagerPath)&quot; $(MdkPackagerArgs)" 
           IgnoreExitCode="false"
-          WorkingDirectory="$(MSBuildProjectDirectory)"
-          ConsoleToMSBuild="true">
-      <Output TaskParameter="ConsoleOutput" ItemName="PackagerOutput" />
-    </Exec>
-    
-    <!-- Output packager messages as MSBuild messages for IDE integration -->
-    <Message Text="%(PackagerOutput.Identity)" Importance="high" />
+          WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
 </Project>

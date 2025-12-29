@@ -17,7 +17,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Mal.Mdk2.References" Version="2.2.4"/>
-        <PackageReference Include="mal.mdk2.sharednugetbuilder" Version="1.0.2" />
+        <PackageReference Include="mal.mdk2.sharednugetbuilder" Version="1.0.3" />
 <!--        <PackageReference Include="Mal.Mdk2.SharedNugetBuilder" Version="1.0.2" />-->
     </ItemGroup>
     <ItemGroup>

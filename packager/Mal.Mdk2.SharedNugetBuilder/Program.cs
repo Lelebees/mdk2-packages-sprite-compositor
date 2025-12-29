@@ -201,10 +201,6 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
                     
                     Console.WriteLine($"✓ Package created: {packagePath}");
                 }
-                else
-                {
-                    Console.WriteLine("(Dry run - package not created)");
-                }
             }
 
             if (!dryRun)
