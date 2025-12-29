@@ -83,9 +83,11 @@ jobs:
       run: |
         Write-Host "Installing build dependencies..."
         $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
+        $sedsPath = $sedsPath.Replace('\', '/')
         steamcmd +force_install_dir $sedsPath +login anonymous +app_update 298740 +quit
         
-        if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
+        $sedsPathWindows = Join-Path $env:RUNNER_TEMP "SEDS"
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPathWindows\DedicatedServer64")) {
           Write-Host "Failed to install (exit code: $LASTEXITCODE)"
           exit 1
         }
