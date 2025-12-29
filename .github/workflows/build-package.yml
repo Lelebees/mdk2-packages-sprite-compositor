@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       package_name:
-        description: 'Package name to build (folder name in packages/)'
+        description: 'Package name to build (folder name in packages/), or leave empty to build all'
         required: false
         type: string
 
@@ -34,8 +34,16 @@ jobs:
     - name: Detect changed packages
       id: changed-packages
       run: |
-        if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.package_name }}" ]; then
-          echo "packages=[\"${{ github.event.inputs.package_name }}\"]" >> $GITHUB_OUTPUT
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          if [ -n "${{ github.event.inputs.package_name }}" ]; then
+            # Build specific package
+            echo "packages=[\"${{ github.event.inputs.package_name }}\"]" >> $GITHUB_OUTPUT
+          else
+            # Build all packages when manually triggered without package name
+            PACKAGES=$(find packages -mindepth 1 -maxdepth 1 -type d ! -name ".idea" -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
+            echo "Building all packages: $PACKAGES"
+          fi
         else
           # Get changed files in packages/ directory
           CHANGED_FILES=$(git diff --name-only HEAD^ HEAD | grep '^packages/' || true)
