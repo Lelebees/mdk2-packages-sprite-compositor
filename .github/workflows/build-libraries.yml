@@ -79,7 +79,7 @@ jobs:
       id: cache-seds
       uses: actions/cache@v4
       with:
-        path: D:\SEDS
+        path: ${{ runner.temp }}\SEDS
         key: seds-298740-v1
     
     - name: Install build dependencies
@@ -97,7 +97,7 @@ jobs:
         Expand-Archive -Path $steamCmdZip -DestinationPath $steamCmdDir -Force
         
         # Install Space Engineers Dedicated Server (App ID: 298740)
-        $sedsPath = "D:\SEDS"
+        $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
         
         # Run SteamCMD once to let it update itself completely
         Write-Host "Initializing SteamCMD..."
@@ -117,7 +117,7 @@ jobs:
     - name: Configure build environment
       shell: pwsh
       run: |
-        $sedsPath = "D:\SEDS"
+        $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
         $binPath = Join-Path $sedsPath "DedicatedServer64"
         
         # Find the demo project for this package
