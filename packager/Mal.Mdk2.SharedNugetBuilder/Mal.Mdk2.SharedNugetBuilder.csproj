@@ -16,8 +16,6 @@
     <PackageTags>mdk;mdk2;shared-project;nuget;space-engineers</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>PACKAGER-README.md</PackageReadmeFile>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>mdk2-sharednuget</ToolCommandName>
     
     <!-- Include build output in package -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
