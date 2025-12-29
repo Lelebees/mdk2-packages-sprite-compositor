@@ -15,13 +15,19 @@ public record SharedProjectMetadata
 
 public class SharedProjectReader
 {
-    public static SharedProjectMetadata ReadMetadata(FileInfo sharedProjectFile)
+    public static SharedProjectMetadata ReadMetadata(FileInfo sharedProjectFile, IOutput output)
     {
         if (!sharedProjectFile.Exists)
+        {
+            output.Error($"Shared project file not found: {sharedProjectFile.FullName}", sharedProjectFile.FullName);
             throw new FileNotFoundException($"Shared project file not found: {sharedProjectFile.FullName}");
+        }
 
         if (!sharedProjectFile.Name.EndsWith(".shproj", StringComparison.OrdinalIgnoreCase))
+        {
+            output.Error($"File is not a shared project (.shproj): {sharedProjectFile.Name}", sharedProjectFile.FullName);
             throw new ArgumentException($"File is not a shared project (.shproj): {sharedProjectFile.Name}");
+        }
 
         var projectDir = sharedProjectFile.Directory!;
         var packageId = Path.GetFileNameWithoutExtension(sharedProjectFile.Name);
@@ -34,9 +40,11 @@ public class SharedProjectReader
 
         if (errors.Count > 0)
         {
-            throw new InvalidOperationException(
-                "Validation failed. Please fix the following issues:\n\n" +
-                string.Join("\n\n", errors.Select((e, i) => $"{i + 1}. {e}")));
+            foreach (var error in errors)
+            {
+                output.Error(error, sharedProjectFile.FullName);
+            }
+            throw new InvalidOperationException("Validation failed. See errors above.");
         }
 
         var targetFramework = readOptionalFile(projectDir, "_targetframework");

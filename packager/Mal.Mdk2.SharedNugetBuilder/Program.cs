@@ -87,7 +87,7 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
     {
         if (shared != null)
         {
-            var metadata = SharedProjectReader.ReadMetadata(shared);
+            var metadata = SharedProjectReader.ReadMetadata(shared, outputter);
             
             // Auto-bump version if requested
             if (autoBump && !dryRun)
@@ -170,7 +170,7 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
             {
                 Console.WriteLine($"\n=== Packaging {sharedProject.PackageId} ===");
                 
-                var metadata = SharedProjectReader.ReadMetadata(sharedProject.ProjectFile);
+                var metadata = SharedProjectReader.ReadMetadata(sharedProject.ProjectFile, outputter);
                 
                 // Auto-bump version if requested
                 if (autoBump && !dryRun)
