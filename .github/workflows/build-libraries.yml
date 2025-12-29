@@ -103,14 +103,16 @@ jobs:
         & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 validate +quit 2>&1 | Tee-Object -FilePath $logFile | Out-Null
         
         if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
-          Write-Error "Failed to install build dependencies (exit code: $LASTEXITCODE)"
+          Write-Host "Failed to install build dependencies (exit code: $LASTEXITCODE)"
           if (Test-Path $logFile) {
             Write-Host "=== Installation Log ==="
-            Get-Content $logFile | Write-Host
+            Get-Content $logFile
             Write-Host "========================"
           } else {
             Write-Host "Log file not found at: $logFile"
           }
+          Write-Host "Checking what we have at $sedsPath"
+          Get-ChildItem -Path $sedsPath -Recurse -Depth 1 | Select-Object FullName
           exit 1
         }
         
