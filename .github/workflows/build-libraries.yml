@@ -75,6 +75,9 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
+    - name: Setup SteamCMD
+      uses: CyberAndrii/setup-steamcmd@v1
+    
     - name: Cache build dependencies
       id: cache-seds
       uses: actions/cache@v4
@@ -88,24 +91,10 @@ jobs:
       run: |
         Write-Host "Setting up build dependencies..."
         
-        # Download SteamCMD
-        $steamCmdZip = "$env:TEMP\steamcmd.zip"
-        $steamCmdDir = "$env:TEMP\steamcmd"
-        New-Item -Path $steamCmdDir -ItemType Directory -Force | Out-Null
-        
-        Invoke-WebRequest -Uri "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip" -OutFile $steamCmdZip -UseBasicParsing | Out-Null
-        Expand-Archive -Path $steamCmdZip -DestinationPath $steamCmdDir -Force
-        
-        # Install Space Engineers Dedicated Server (App ID: 298740)
         $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
         
-        # Run SteamCMD once to let it update itself completely
-        Write-Host "Initializing SteamCMD..."
-        & "$steamCmdDir\steamcmd.exe" +quit
-        
-        # Now run the actual installation
-        Write-Host "Installing build dependencies..."
-        & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 +quit
+        # Install Space Engineers Dedicated Server (App ID: 298740)
+        steamcmd +force_install_dir $sedsPath +login anonymous +app_update 298740 validate +quit
         
         if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
           Write-Host "Failed to install build dependencies (exit code: $LASTEXITCODE)"
