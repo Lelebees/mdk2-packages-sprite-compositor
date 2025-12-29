@@ -1,6 +1,6 @@
 <Project>
   
-  <Target Name="MdkPackageSharedProjects" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' AND '$(MdkDisableAutoPackage)' != 'true'">
+  <Target Name="MdkPackageSharedProjects" AfterTargets="Build" Condition="('$(Configuration)' == 'Release' OR '$(Configuration)' == 'Debug') AND '$(MdkDisableAutoPackage)' != 'true'">
     <PropertyGroup>
       <!-- Detect OS and set appropriate path -->
       <MdkPackagerRid Condition="$([MSBuild]::IsOSPlatform('Windows'))">win-x64</MdkPackagerRid>
@@ -13,6 +13,7 @@
       
       <!-- Build command with optional flags -->
       <MdkPackagerArgs>--demo "$(MSBuildProjectFullPath)"</MdkPackagerArgs>
+      <MdkPackagerArgs Condition="'$(Configuration)' == 'Debug'">$(MdkPackagerArgs) --dry-run</MdkPackagerArgs>
       <MdkPackagerArgs Condition="'$(MdkAutoBumpVersion)' == 'true'">$(MdkPackagerArgs) --auto-bump</MdkPackagerArgs>
       <MdkPackagerArgs Condition="'$(MdkForceRebuild)' == 'true'">$(MdkPackagerArgs) --force</MdkPackagerArgs>
     </PropertyGroup>
@@ -21,7 +22,13 @@
     
     <Exec Command="&quot;$(MdkPackagerPath)&quot; $(MdkPackagerArgs)" 
           IgnoreExitCode="false"
-          WorkingDirectory="$(MSBuildProjectDirectory)" />
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="PackagerOutput" />
+    </Exec>
+    
+    <!-- Output packager messages as MSBuild messages for IDE integration -->
+    <Message Text="%(PackagerOutput.Identity)" Importance="high" />
   </Target>
 
 </Project>
