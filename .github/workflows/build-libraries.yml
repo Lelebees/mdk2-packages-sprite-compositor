@@ -98,17 +98,17 @@ jobs:
         
         # Install Space Engineers Dedicated Server (App ID: 298740)
         $sedsPath = "D:\SEDS"
-        $logFile = "$env:TEMP\steamcmd_install.log"
         
-        & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 +quit 2>&1 | Tee-Object -FilePath $logFile | Out-Null
+        # Run SteamCMD once to let it update itself completely
+        Write-Host "Initializing SteamCMD..."
+        & "$steamCmdDir\steamcmd.exe" +quit
+        
+        # Now run the actual installation
+        Write-Host "Installing build dependencies..."
+        & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 +quit
         
         if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
           Write-Host "Failed to install build dependencies (exit code: $LASTEXITCODE)"
-          if (Test-Path $logFile) {
-            Write-Host "=== Installation Log ==="
-            Get-Content $logFile
-            Write-Host "========================"
-          }
           exit 1
         }
         
