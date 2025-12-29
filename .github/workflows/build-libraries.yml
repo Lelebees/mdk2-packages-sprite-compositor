@@ -78,7 +78,7 @@ jobs:
     - name: Setup SteamCMD and Install SEDS
       uses: CyberAndrii/setup-steamcmd@v1
       with:
-        arguments: +force_install_dir ${{ runner.temp }}\SEDS +login anonymous +app_update 298740 validate +quit
+        arguments: +force_install_dir ${{ runner.temp }}\SEDS +login anonymous +app_update 298740 +quit
     
     - name: Configure build environment
       shell: pwsh
