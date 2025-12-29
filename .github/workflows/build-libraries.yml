@@ -100,7 +100,8 @@ jobs:
         $sedsPath = "D:\SEDS"
         $logFile = "$env:TEMP\steamcmd_install.log"
         
-        & "$steamCmdDir\steamcmd.exe" +force_install_dir $sedsPath +login anonymous +app_update 298740 validate +quit 2>&1 | Tee-Object -FilePath $logFile | Out-Null
+        # SteamCMD sometimes needs multiple attempts or different syntax
+        & "$steamCmdDir\steamcmd.exe" +@ShutdownOnFailedCommand 1 +@NoPromptForPassword 1 +force_install_dir $sedsPath +login anonymous +app_update 298740 +quit 2>&1 | Tee-Object -FilePath $logFile | Out-Null
         
         if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
           Write-Host "Failed to install build dependencies (exit code: $LASTEXITCODE)"
