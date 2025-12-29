@@ -72,17 +72,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-    
     - name: Setup SteamCMD
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
     - name: Install build dependencies
-      shell: powershell
       run: steamcmd +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
+      shell: powershell
     
     - name: Configure build environment
       shell: pwsh
@@ -102,6 +97,11 @@ jobs:
           Write-Host "Configured build environment"
         }
     
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
     - name: Add GitHub Packages source
       run: |
         dotnet nuget add source "https://nuget.pkg.github.com/malforge/index.json" `
