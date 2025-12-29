@@ -75,10 +75,21 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Setup SteamCMD and Install SEDS
+    - name: Setup SteamCMD
       uses: CyberAndrii/setup-steamcmd@v1
-      with:
-        arguments: +force_install_dir ${{ runner.temp }}\SEDS +login anonymous +app_update 298740 +quit
+    
+    - name: Install build dependencies
+      shell: pwsh
+      run: |
+        Write-Host "Installing build dependencies..."
+        $sedsPath = Join-Path $env:RUNNER_TEMP "SEDS"
+        steamcmd +force_install_dir $sedsPath +login anonymous +app_update 298740 +quit
+        
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path "$sedsPath\DedicatedServer64")) {
+          Write-Host "Failed to install (exit code: $LASTEXITCODE)"
+          exit 1
+        }
+        Write-Host "Installation complete"
     
     - name: Configure build environment
       shell: pwsh
