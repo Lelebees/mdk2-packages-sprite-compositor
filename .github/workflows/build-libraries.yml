@@ -1,14 +1,14 @@
-name: Build Package
+name: Build Libraries
 
 on:
   push:
     paths:
       - 'libraries/**'
-      - '.github/workflows/build-package.yml'
+      - '.github/workflows/build-libraries.yml'
   pull_request:
     paths:
       - 'libraries/**'
-      - '.github/workflows/build-package.yml'
+      - '.github/workflows/build-libraries.yml'
   workflow_dispatch:
     inputs:
       package_name:
