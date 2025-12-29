@@ -79,21 +79,7 @@ jobs:
       uses: CyberAndrii/setup-steamcmd@v1
     
     - name: Install build dependencies
-      shell: pwsh
-      run: |
-        Write-Host "Installing build dependencies..."
-        steamcmd +login anonymous +app_update 298740 +quit
-        
-        Write-Host "Checking SteamCMD logs..."
-        $logDir = "C:\hostedtoolcache\windows\steamcmd\latest\i386\logs"
-        if (Test-Path $logDir) {
-          Write-Host "=== stderr.txt ==="
-          Get-Content "$logDir\stderr.txt" -ErrorAction SilentlyContinue | Select-Object -Last 50
-          Write-Host "=== Latest log file ==="
-          Get-ChildItem "$logDir" -Filter "*.txt" | Sort-Object LastWriteTime -Descending | Select-Object -First 1 | ForEach-Object { Get-Content $_.FullName | Select-Object -Last 50 }
-        }
-        
-        Write-Host "Installation exit code: $LASTEXITCODE"
+      run: steamcmd +login anonymous +app_update 298740 +quit
     
     - name: Configure build environment
       shell: pwsh
