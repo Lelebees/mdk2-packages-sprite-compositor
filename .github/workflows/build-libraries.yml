@@ -167,9 +167,13 @@ jobs:
           
           foreach ($packageRef in $packageRefs) {
             $packageName = $packageRef.Include
-            Write-Host "  Updating $packageName..."
+            $currentVersion = $packageRef.Version
+            Write-Host "  Updating $packageName (current: $currentVersion)..."
             try {
-              dotnet add "$csprojPath" package $packageName --source $sourceUrl 2>&1 | Out-Null
+              # Remove then re-add to force update
+              dotnet remove "$csprojPath" package $packageName 2>&1 | Out-Null
+              $addOutput = dotnet add "$csprojPath" package $packageName --source $sourceUrl 2>&1
+              Write-Host "  $addOutput"
               if ($LASTEXITCODE -eq 0) {
                 Write-Host "    Updated $packageName" -ForegroundColor Green
               }
@@ -220,35 +224,28 @@ jobs:
           $shouldBuild = $true
           
           try {
-            $searchOutput = dotnet nuget search $packageName --source $sourceUrl --format json 2>&1
-            if ($LASTEXITCODE -eq 0 -and $searchOutput -match '^\s*\{') {
-              $nugetVersions = $searchOutput | ConvertFrom-Json
-              
-              if ($nugetVersions.searchResult -and $nugetVersions.searchResult.Count -gt 0) {
-                $existingPackage = $nugetVersions.searchResult | Where-Object { $_.packages.id -eq $packageName } | Select-Object -First 1
-                if ($existingPackage -and $existingPackage.packages -and $existingPackage.packages.Count -gt 0) {
-                  $publishedVersion = $existingPackage.packages[0].version
-                  Write-Host "Published version: $publishedVersion"
-                  
-                  if ($localVersion -eq $publishedVersion) {
-                    Write-Host "Version $localVersion already published - skipping" -ForegroundColor Yellow
-                    $skippedPackages += $package
-                    $shouldBuild = $false
-                  } elseif ([version]$localVersion -le [version]$publishedVersion) {
-                    Write-Host "Local version $localVersion is not higher than published $publishedVersion - skipping" -ForegroundColor Yellow
-                    $skippedPackages += $package
-                    $shouldBuild = $false
-                  }
-                }
-              } else {
-                Write-Host "No published version found - will build"
-              }
+            # Try to download package metadata directly from GitHub Packages
+            $headers = @{
+              "Authorization" = "Bearer $env:GITHUB_TOKEN"
+            }
+            $packageUrl = "https://nuget.pkg.github.com/malforge/download/$packageName/$localVersion/$packageName.$localVersion.nupkg"
+            
+            Write-Host "Checking if version $localVersion exists..."
+            $response = Invoke-WebRequest -Uri $packageUrl -Method Head -Headers $headers -ErrorAction SilentlyContinue
+            
+            if ($response.StatusCode -eq 200) {
+              Write-Host "Version $localVersion already exists - skipping" -ForegroundColor Yellow
+              $skippedPackages += $package
+              $shouldBuild = $false
             } else {
-              Write-Host "Could not query NuGet feed (may not exist yet) - will build"
+              Write-Host "Version $localVersion not found - will build"
             }
           } catch {
-            Write-Host "Could not query NuGet feed: $_" -ForegroundColor Yellow
-            Write-Host "Will build package anyway"
+            if ($_.Exception.Response.StatusCode -eq 404) {
+              Write-Host "Version $localVersion not found - will build"
+            } else {
+              Write-Host "Could not check version (error: $($_.Exception.Message)) - will build anyway"
+            }
           }
           
           if (-not $shouldBuild) {
