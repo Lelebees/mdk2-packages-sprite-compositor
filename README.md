@@ -14,23 +14,11 @@ Once configured, you can install any library from this repository using your IDE
 
 Mixins are reusable code libraries that get compiled directly into your Space Engineers projects. Since SE doesn't support external DLL references, mixins provide the only practical way to share code between scripts and mods. [Learn more about how mixins work](./docs/Understanding-Mixins.md).
 
-## Library Naming Convention
-
-All libraries follow the MDK naming convention to clearly indicate where they can be used:
-
-- **MdkScriptMixin** - For programmable block scripts only
-- **MdkModMixin** - For mods only
-- **MdkSharedMixin** - For libraries that work in both environments
-
-This naming helps you quickly identify which libraries are suitable for your project type.
-
 ## Available Libraries
 
 | Package | Version | Author(s) | Description |
 |---------|---------|-----------|-------------|
-| [Mal.MdkModMixin.LazyLibrary](./docs/libraries/Mal.MdkModMixin.LazyLibrary.md) | 2.0.0 | Lazy Developer | A library created by someone who was too busy to write documentation. It probably does something useful. |
 | [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.2 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
-| [Mal.MdkScriptMixin.TestLibrary1](./docs/libraries/Mal.MdkScriptMixin.TestLibrary1.md) | 1.2.3 | Alice Developer, Bob Coder | A comprehensive test library that demonstrates all the cool features you could ever want in a Space Engineers mixin. |
 
 **Click on any library name above** to see its documentation, including detailed installation instructions for Visual Studio, Rider, and VS Code.
 
@@ -44,6 +32,16 @@ See our guides for creating mixins:
 - [Creating a Mixin with VS Code](./docs/Creating-A-Mixin-VSCode.md)
 
 Once your library is ready, submit a pull request to this repository. All contributions are reviewed to ensure quality and consistency.
+
+## Library Naming Convention
+
+All libraries follow the MDK naming convention to clearly indicate where they can be used:
+
+- **MdkScriptMixin** - For programmable block scripts only
+- **MdkModMixin** - For mods only
+- **MdkSharedMixin** - For libraries that work in both environments
+
+This naming helps you quickly identify which libraries are suitable for your project type.
 
 ## Resources
 
