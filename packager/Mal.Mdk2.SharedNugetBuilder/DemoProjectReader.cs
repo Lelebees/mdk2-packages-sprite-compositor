@@ -121,8 +121,8 @@ public class DemoProjectReader
             using var reader = new StreamReader(stream);
             var nuspecContent = reader.ReadToEnd();
 
-            // Check for our packageType marker
-            return nuspecContent.Contains("<packageType name=\"MdkSharedProject\"");
+            // Check for our mdk-mixin tag marker
+            return nuspecContent.Contains("<tags>") && nuspecContent.Contains("mdk-mixin");
         }
         catch
         {

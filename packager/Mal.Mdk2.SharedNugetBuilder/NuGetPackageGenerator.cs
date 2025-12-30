@@ -190,8 +190,11 @@ public class NuGetPackageGenerator
         if (metadata.ProjectUrl != null)
             metadataElement.Add(new XElement("projectUrl", metadata.ProjectUrl));
 
-        if (metadata.Tags != null && metadata.Tags.Length > 0)
-            metadataElement.Add(new XElement("tags", string.Join(" ", metadata.Tags)));
+        // Always add mdk-mixin tag to identify these packages
+        var tags = metadata.Tags != null && metadata.Tags.Length > 0 
+            ? string.Join(" ", metadata.Tags.Append("mdk-mixin"))
+            : "mdk-mixin";
+        metadataElement.Add(new XElement("tags", tags));
 
         // Add dependencies
         if (dependencies.Length > 0)
@@ -216,13 +219,6 @@ public class NuGetPackageGenerator
                 new XAttribute("include", "cs/any/Shared/**/*.*"),
                 new XAttribute("buildAction", "Compile"),
                 new XAttribute("copyToOutput", "false")
-            )
-        ));
-        
-        // Add packageTypes to identify this as a shared project package
-        metadataElement.Add(new XElement("packageTypes",
-            new XElement("packageType",
-                new XAttribute("name", "MdkSharedProject")
             )
         ));
 

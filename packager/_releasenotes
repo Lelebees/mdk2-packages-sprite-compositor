@@ -1,3 +1,5 @@
+- 1.0.10
+  - CRITICAL FIX: Removed invalid packageType that prevented package installation
 - 1.0.9
   - Auto-generation of project URLs for library packages based on git repository and library location
   - Fixed packager tool's own repository URLs to point to malforge/mdk2-packages

@@ -1,3 +1,5 @@
+- 1.0.4
+  CRITICAL FIX: Removed invalid packageType that prevented package installation
 - 1.0.3
   Test release to verify project URL now points to library subfolder instead of repository root
 - 1.0.2
