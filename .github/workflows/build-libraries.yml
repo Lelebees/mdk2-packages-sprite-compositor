@@ -150,6 +150,16 @@ jobs:
           
           Write-Host "Found demo project: $($demoProj.Name)"
           
+          # Create mdk.local.ini with Space Engineers path BEFORE any dotnet commands
+          $mdkLocalIni = Join-Path $demoProj.Directory.FullName "mdk.local.ini"
+          $content = "[mdk]`noutput = auto`nbinarypath = $binPath"
+          Set-Content -Path $mdkLocalIni -Value $content -Encoding UTF8
+          Write-Host "Created mdk.local.ini at: $mdkLocalIni"
+          Write-Host "Content:"
+          Get-Content $mdkLocalIni | ForEach-Object { Write-Host "  $_" }
+          Write-Host "Demo project path: $($demoProj.FullName)"
+          Write-Host "Demo project directory: $($demoProj.Directory.FullName)"
+          
           # Get version from _version file
           $versionFile = Get-ChildItem -Path "libraries\$package" -Recurse -Filter "_version" | Select-Object -First 1
           if (-not $versionFile) {
@@ -200,16 +210,6 @@ jobs:
           if (-not $shouldBuild) {
             continue
           }
-          
-          # Create mdk.local.ini with Space Engineers path
-          $mdkLocalIni = Join-Path $demoProj.Directory.FullName "mdk.local.ini"
-          $content = "[mdk]`noutput = auto`nbinarypath = $binPath"
-          Set-Content -Path $mdkLocalIni -Value $content -Encoding UTF8
-          Write-Host "Created mdk.local.ini at: $mdkLocalIni"
-          Write-Host "Content:"
-          Get-Content $mdkLocalIni | ForEach-Object { Write-Host "  $_" }
-          Write-Host "Demo project path: $($demoProj.FullName)"
-          Write-Host "Demo project directory: $($demoProj.Directory.FullName)"
           
           # Restore and build
           Write-Host "Restoring project..."
