@@ -35,7 +35,7 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Add GitHub Packages source (for version check)
+    - name: Add GitHub Packages source
       run: |
         dotnet nuget add source "https://nuget.pkg.github.com/malforge/index.json" `
           --name "GitHub" `
@@ -117,7 +117,7 @@ jobs:
       if: steps.version-check.outputs.needs-build == 'true'
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
-    - name: Install Space Engineers Dedicated Server
+    - name: Install Build Dependencies
       if: steps.version-check.outputs.needs-build == 'true'
       shell: pwsh
       run: |
@@ -194,10 +194,6 @@ jobs:
         }
         
         Write-Host "SE installation directory exists: $sedsPath"
-        Write-Host "Contents of SE directory:"
-        Get-ChildItem -Path $sedsPath -Directory | Select-Object -First 10 | ForEach-Object { Write-Host "  DIR: $($_.Name)" }
-        Get-ChildItem -Path $sedsPath -File | Select-Object -First 10 | ForEach-Object { Write-Host "  FILE: $($_.Name)" }
-        
         if (-not (Test-Path $binPath)) {
           Write-Error "DedicatedServer64 directory not found at: $binPath"
           Write-Host "Searching for DedicatedServer64..."
@@ -261,74 +257,15 @@ jobs:
             }
           }
           
-          # Create mdk.local.ini with Space Engineers path BEFORE any dotnet commands
+          # Create mdk.local.ini with Space Engineers path
           $mdkLocalIni = Join-Path $demoProj.Directory.FullName "mdk.local.ini"
           $content = "[mdk]`noutput = auto`nbinarypath = $binPath"
           Set-Content -Path $mdkLocalIni -Value $content -Encoding UTF8
-          Write-Host "Created mdk.local.ini at: $mdkLocalIni"
-          Write-Host "Content:"
-          Get-Content $mdkLocalIni | ForEach-Object { Write-Host "  $_" }
+          Write-Host "Created mdk.local.ini"
           
-          # Verify file actually exists
-          if (Test-Path $mdkLocalIni) {
-            Write-Host "VERIFIED: mdk.local.ini file exists!" -ForegroundColor Green
-            $fileInfo = Get-Item $mdkLocalIni
-            Write-Host "File size: $($fileInfo.Length) bytes" -ForegroundColor Green
-            Write-Host "Last write time: $($fileInfo.LastWriteTime)" -ForegroundColor Green
-          } else {
-            Write-Error "ERROR: mdk.local.ini file does NOT exist after creation!"
+          if (-not (Test-Path $mdkLocalIni)) {
+            Write-Error "Failed to create mdk.local.ini"
             exit 1
-          }
-          
-          Write-Host "Demo project path: $($demoProj.FullName)"
-          Write-Host "Demo project directory: $($demoProj.Directory.FullName)"
-          
-          # List all .ini files in the project directory
-          Write-Host "All .ini files in project directory:"
-          Get-ChildItem -Path $demoProj.Directory.FullName -Filter "*.ini" | ForEach-Object { Write-Host "  - $($_.Name)" }
-          
-          # Get version from _version file
-          $versionFile = Get-ChildItem -Path "libraries\$package" -Recurse -Filter "_version" | Select-Object -First 1
-          if (-not $versionFile) {
-            Write-Host "No _version file found - skipping" -ForegroundColor Yellow
-            $skippedPackages += $package
-            continue
-          }
-          
-          $localVersion = (Get-Content $versionFile.FullName).Trim()
-          Write-Host "Local version: $localVersion"
-          
-          # Check if this version already exists in NuGet
-          $packageName = $package
-          $shouldBuild = $true
-          
-          try {
-            # Try to download package metadata directly from GitHub Packages
-            $headers = @{
-              "Authorization" = "Bearer $env:GITHUB_TOKEN"
-            }
-            $packageUrl = "https://nuget.pkg.github.com/malforge/download/$packageName/$localVersion/$packageName.$localVersion.nupkg"
-            
-            Write-Host "Checking if version $localVersion exists..."
-            $response = Invoke-WebRequest -Uri $packageUrl -Method Head -Headers $headers -ErrorAction SilentlyContinue
-            
-            if ($response.StatusCode -eq 200) {
-              Write-Host "Version $localVersion already exists - skipping" -ForegroundColor Yellow
-              $skippedPackages += $package
-              $shouldBuild = $false
-            } else {
-              Write-Host "Version $localVersion not found - will build"
-            }
-          } catch {
-            if ($_.Exception.Response.StatusCode -eq 404) {
-              Write-Host "Version $localVersion not found - will build"
-            } else {
-              Write-Host "Could not check version (error: $($_.Exception.Message)) - will build anyway"
-            }
-          }
-          
-          if (-not $shouldBuild) {
-            continue
           }
           
           # Restore and build
@@ -340,8 +277,7 @@ jobs:
           }
           
           Write-Host "Building project in Release mode..."
-          dotnet build "$($demoProj.FullName)" -c Release 2>&1 | Tee-Object -Variable buildOutput
-          Write-Host "Build output captured for analysis"
+          dotnet build "$($demoProj.FullName)" -c Release
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Failed to build $package"
             exit 1
