@@ -28,7 +28,7 @@ This naming helps you quickly identify which libraries are suitable for your pro
 
 | Package | Version | Author(s) | Description |
 |---------|---------|-----------|-------------|
-| [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.2 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
+| [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.3 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
 
 **Click on any library name above** to see its documentation, including detailed installation instructions for Visual Studio, Rider, and VS Code.
 
@@ -48,6 +48,16 @@ Once your library is ready, submit a pull request to this repository. All contri
 - [Understanding Mixins](./docs/Understanding-Mixins.md) - Learn how mixins work and why they're perfect for SE
 - [MDK Documentation](https://malforge.github.io/spaceengineers/mdk2/) - Full MDK documentation
 - [MDK GitHub](https://github.com/malware-dev/mdk2) - MDK source code
+
+## Legal Stuff (Unfortunately Necessary)
+
+Look, I hate having to add this section. I'd rather just share cool code with fellow Space Engineers players without worrying about legal nonsense. But the reality of the internet is that you have to protect yourself, even when you're just trying to help people out for free.
+
+**The bottom line:** This repository is a community platform. I'm not responsible for what other people contribute here. Each library comes from its respective author(s), and they're responsible for their own code and licensing.
+
+**Disclaimer:** This repository is a community platform for sharing Space Engineers code libraries. The repository maintainer is not responsible for the content, licensing, or copyright status of contributed libraries. Each library is provided by its respective author(s) as indicated in the package metadata.
+
+**Use at your own risk:** All libraries are provided "as-is" without warranty of any kind. Users should review each library's license and code before use.
 
 ---
 
