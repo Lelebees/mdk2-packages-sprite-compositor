@@ -3,7 +3,7 @@
 > [!WARNING]
 > **Missing Release Notes**
 > 
-> *The author's release process: Ship it and let users discover the changes through trial and error.*  
+> *The author believes version numbers speak for themselves. They do not.*  
 > \- Malware
 
 ---
