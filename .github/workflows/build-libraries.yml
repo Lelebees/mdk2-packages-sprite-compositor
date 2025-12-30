@@ -150,6 +150,27 @@ jobs:
           
           Write-Host "Found demo project: $($demoProj.Name)"
           
+          # Update all Mal.Mdk2.* packages to latest versions
+          Write-Host "Updating Mal.Mdk2.* packages to latest versions..."
+          $csprojPath = $demoProj.FullName
+          
+          # Get all package references from the csproj
+          [xml]$csproj = Get-Content $csprojPath
+          $packageRefs = $csproj.Project.ItemGroup.PackageReference | Where-Object { $_.Include -like "Mal.Mdk2.*" }
+          
+          foreach ($packageRef in $packageRefs) {
+            $packageName = $packageRef.Include
+            Write-Host "  Updating $packageName..."
+            try {
+              dotnet add "$csprojPath" package $packageName --source $sourceUrl 2>&1 | Out-Null
+              if ($LASTEXITCODE -eq 0) {
+                Write-Host "    Updated $packageName" -ForegroundColor Green
+              }
+            } catch {
+              Write-Host "    Failed to update $packageName" -ForegroundColor Yellow
+            }
+          }
+          
           # Create mdk.local.ini with Space Engineers path BEFORE any dotnet commands
           $mdkLocalIni = Join-Path $demoProj.Directory.FullName "mdk.local.ini"
           $content = "[mdk]`noutput = auto`nbinarypath = $binPath"
@@ -236,7 +257,7 @@ jobs:
           }
           
           Write-Host "Building project in Release mode..."
-          dotnet build "$($demoProj.FullName)" -c Release 2>&1 | Tee-Object -Variable buildOutput
+          dotnet build "$($demoProj.FullName)" -c Release -p:SpaceEngineersFinderVerbose=true 2>&1 | Tee-Object -Variable buildOutput
           Write-Host "Build output captured for analysis"
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Failed to build $package"
