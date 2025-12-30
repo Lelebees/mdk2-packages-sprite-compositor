@@ -1,6 +1,9 @@
 # Release Notes - Mal.MdkScriptMixin.Coroutines
 
 ````````text
+- 1.0.6
+  Cancellation system improvements: version-based cancellation, removed Reset() method
+  Improved readme with complete airlock controller example
 - 1.0.5
   Actually fixed packageType issue (rebuilt with updated packager tool 1.0.10)
 - 1.0.4

@@ -50,7 +50,7 @@ dotnet add package Mal.MdkScriptMixin.Coroutines
 Add this to your `.csproj` file:
 
 ```xml
-<PackageReference Include="Mal.MdkScriptMixin.Coroutines" Version="1.0.5" />
+<PackageReference Include="Mal.MdkScriptMixin.Coroutines" Version="1.0.6" />
 ```
 
 ---
