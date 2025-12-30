@@ -99,6 +99,40 @@ jobs:
         $binPath = Join-Path $sedsPath "DedicatedServer64"
         $sourceUrl = "https://nuget.pkg.github.com/malforge/index.json"
         
+        # Verify SteamCMD actually installed SE properly
+        Write-Host "Verifying Space Engineers installation..."
+        if (-not (Test-Path $sedsPath)) {
+          Write-Error "SE installation directory does not exist: $sedsPath"
+          exit 1
+        }
+        
+        Write-Host "SE installation directory exists: $sedsPath"
+        Write-Host "Contents of SE directory:"
+        Get-ChildItem -Path $sedsPath -Directory | Select-Object -First 10 | ForEach-Object { Write-Host "  DIR: $($_.Name)" }
+        Get-ChildItem -Path $sedsPath -File | Select-Object -First 10 | ForEach-Object { Write-Host "  FILE: $($_.Name)" }
+        
+        if (-not (Test-Path $binPath)) {
+          Write-Error "DedicatedServer64 directory not found at: $binPath"
+          Write-Host "Searching for DedicatedServer64..."
+          $found = Get-ChildItem -Path $sedsPath -Recurse -Directory -Filter "DedicatedServer64" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($found) {
+            $binPath = $found.FullName
+            Write-Host "Found DedicatedServer64 at alternate location: $binPath"
+          } else {
+            Write-Error "Could not find DedicatedServer64 directory anywhere in SE installation"
+            exit 1
+          }
+        }
+        
+        Write-Host "Binary path confirmed: $binPath"
+        $dllCount = (Get-ChildItem -Path $binPath -Filter "*.dll" -ErrorAction SilentlyContinue | Measure-Object).Count
+        Write-Host "Found $dllCount DLL files in binary path"
+        
+        if ($dllCount -lt 10) {
+          Write-Error "SE installation appears incomplete - only $dllCount DLL files found"
+          exit 1
+        }
+        
         $builtPackages = @()
         $skippedPackages = @()
         
