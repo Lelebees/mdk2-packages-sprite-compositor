@@ -42,7 +42,7 @@ jobs:
         # Try multiple times with different approaches
         $attempts = @(
           # "+@sSteamCmdForcePlatformType windows +force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit",
-          "+force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit",
+          "+force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit" #,
           # "+@NoPromptForPassword 1 +force_install_dir `"$installDir`" +login anonymous +app_update 298740 +quit"
         )
         
