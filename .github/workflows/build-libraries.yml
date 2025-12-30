@@ -157,8 +157,24 @@ jobs:
           Write-Host "Created mdk.local.ini at: $mdkLocalIni"
           Write-Host "Content:"
           Get-Content $mdkLocalIni | ForEach-Object { Write-Host "  $_" }
+          
+          # Verify file actually exists
+          if (Test-Path $mdkLocalIni) {
+            Write-Host "VERIFIED: mdk.local.ini file exists!" -ForegroundColor Green
+            $fileInfo = Get-Item $mdkLocalIni
+            Write-Host "File size: $($fileInfo.Length) bytes" -ForegroundColor Green
+            Write-Host "Last write time: $($fileInfo.LastWriteTime)" -ForegroundColor Green
+          } else {
+            Write-Error "ERROR: mdk.local.ini file does NOT exist after creation!"
+            exit 1
+          }
+          
           Write-Host "Demo project path: $($demoProj.FullName)"
           Write-Host "Demo project directory: $($demoProj.Directory.FullName)"
+          
+          # List all .ini files in the project directory
+          Write-Host "All .ini files in project directory:"
+          Get-ChildItem -Path $demoProj.Directory.FullName -Filter "*.ini" | ForEach-Object { Write-Host "  - $($_.Name)" }
           
           # Get version from _version file
           $versionFile = Get-ChildItem -Path "libraries\$package" -Recurse -Filter "_version" | Select-Object -First 1
@@ -220,7 +236,7 @@ jobs:
           }
           
           Write-Host "Building project in Release mode..."
-          dotnet build "$($demoProj.FullName)" -c Release -v:detailed 2>&1 | Tee-Object -Variable buildOutput
+          dotnet build "$($demoProj.FullName)" -c Release 2>&1 | Tee-Object -Variable buildOutput
           Write-Host "Build output captured for analysis"
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Failed to build $package"
