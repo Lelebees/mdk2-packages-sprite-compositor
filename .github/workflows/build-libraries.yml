@@ -70,19 +70,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Cache build dependencies
-      id: cache-se
-      uses: actions/cache@v4
-      with:
-        path: se
-        key: se-ds-${{ runner.os }}-298740
+    # - name: Cache build dependencies
+      # id: cache-se
+      # uses: actions/cache@v4
+      # with:
+        # path: se
+        # key: se-ds-${{ runner.os }}-298740
     
     - name: Setup SteamCMD
-      if: steps.cache-se.outputs.cache-hit != 'true'
+      # if: steps.cache-se.outputs.cache-hit != 'true'
       id: steamcmd
       uses: CyberAndrii/setup-steamcmd@v1.1.5
+    
     - name: Install Space Engineers Dedicated Server (SteamCMD)
-      if: steps.cache-se.outputs.cache-hit != 'true'
+      # if: steps.cache-se.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
         $installDir = Join-Path $env:GITHUB_WORKSPACE "se"
