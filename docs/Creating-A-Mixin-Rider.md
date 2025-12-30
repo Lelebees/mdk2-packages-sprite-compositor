@@ -21,30 +21,24 @@ You don't have direct write access to the main repository. Forking creates your 
 6. Enter **your fork's URL**: `https://github.com/YourUsername/mdk2-packages`
 7. Choose a local path and click **Clone**
 
-## Step 2: Create the Library Folder Structure
+## Step 2: Create a New Solution for Your Library
 
-1. In File Explorer, navigate to the repository's `libraries` folder
-2. Create a new folder with your library name following the naming convention:
+Rider can automatically create the proper folder structure when you create a new solution with the "Create directory for solution" option enabled.
+
+1. In Rider, go to **File → New → Solution**
+2. Search for **"MDK Mixin"** template
+3. Set the solution name to match your library name following the naming convention:
    - `YourName.MdkScriptMixin.LibraryName` - For programmable block scripts
    - `YourName.MdkModMixin.LibraryName` - For mods
    - `YourName.MdkSharedMixin.LibraryName` - For libraries that work in both
-3. This will be your library's project folder
-   - Example: `libraries/Alice.MdkScriptMixin.DataGrid/`
-
-## Step 3: Create the Mixin Project (Shared Project)
-
-This is where you'll write your library code. The MDK Mixin template sets up a [Shared Project](Understanding-Mixins.md) with all the necessary files and structure.
-
-1. In Rider, right-click the solution in the Solution Explorer
-2. Select **Add → New Project**
-3. Search for **"MDK Mixin"** template
-4. Set the project name to match your library name (e.g., `Alice.MdkScriptMixin.DataGrid`)
-5. Set the location to the folder you created in Step 2
+   - Example: `Alice.MdkScriptMixin.DataGrid`
+4. Set the location to the `libraries` folder in your cloned repository
+5. **Enable "Create directory for solution"** - This creates the proper folder structure automatically
 6. Click **Create**
 
-The template will create a Shared Project with all the necessary structure pre-configured.
+The template will create a Shared Project with all the necessary structure pre-configured inside a solution folder.
 
-## Step 4: Create Required Metadata Files
+## Step 3: Create Required Metadata Files
 
 In the shared project folder, create these text files with exact names (no file extensions except `readme.md`):
 
@@ -81,15 +75,14 @@ Create a comprehensive readme with:
 
 **Important:** Always include a readme.md to avoid public shaming in the documentation! 😄
 
-## Step 5: Add Your Code Files
+## Step 4: Add Your Code Files
 
 1. Right-click the shared project
 2. Select **Add → C# File**
 3. Name your file and click **OK**
 4. Add your library code
-5. Remember: Keep it compatible with Space Engineers restrictions if targeting MdkScriptMixin (C# 6.0, limited APIs)
 
-## Step 6: Create a Demo Project
+## Step 5: Create a Demo Project
 
 The Demo Project serves three purposes:
 1. **Testing**: It lets you test your library code as if it were being used in a real Space Engineers script
@@ -107,7 +100,7 @@ Think of it as a sample Space Engineers script that uses your library.
 
 The template will create a fully configured demo project with all MDK packages already included.
 
-## Step 7: Reference the Mixin in Demo
+## Step 6: Reference the Mixin in Demo
 
 This connects your Demo project to your library code. When you build the Demo, it will include all the code from your Shared Project, just like a real user's script would.
 
@@ -117,7 +110,7 @@ This connects your Demo project to your library code. When you build the Demo, i
 4. Check your mixin project (it should show as a Shared Project)
 5. Click **OK**
 
-## Step 8: Create Demo Code
+## Step 7: Create Demo Code
 
 The MDK template already created a `Program.cs` with the basic structure. Modify it to demonstrate your library - this helps other developers understand how to use it and serves as a working test.
 
@@ -143,7 +136,7 @@ namespace IngameScript
 }
 ```
 
-## Step 9: Test Building
+## Step 8: Test Building
 
 Building verifies that your code compiles correctly, all references are set up properly, and the NuGet package can be generated.
 
@@ -154,7 +147,7 @@ Building verifies that your code compiles correctly, all references are set up p
    - Compile your demo project
    - Generate a NuGet package in the output folder
 
-## Step 10: Commit and Push
+## Step 9: Commit and Push
 
 1. Go to **VCS → Commit** (or press `Ctrl+K`)
 2. Review and stage all your new files
@@ -163,7 +156,7 @@ Building verifies that your code compiles correctly, all references are set up p
 5. Go to **VCS → Git → Push** (or press `Ctrl+Shift+K`)
 6. Click **Push** to upload to **your fork**
 
-## Step 11: Create a Pull Request
+## Step 10: Create a Pull Request
 
 A pull request (PR) asks the repository maintainers to review and merge your changes into the main repository.
 
@@ -178,7 +171,7 @@ A pull request (PR) asks the repository maintainers to review and merge your cha
    - Description: Briefly describe what your library does
 8. Click **Create pull request**
 
-## Step 12: Wait for Review
+## Step 11: Wait for Review
 
 Once your PR is submitted:
 1. The automated GitHub Actions workflows will run to verify your library builds correctly

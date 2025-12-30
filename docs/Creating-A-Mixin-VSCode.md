@@ -139,8 +139,6 @@ namespace IngameScript
 EOF
 ```
 
-Remember: Keep it compatible with Space Engineers restrictions if targeting MdkScriptMixin (C# 6.0, no async, limited APIs)
-
 ## Step 6: Create a Demo Project
 
 The Demo Project serves three purposes:
