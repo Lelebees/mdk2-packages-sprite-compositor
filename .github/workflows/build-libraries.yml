@@ -21,115 +21,27 @@ permissions:
   packages: write
 
 jobs:
-  detect-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.changed-packages.outputs.packages }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 2
-    
-    - name: Detect changed packages
-      id: changed-packages
-      run: |
-        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-          if [ -n "${{ github.event.inputs.package_name }}" ]; then
-            # Build specific package
-            echo "packages=[\"${{ github.event.inputs.package_name }}\"]" >> $GITHUB_OUTPUT
-          else
-            # Build all packages when manually triggered without package name
-            PACKAGES=$(find libraries -mindepth 1 -maxdepth 1 -type d ! -name ".idea" -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
-            echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
-            echo "Building all packages: $PACKAGES"
-          fi
-        else
-          # Get changed files in libraries/ directory
-          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD | grep '^libraries/' || true)
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "packages=[]" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          # Extract unique package folder names
-          PACKAGES=$(echo "$CHANGED_FILES" | cut -d'/' -f2 | sort -u | jq -R -s -c 'split("\n") | map(select(length > 0))')
-          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
-          echo "Changed packages: $PACKAGES"
-        fi
-
   build:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.packages != '[]'
     runs-on: windows-latest
-    permissions:
-      contents: write
-      packages: write
-    strategy:
-      matrix:
-        package_name: ${{ fromJson(needs.detect-changes.outputs.packages) }}
+    outputs:
+      has-packages: ${{ steps.build-summary.outputs.has-packages }}
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
-    # - name: Cache build dependencies
-      # id: cache-se
-      # uses: actions/cache@v4
-      # with:
-        # path: se
-        # key: se-ds-${{ runner.os }}-298740
     
     - name: Setup SteamCMD
-      # if: steps.cache-se.outputs.cache-hit != 'true'
-      id: steamcmd
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
-    - name: Install Space Engineers Dedicated Server (SteamCMD)
-      # if: steps.cache-se.outputs.cache-hit != 'true'
-      shell: pwsh
-      run: |
-        $installDir = Join-Path $env:GITHUB_WORKSPACE "se"
-        $homeDir    = Join-Path $env:RUNNER_TEMP "steamcmd-home"
-        # Start from a clean SteamCMD home each run (SteamCMD is sensitive to its state folder)
-        if (Test-Path $homeDir) { Remove-Item -Recurse -Force $homeDir }
-        New-Item -ItemType Directory -Force -Path $homeDir | Out-Null
-        Write-Host "SteamCMD exe: $((Get-Command steamcmd).Source)"
-        Write-Host "SteamCMD home: $homeDir"
-        Write-Host "Install dir : $installDir"
-        Push-Location $homeDir
-        steamcmd +@ShutdownOnFailedCommand 1 +@NoPromptForPassword 1 +@sSteamCmdForcePlatformType windows +force_install_dir "$installDir" +login anonymous +app_update 298740 validate +quit
-        Pop-Location
-
-    # - name: Install build dependencies
-
-      # if: steps.cache-se.outputs.cache-hit != 'true'
-      # shell: powershell    
-      # run: steamcmd +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
-
-    - name: Configure build environment
-      shell: pwsh
-      run: |
-        $sedsPath = "$env:GITHUB_WORKSPACE\se"
-        $binPath = Join-Path $sedsPath "DedicatedServer64"
-        
-        # Find the demo project for this package
-        $demoProj = Get-ChildItem -Path "libraries\${{ matrix.package_name }}" -Recurse -Filter "*.Demo.csproj" | Select-Object -First 1
-        if ($demoProj) {
-          $mdkLocalIni = Join-Path $demoProj.Directory.FullName "mdk.local.ini"
-          
-          # Create mdk.local.ini with Space Engineers path
-          $content = "[mdk]`noutput = auto`nbinarypath = $binPath"
-          Set-Content -Path $mdkLocalIni -Value $content -Encoding UTF8
-          
-          Write-Host "Configured build environment"
-        }
+    - name: Install Space Engineers Dedicated Server
+      run: steamcmd +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
+      shell: powershell
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
-
+    
     - name: Add GitHub Packages source
       run: |
         dotnet nuget add source "https://nuget.pkg.github.com/malforge/index.json" `
@@ -138,59 +50,176 @@ jobs:
           --password ${{ secrets.GITHUB_TOKEN }} `
           --store-password-in-clear-text
     
-    - name: Find demo project
-      id: find-demo
+    - name: Build Libraries
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $demoProj = Get-ChildItem -Path "libraries\${{ matrix.package_name }}" -Recurse -Filter "*.Demo.csproj" | Select-Object -First 1
-        if (-not $demoProj) {
-          Write-Error "No demo project (*.Demo.csproj) found in libraries/${{ matrix.package_name }}"
-          exit 1
+        $ErrorActionPreference = "Stop"
+        
+        # Determine which packages to build
+        $packagesToBuild = @()
+        if ("${{ github.event.inputs.package_name }}" -ne "") {
+          $packagesToBuild = @("${{ github.event.inputs.package_name }}")
+          Write-Host "Building single package: ${{ github.event.inputs.package_name }}"
+        } else {
+          $allPackages = Get-ChildItem -Path "libraries" -Directory | Where-Object { $_.Name -ne ".idea" }
+          $packagesToBuild = $allPackages | ForEach-Object { $_.Name }
+          Write-Host "Building all packages: $($packagesToBuild -join ', ')"
         }
-        echo "demo_path=$($demoProj.FullName)" >> $env:GITHUB_OUTPUT
-        Write-Host "Found demo project: $($demoProj.FullName)"
+        
+        $sedsPath = "$env:GITHUB_WORKSPACE\se"
+        $binPath = Join-Path $sedsPath "DedicatedServer64"
+        $sourceUrl = "https://nuget.pkg.github.com/malforge/index.json"
+        
+        $builtPackages = @()
+        $skippedPackages = @()
+        
+        foreach ($package in $packagesToBuild) {
+          Write-Host ""
+          Write-Host "=== Processing: $package ===" -ForegroundColor Cyan
+          
+          # Check if package has a demo project
+          $demoProj = Get-ChildItem -Path "libraries\$package" -Recurse -Filter "*.Demo.csproj" | Select-Object -First 1
+          if (-not $demoProj) {
+            Write-Host "No demo project found - skipping" -ForegroundColor Yellow
+            $skippedPackages += $package
+            continue
+          }
+          
+          Write-Host "Found demo project: $($demoProj.Name)"
+          
+          # Get version from _version file
+          $versionFile = Get-ChildItem -Path "libraries\$package" -Recurse -Filter "_version" | Select-Object -First 1
+          if (-not $versionFile) {
+            Write-Host "No _version file found - skipping" -ForegroundColor Yellow
+            $skippedPackages += $package
+            continue
+          }
+          
+          $localVersion = (Get-Content $versionFile.FullName).Trim()
+          Write-Host "Local version: $localVersion"
+          
+          # Check if this version already exists in NuGet
+          $packageName = $package
+          $nugetVersions = dotnet nuget search $packageName --source $sourceUrl --format json 2>&1 | ConvertFrom-Json
+          
+          $shouldBuild = $true
+          if ($nugetVersions.searchResult -and $nugetVersions.searchResult.Count -gt 0) {
+            $existingPackage = $nugetVersions.searchResult | Where-Object { $_.packages.id -eq $packageName } | Select-Object -First 1
+            if ($existingPackage -and $existingPackage.packages -and $existingPackage.packages.Count -gt 0) {
+              $publishedVersion = $existingPackage.packages[0].version
+              Write-Host "Published version: $publishedVersion"
+              
+              if ($localVersion -eq $publishedVersion) {
+                Write-Host "Version $localVersion already published - skipping" -ForegroundColor Yellow
+                $skippedPackages += $package
+                $shouldBuild = $false
+              } elseif ([version]$localVersion -le [version]$publishedVersion) {
+                Write-Host "Local version $localVersion is not higher than published $publishedVersion - skipping" -ForegroundColor Yellow
+                $skippedPackages += $package
+                $shouldBuild = $false
+              }
+            }
+          } else {
+            Write-Host "No published version found - will build"
+          }
+          
+          if (-not $shouldBuild) {
+            continue
+          }
+          
+          # Create mdk.local.ini with Space Engineers path
+          $mdkLocalIni = Join-Path $demoProj.Directory.FullName "mdk.local.ini"
+          $content = "[mdk]`noutput = auto`nbinarypath = $binPath"
+          Set-Content -Path $mdkLocalIni -Value $content -Encoding UTF8
+          Write-Host "Configured build environment"
+          
+          # Restore and build
+          Write-Host "Restoring project..."
+          dotnet restore "$($demoProj.FullName)"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to restore $package"
+            exit 1
+          }
+          
+          Write-Host "Building project in Release mode..."
+          dotnet build "$($demoProj.FullName)" -c Release
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to build $package"
+            exit 1
+          }
+          
+          # Find generated NuGet package
+          $nupkg = Get-ChildItem -Path "libraries\$package" -Recurse -Filter "*.nupkg" | Select-Object -First 1
+          if (-not $nupkg) {
+            Write-Error "No .nupkg file generated for $package"
+            exit 1
+          }
+          
+          Write-Host "Found package: $($nupkg.Name)" -ForegroundColor Green
+          
+          $builtPackages += $package
+        }
+        
+        Write-Host ""
+        Write-Host "=== Build Summary ===" -ForegroundColor Cyan
+        Write-Host "Built: $($builtPackages.Count) packages"
+        if ($builtPackages.Count -gt 0) {
+          $builtPackages | ForEach-Object { Write-Host "  - $_" -ForegroundColor Green }
+        }
+        Write-Host "Skipped: $($skippedPackages.Count) packages"
+        if ($skippedPackages.Count -gt 0) {
+          $skippedPackages | ForEach-Object { Write-Host "  - $_" -ForegroundColor Yellow }
+        }
+        
+        echo "has-packages=$($builtPackages.Count -gt 0)" >> $env:GITHUB_OUTPUT
     
-    - name: Restore demo project
-      run: dotnet restore "${{ steps.find-demo.outputs.demo_path }}"
-    
-    - name: Build demo project in Release (triggers packager)
-      run: dotnet build "${{ steps.find-demo.outputs.demo_path }}" -c Release
-    
-    - name: Find generated NuGet package
-      id: find-nupkg
+    - name: Set build summary output
+      id: build-summary
+      shell: pwsh
       run: |
-        $nupkg = Get-ChildItem -Path "libraries\${{ matrix.package_name }}" -Recurse -Filter "*.nupkg" | Select-Object -First 1
-        if (-not $nupkg) {
-          Write-Error "No .nupkg file generated for ${{ matrix.package_name }}"
-          exit 1
-        }
-        echo "nupkg_path=$($nupkg.FullName)" >> $env:GITHUB_OUTPUT
-        Write-Host "Found package: $($nupkg.FullName)"
+        $nupkgs = Get-ChildItem -Path "libraries" -Recurse -Filter "*.nupkg"
+        $hasPackages = $nupkgs.Count -gt 0
+        echo "has-packages=$hasPackages" >> $env:GITHUB_OUTPUT
     
-    - name: Upload package artifact
+    - name: Upload package artifacts
+      if: steps.build-summary.outputs.has-packages == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.package_name }}-nuget
-        path: ${{ steps.find-nupkg.outputs.nupkg_path }}
+        name: nuget-packages
+        path: libraries/**/*.nupkg
         if-no-files-found: error
   
   publish:
     needs: build
+    if: needs.build.outputs.has-packages == 'true' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: windows-latest
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    
     steps:
-      - name: Download all package artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: packages-nuget
-          pattern: '*-nuget'
-      
-      - name: Publish to GitHub Packages
-        shell: pwsh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $sourceUrl = "https://nuget.pkg.github.com/malforge/index.json"
-          Get-ChildItem -Path packages-nuget -Filter *.nupkg -Recurse | ForEach-Object {
-              Write-Host "Publishing package $($_.Name) to GitHub Packages..."
-              dotnet nuget push $_.FullName --source $sourceUrl --api-key $env:GITHUB_TOKEN --skip-duplicate
-          }
+    - name: Download package artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: packages
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Publish to GitHub Packages
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $sourceUrl = "https://nuget.pkg.github.com/malforge/index.json"
+        Get-ChildItem -Path packages -Filter *.nupkg -Recurse | ForEach-Object {
+            Write-Host "Publishing package $($_.Name) to GitHub Packages..."
+            dotnet nuget push $_.FullName --source $sourceUrl --api-key $env:GITHUB_TOKEN --skip-duplicate
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "Successfully published $($_.Name)" -ForegroundColor Green
+            } else {
+              Write-Warning "Failed to publish $($_.Name)"
+            }
+        }
