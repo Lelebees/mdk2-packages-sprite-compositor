@@ -72,14 +72,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
+    - name: Cache build dependencies
+      id: cache-se
+      uses: actions/cache@v4
+      with:
+        path: se
+        key: se-ds-${{ runner.os }}-298740
+    
     - name: Setup SteamCMD
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
+    - name: Where is steamcmd?
+      shell: pwsh
+      run: |
+        Get-Command steamcmd -All | Format-Table -AutoSize Source, CommandType, Version
+        Write-Host "setup-steamcmd says executable: ${{ steps.steamcmd.outputs.executable }}"
+
     - name: Install build dependencies
+      if: steps.cache-se.outputs.cache-hit != 'true'
+      shell: powershell    
       run: steamcmd +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
-      shell: powershell
-    
+   
     - name: Configure build environment
+      if: steps.cache-se.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
         $sedsPath = "$env:GITHUB_WORKSPACE\se"
