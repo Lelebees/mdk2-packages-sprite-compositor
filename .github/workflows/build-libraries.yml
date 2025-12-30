@@ -129,27 +129,38 @@ jobs:
           
           # Check if this version already exists in NuGet
           $packageName = $package
-          $nugetVersions = dotnet nuget search $packageName --source $sourceUrl --format json 2>&1 | ConvertFrom-Json
-          
           $shouldBuild = $true
-          if ($nugetVersions.searchResult -and $nugetVersions.searchResult.Count -gt 0) {
-            $existingPackage = $nugetVersions.searchResult | Where-Object { $_.packages.id -eq $packageName } | Select-Object -First 1
-            if ($existingPackage -and $existingPackage.packages -and $existingPackage.packages.Count -gt 0) {
-              $publishedVersion = $existingPackage.packages[0].version
-              Write-Host "Published version: $publishedVersion"
+          
+          try {
+            $searchOutput = dotnet nuget search $packageName --source $sourceUrl --format json 2>&1
+            if ($LASTEXITCODE -eq 0 -and $searchOutput -match '^\s*\{') {
+              $nugetVersions = $searchOutput | ConvertFrom-Json
               
-              if ($localVersion -eq $publishedVersion) {
-                Write-Host "Version $localVersion already published - skipping" -ForegroundColor Yellow
-                $skippedPackages += $package
-                $shouldBuild = $false
-              } elseif ([version]$localVersion -le [version]$publishedVersion) {
-                Write-Host "Local version $localVersion is not higher than published $publishedVersion - skipping" -ForegroundColor Yellow
-                $skippedPackages += $package
-                $shouldBuild = $false
+              if ($nugetVersions.searchResult -and $nugetVersions.searchResult.Count -gt 0) {
+                $existingPackage = $nugetVersions.searchResult | Where-Object { $_.packages.id -eq $packageName } | Select-Object -First 1
+                if ($existingPackage -and $existingPackage.packages -and $existingPackage.packages.Count -gt 0) {
+                  $publishedVersion = $existingPackage.packages[0].version
+                  Write-Host "Published version: $publishedVersion"
+                  
+                  if ($localVersion -eq $publishedVersion) {
+                    Write-Host "Version $localVersion already published - skipping" -ForegroundColor Yellow
+                    $skippedPackages += $package
+                    $shouldBuild = $false
+                  } elseif ([version]$localVersion -le [version]$publishedVersion) {
+                    Write-Host "Local version $localVersion is not higher than published $publishedVersion - skipping" -ForegroundColor Yellow
+                    $skippedPackages += $package
+                    $shouldBuild = $false
+                  }
+                }
+              } else {
+                Write-Host "No published version found - will build"
               }
+            } else {
+              Write-Host "Could not query NuGet feed (may not exist yet) - will build"
             }
-          } else {
-            Write-Host "No published version found - will build"
+          } catch {
+            Write-Host "Could not query NuGet feed: $_" -ForegroundColor Yellow
+            Write-Host "Will build package anyway"
           }
           
           if (-not $shouldBuild) {
