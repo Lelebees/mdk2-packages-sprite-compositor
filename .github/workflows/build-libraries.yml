@@ -41,9 +41,9 @@ jobs:
         
         # Try multiple times with different approaches
         $attempts = @(
-          "+@sSteamCmdForcePlatformType windows +force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit",
+          # "+@sSteamCmdForcePlatformType windows +force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit",
           "+force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit",
-          "+@NoPromptForPassword 1 +force_install_dir `"$installDir`" +login anonymous +app_update 298740 +quit"
+          # "+@NoPromptForPassword 1 +force_install_dir `"$installDir`" +login anonymous +app_update 298740 +quit"
         )
         
         $success = $false
@@ -186,7 +186,8 @@ jobs:
           }
           
           Write-Host "Building project in Release mode..."
-          dotnet build "$($demoProj.FullName)" -c Release -p:ProjectPath="$($demoProj.FullName)"
+          dotnet build "$($demoProj.FullName)" -c Release -v:detailed 2>&1 | Tee-Object -Variable buildOutput
+          Write-Host "Build output captured for analysis"
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Failed to build $package"
             exit 1
