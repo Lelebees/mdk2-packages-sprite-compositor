@@ -98,7 +98,7 @@ jobs:
           +@sSteamCmdForcePlatformType windows `
           +force_install_dir "$installDir" `
           +login anonymous `
-          +app_update 298740 `
+          +app_update 298740 validate `
           +quit
         Pop-Location
 
