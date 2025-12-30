@@ -34,7 +34,7 @@ jobs:
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
     - name: Install Space Engineers Dedicated Server
-      run: steamcmd +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
+      run: steamcmd +@sSteamCmdForcePlatformType windows +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
       shell: powershell
     
     - name: Setup .NET
