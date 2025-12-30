@@ -241,11 +241,9 @@ public class NuGetPackageGenerator
     {
         var targets = new XDocument(
             new XElement("Project",
-                new XElement("ItemGroup",
-                    new XElement("Compile",
-                        new XAttribute("Include", $"$(MSBuildThisFileDirectory)..\\contentFiles\\cs\\any\\Shared\\**\\*.cs"),
-                        new XAttribute("Link", "Shared\\%(RecursiveDir)%(FileName)%(Extension)")
-                    )
+                new XElement("Import",
+                    new XAttribute("Project", $"$(MSBuildThisFileDirectory)..\\contentFiles\\cs\\any\\Shared\\{metadata.PackageId}.projitems"),
+                    new XAttribute("Label", "Shared")
                 )
             )
         );

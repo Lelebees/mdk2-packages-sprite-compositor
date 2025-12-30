@@ -1,3 +1,5 @@
+- 1.0.11
+  - CRITICAL FIX: Changed .targets file to properly import .projitems instead of manually including .cs files (was attempting to compile .projitems as source)
 - 1.0.10
   - CRITICAL FIX: Removed invalid packageType that prevented package installation
 - 1.0.9
