@@ -181,9 +181,6 @@ jobs:
         }
         
         Write-Host "Building libraries: $($packagesToBuild -join ', ')"
-          $packagesToBuild = $allPackages | ForEach-Object { $_.Name }
-          Write-Host "Building all packages: $($packagesToBuild -join ', ')"
-        }
         
         $sedsPath = "$env:GITHUB_WORKSPACE\se"
         $binPath = Join-Path $sedsPath "DedicatedServer64"
