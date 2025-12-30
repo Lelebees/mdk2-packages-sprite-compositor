@@ -87,46 +87,15 @@ jobs:
       run: |
         $installDir = Join-Path $env:GITHUB_WORKSPACE "se"
         $homeDir    = Join-Path $env:RUNNER_TEMP "steamcmd-home"
-
         # Start from a clean SteamCMD home each run (SteamCMD is sensitive to its state folder)
         if (Test-Path $homeDir) { Remove-Item -Recurse -Force $homeDir }
         New-Item -ItemType Directory -Force -Path $homeDir | Out-Null
-
         Write-Host "SteamCMD exe: $((Get-Command steamcmd).Source)"
         Write-Host "SteamCMD home: $homeDir"
         Write-Host "Install dir : $installDir"
-
-        function Invoke-SteamCmd([int]$Attempt) {
-          Write-Host "---- SteamCMD attempt $Attempt ----"
-          Push-Location $homeDir
-
-          steamcmd `
-            +@ShutdownOnFailedCommand 1 `
-            +@NoPromptForPassword 1 `
-            +@sSteamCmdForcePlatformType windows `
-            +force_install_dir "$installDir" `
-            +login anonymous `
-            +app_info_print 298740 `
-            +app_update 298740 validate `
-            +quit
-
-          $code = $LASTEXITCODE
-          Pop-Location
-          Write-Host "SteamCMD exit code: $code"
-          return $code
-        }
-
-        for ($i = 1; $i -le 3; $i++) {
-          $code = Invoke-SteamCmd $i
-          if ($code -eq 0) { exit 0 }
-
-          # Nuke SteamCMD state and retry (helps when SteamCMD gets into a bad state)
-          if (Test-Path $homeDir) { Remove-Item -Recurse -Force $homeDir }
-          New-Item -ItemType Directory -Force -Path $homeDir | Out-Null
-          Start-Sleep -Seconds (5 * $i)
-        }
-
-        throw "SteamCMD failed after retries."
+        Push-Location $homeDir
+        steamcmd +@ShutdownOnFailedCommand 1 +@NoPromptForPassword 1 +@sSteamCmdForcePlatformType windows +force_install_dir "$installDir" +login anonymous +app_update 298740 validate +quit
+        Pop-Location
 
     # - name: Install build dependencies
 
