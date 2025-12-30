@@ -7,17 +7,14 @@ This guide will walk you through creating a new mixin library for the MDK Packag
 - Visual Studio Code
 - .NET Framework 4.8 SDK
 - .NET SDK (for CLI tools)
+- MDK2 installed
 - Git
-- C# extension for VS Code (ms-dotnettools.csharp)
+- C# extension (ms-dotnettools.csharp)
 
 ## Step 1: Fork and Clone the Repository
 
-You don't have direct write access to the main repository. Forking creates your own copy where you can make changes, then submit them as a pull request.
-
-1. Go to `https://github.com/malforge/mdk2-packages` in your browser
-2. Click the **Fork** button in the top right
-3. GitHub will create a fork under your account
-4. Open a terminal and run:
+1. Go to `https://github.com/malforge/mdk2-packages` and click **Fork**
+2. Open a terminal and run:
 
 ```bash
 git clone https://github.com/YourUsername/mdk2-packages
@@ -25,105 +22,49 @@ cd mdk2-packages
 code .
 ```
 
-This will clone **your fork** and open it in VS Code.
+## Step 2: Create the Library Structure
 
-## Step 2: Create the Library Folder Structure
+Choose a library name following the format:
+- `YourName.MdkScriptMixin.LibraryName` - For programmable block scripts only
+- `YourName.MdkModMixin.LibraryName` - For mods only
+- `YourName.MdkSharedMixin.LibraryName` - For both scripts and mods
 
-In the terminal (or VS Code's integrated terminal):
+1. In VS Code's Explorer, right-click the `libraries` folder → **New Folder**
+2. Name it (e.g., `Alice.MdkScriptMixin.DataGrid`)
+3. Open the integrated terminal (`` Ctrl+` ``)
+4. Navigate to your new folder and create the mixin project:
+   ```
+   cd libraries\Alice.MdkScriptMixin.DataGrid
+   dotnet new mdk2mixin -n Alice.MdkScriptMixin.DataGrid
+   ```
 
-```bash
-# Replace with your actual library name following the naming convention
-LIBNAME="Alice.MdkScriptMixin.DataGrid"
+## Step 3: Create Required Metadata Files
 
-# Create the folder structure
-mkdir -p "libraries/$LIBNAME/$LIBNAME"
-cd "libraries/$LIBNAME/$LIBNAME"
-```
+In VS Code's Explorer, navigate to your mixin project folder and create these files:
 
-**Naming Convention:**
-- `YourName.MdkScriptMixin.LibraryName` - For programmable block scripts
-- `YourName.MdkModMixin.LibraryName` - For mods
-- `YourName.MdkSharedMixin.LibraryName` - For libraries that work in both
+1. Right-click the mixin project folder → **New File**
+2. Create `_version` and enter: `1.0.0`
+3. Create `_authors` and enter your name
+4. Create `_description` and enter a brief description
+5. Create `_releasenotes` with format:
+   ```
+   - 1.0.0
+     Initial release
+   ```
+6. Create `readme.md` with usage examples and documentation
 
-## Step 3: Create the Mixin Project (Shared Project)
+## Step 4: Add Your Code Files
 
-This is where you'll write your library code. The MDK Mixin template sets up a [Shared Project](Understanding-Mixins.md) with all the necessary files and structure.
+Now you'll write the actual library code that you want to share with others.
 
-In the terminal:
+1. Right-click your mixin project folder → **New File**
+2. Name it (e.g., `MyLibrary.cs`)
+3. Write your library code
+4. Add as many files as needed to organize your code
 
-```bash
-# Replace with your actual library name
-LIBNAME="Alice.MdkScriptMixin.DataGrid"
-
-# Navigate to your library folder
-cd "libraries/$LIBNAME"
-
-# Create the mixin project using the MDK template
-dotnet new mdk2mixin -n "$LIBNAME"
-```
-
-This creates a Shared Project with all the necessary structure pre-configured.
-
-## Step 4: Create Required Metadata Files
-
-```bash
-# _version
-echo "1.0.0" > _version
-
-# _authors
-cat > _authors << 'EOF'
-Your Name
-Co-Author Name (if any)
-EOF
-
-# _description
-echo "A brief description of what your library does." > _description
-
-# _releasenotes
-cat > _releasenotes << 'EOF'
-- 1.0.0
-  Initial release
-  Feature 1 added
-  Feature 2 added
-EOF
-
-# readme.md
-cat > readme.md << 'EOF'
-# Your Library Name
-
-Brief overview of what your library does.
-
-## Features
-
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Usage
+Example code structure:
 
 ```csharp
-// Example code here
-```
-
-## Installation
-
-See the main repository documentation for installation instructions.
-
-## API Reference
-
-Document your public API here.
-EOF
-```
-
-**Important:** Always include a readme.md to avoid public shaming in the documentation! 😄
-
-## Step 5: Add Your Code Files
-
-Create your C# source files in the mixin project folder:
-
-```bash
-# Example: Create a main library file
-cat > MyLibrary.cs << 'EOF'
 using System;
 
 namespace IngameScript
@@ -136,159 +77,94 @@ namespace IngameScript
         }
     }
 }
-EOF
 ```
 
-## Step 6: Create a Demo Project
+**Important:**
+- **For script mixins**: Strongly recommended to use the `IngameScript` namespace to avoid conflicts (programmable blocks don't use namespaces, making namespace mismatches easy to cause trouble). Mixins for mods do not need to follow this convention.
 
-The Demo Project serves three purposes:
-1. **Testing**: It lets you test your library code as if it were being used in a real Space Engineers script
-2. **Documentation**: It shows other developers how to use your library
-3. **Packaging**: The build system uses it to package your library as a NuGet package
+**Tips:**
+- Add as many files as needed to organize your code
+- Keep code well-organized and commented
+- Consider edge cases and error handling
+- Make your API intuitive for other developers
 
-Think of it as a sample Space Engineers script that uses your library.
+## Step 5: Create a Demo Project
 
-In the terminal:
+The demo shows how to use your library and is required for packaging.
 
-```bash
-# Navigate back to your library folder (if needed)
-cd "libraries/$LIBNAME"
+1. Open the integrated terminal (`` Ctrl+` ``)
+2. Run: `dotnet new mdk2pbscript -n Alice.MdkScriptMixin.DataGrid.Demo`
+   (replace with your library name + `.Demo`)
 
-# Create the demo project using the MDK template
-dotnet new mdk2pbscript -n "$LIBNAME.Demo"
-```
+## Step 6: Reference the Mixin in Demo
 
-The template will create a fully configured demo project with all MDK packages already included.
+1. In Explorer, open the Demo project's `.csproj` file
+2. Find the `</Project>` closing tag at the bottom
+3. Add this line just before it:
+   ```xml
+   <Import Project="..\Alice.MdkScriptMixin.DataGrid\Alice.MdkScriptMixin.DataGrid.projitems" Label="Shared"/>
+   ```
+   (Replace with your actual library name)
+4. Save the file
 
-## Step 7: Reference the Mixin in Demo
+## Step 7: Write Demo Code
 
-This connects your Demo project to your library code. When you build the Demo, it will include all the code from your Shared Project, just like a real user's script would.
-
-Edit the Demo project's `.csproj` file to add the shared project reference:
-
-```bash
-cd "$LIBNAME.Demo"
-
-# Add the Import line before the closing </Project> tag
-# You'll need to edit this manually or use a text editor
-# Add: <Import Project="..\$LIBNAME\$LIBNAME.projitems" Label="Shared"/>
-```
-
-Open the `.csproj` file in VS Code and add this line before `</Project>`:
-
-```xml
-<Import Project="..\YourLibraryName\YourLibraryName.projitems" Label="Shared"/>
-```
-
-(Replace `YourLibraryName` with your actual library name)
-
-## Step 8: Create Demo Code
-
-The MDK template already created a `Program.cs` with the basic structure. Open it in VS Code and modify it to demonstrate your library - this helps other developers understand how to use it and serves as a working test.
+1. In Explorer, open `Program.cs` in the Demo project
+2. Modify it to demonstrate your library usage:
 
 ```csharp
-using Sandbox.ModAPI.Ingame;
-using System;
-
-namespace IngameScript
+partial class Program : MyGridProgram
 {
-    partial class Program : MyGridProgram
+    public Program()
     {
-        public Program()
-        {
-            // Initialize your library here
-            // Example: var myLib = new MyLibrary();
-        }
+        // Initialize your library
+        var myLib = new MyLibrary();
+    }
 
-        public void Main(string argument, UpdateType updateSource)
-        {
-            // Demonstrate your library usage
-        }
+    public void Main(string argument, UpdateType updateSource)
+    {
+        // Show library usage
     }
 }
 ```
 
-## Step 9: Test Building
+## Step 8: Test Building
 
-Building verifies that your code compiles correctly, all references are set up properly, and the NuGet package can be generated.
+1. Open the integrated terminal (`` Ctrl+` ``)
+2. Navigate to repository root: `cd ..\..`
+3. Build: `dotnet build --configuration Release`
+4. Check the output for any errors
 
-```bash
-# Navigate back to repository root
-cd ../../..
+## Step 9: Commit and Push
 
-# Restore packages
-dotnet restore
+1. Open the Source Control view (`` Ctrl+Shift+G ``)
+2. Stage all changes (click **+** next to Changes)
+3. Enter commit message: `Add [YourLibraryName] mixin`
+4. Click **✓ Commit**
+5. Click **⋯** → **Push**
 
-# Build the solution
-dotnet build --configuration Release
-```
+## Step 10: Create a Pull Request
 
-Verify there are no errors in the output.
-
-## Step 10: Commit and Push
-
-```bash
-git add .
-git commit -m "Add [YourLibraryName] mixin"
-git push origin main
-```
-
-This pushes your changes to **your fork**.
-
-## Step 11: Create a Pull Request
-
-A pull request (PR) asks the repository maintainers to review and merge your changes into the main repository.
-
-1. Go to your fork on GitHub: `https://github.com/YourUsername/mdk2-packages`
-2. Click the **Pull requests** tab
-3. Click **New pull request**
-4. Ensure the base repository is `malforge/mdk2-packages` and base branch is `main`
-5. Ensure the head repository is your fork and the compare branch has your changes
+1. Go to your fork: `https://github.com/YourUsername/mdk2-packages`
+2. Click **Pull requests** → **New pull request**
+3. Verify base is `malforge/mdk2-packages:main`
+4. Title: `Add [YourLibraryName] mixin`
+5. Describe what your library does
 6. Click **Create pull request**
-7. Fill in the title and description:
-   - Title: `Add [YourLibraryName] mixin`
-   - Description: Briefly describe what your library does
-8. Click **Create pull request**
 
-## Step 12: Wait for Review
+## Step 11: Wait for Review
 
-Once your PR is submitted:
-1. The automated GitHub Actions workflows will run to verify your library builds correctly
+1. GitHub Actions will automatically test your build
 2. A maintainer will review your code
-3. They may request changes or approve immediately
-4. Once approved and merged, your library will be automatically:
-   - Built and packaged
-   - Published to GitHub Packages
-   - Documented on the main README
+3. Once approved and merged, your library is automatically published to GitHub Packages
 
-## Naming Convention Summary
+## Quick Tips
 
-- **MdkScriptMixin**: For programmable block scripts only
-- **MdkModMixin**: For mods only
-- **MdkSharedMixin**: Works in both environments
-
-## Tips
-
-- Always include a `readme.md` file with usage examples
-- Keep `_releasenotes` up to date with each version bump
-- Test your library in an actual Space Engineers environment
-- Follow C# 6.0 syntax for script mixins (Space Engineers limitation)
-- Use semantic versioning (Major.Minor.Patch)
-- Use VS Code extensions for better C# support
-
-## Useful VS Code Extensions
-
-- **C# for Visual Studio Code** (ms-dotnettools.csharp)
-- **NuGet Package Manager** (jmrog.vscode-nuget-package-manager)
-- **GitLens** (eamodio.gitlens) - Enhanced Git integration
-- **Markdown All in One** (yzhang.markdown-all-in-one) - For editing readme.md
-
-## VS Code Tips
-
-- Press `Ctrl+Shift+P` to open the command palette
-- Use `Ctrl+`` to toggle the integrated terminal
-- Press `F5` to start debugging (if configured)
-- Use `Ctrl+P` for quick file navigation
+- Always include `readme.md` with usage examples
+- Use semantic versioning (1.0.0 = Major.Minor.Patch)
+- Test in Space Engineers before submitting
+- Press `Ctrl+Shift+P` for command palette
+- Use `Ctrl+`` to toggle terminal
 
 ## Need Help?
 
