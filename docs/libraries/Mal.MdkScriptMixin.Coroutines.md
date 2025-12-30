@@ -1,7 +1,7 @@
 # Mal.MdkScriptMixin.Coroutines
 
 > [!NOTE]
-> **Version:** 1.0.3  
+> **Version:** 1.0.4  
 > **Authors:** Malware  
 > **Package:** `Mal.MdkScriptMixin.Coroutines`
 > 
