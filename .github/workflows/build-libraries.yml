@@ -34,8 +34,35 @@ jobs:
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
     - name: Install Space Engineers Dedicated Server
-      run: steamcmd +@sSteamCmdForcePlatformType windows +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
-      shell: powershell
+      shell: pwsh
+      run: |
+        $installDir = Join-Path $env:GITHUB_WORKSPACE "se"
+        New-Item -ItemType Directory -Force -Path $installDir | Out-Null
+        
+        # Try multiple times with different approaches
+        $attempts = @(
+          "+@sSteamCmdForcePlatformType windows +force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit",
+          "+force_install_dir `"$installDir`" +login anonymous +app_update 298740 validate +quit",
+          "+@NoPromptForPassword 1 +force_install_dir `"$installDir`" +login anonymous +app_update 298740 +quit"
+        )
+        
+        $success = $false
+        foreach ($attempt in $attempts) {
+          Write-Host "Trying: steamcmd $attempt"
+          $cmd = "steamcmd $attempt"
+          Invoke-Expression $cmd
+          if ($LASTEXITCODE -eq 0) {
+            $success = $true
+            break
+          }
+          Write-Host "Attempt failed with exit code $LASTEXITCODE, trying next approach..."
+          Start-Sleep -Seconds 5
+        }
+        
+        if (-not $success) {
+          Write-Error "All SteamCMD installation attempts failed"
+          exit 1
+        }
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
