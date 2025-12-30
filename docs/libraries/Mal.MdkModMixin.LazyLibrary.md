@@ -13,7 +13,7 @@
 > [!WARNING]
 > **Missing Documentation**
 > 
-> *This package is SO good, the author thought it didn't need documentation. Confidence: 100. Documentation: 0.*  
+> *Apparently the author thinks their code is self-documenting. Narrator: It wasn't.*  
 > \- Malware
 
 ---

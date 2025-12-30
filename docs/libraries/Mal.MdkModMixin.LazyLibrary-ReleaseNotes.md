@@ -3,7 +3,7 @@
 > [!WARNING]
 > **Missing Release Notes**
 > 
-> *The author believes version numbers speak for themselves. They do not.*  
+> *The changelog is stored in the author's brain. Good luck accessing that archive.*  
 > \- Malware
 
 ---
