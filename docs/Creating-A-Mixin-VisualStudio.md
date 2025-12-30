@@ -2,6 +2,14 @@
 
 This guide will walk you through creating a new mixin library for the MDK Package Libraries repository using Visual Studio.
 
+## A Quick Word About Sharing Code
+
+Hey, thanks for wanting to contribute! Sharing code with the Space Engineers community is awesome, and I really appreciate you taking the time to do it.
+
+That said, I need to be upfront about something: **By contributing here, you're responsible for your own code and licensing.** I recommend using the MIT License (it's simple and everyone understands it), but you can choose whatever open-source license you want. Just make sure you actually have the right to share what you're contributing, and understand that if there are any copyright issues, that's on you to handle.
+
+I'm not here to play lawyer or referee licensing disputes - I'm just providing a platform for the community. If you're cool with that, let's build something great together!
+
 ## Prerequisites
 
 - Visual Studio 2022+
@@ -121,6 +129,19 @@ partial class Program : MyGridProgram
 1. GitHub Actions will automatically test your build
 2. A maintainer will review your code
 3. Once approved and merged, your library is automatically published to GitHub Packages
+
+## Copyright & Licensing
+
+**Important:** By contributing to this repository, you confirm that:
+- You own the copyright to the code you're contributing, OR
+- You have permission to share it under your chosen license
+
+**We strongly recommend using the MIT License** for maximum compatibility and ease of use. However, you may choose any open-source license. You are responsible for:
+- Ensuring your code doesn't infringe on others' copyrights
+- Maintaining and enforcing your chosen license
+- Handling any licensing disputes
+
+**The repository maintainer does not police or enforce individual library licenses and takes no responsibility for copyright or licensing issues.**
 
 ## Quick Tips
 

@@ -49,7 +49,7 @@ public class SharedProjectReader
 
         var targetFramework = readOptionalFile(projectDir, "_targetframework");
         var license = readOptionalFile(projectDir, "_license");
-        var projectUrl = readOptionalFile(projectDir, "_projecturl");
+        var projectUrl = readOptionalFile(projectDir, "_projecturl") ?? generateProjectUrl(sharedProjectFile);
         var tags = readOptionalFileLines(projectDir, "_tags");
         var readmePath = findReadmeFile(projectDir);
         
@@ -162,6 +162,84 @@ public class SharedProjectReader
                 return filePath;
         }
 
+        return null;
+    }
+
+    static string? generateProjectUrl(FileInfo sharedProjectFile)
+    {
+        try
+        {
+            var projectDir = sharedProjectFile.Directory!;
+            
+            // Get git repository root
+            var gitRoot = runGitCommand(projectDir, "rev-parse --show-toplevel");
+            if (gitRoot == null) return null;
+            
+            // Get remote origin URL
+            var remoteUrl = runGitCommand(projectDir, "config --get remote.origin.url");
+            if (remoteUrl == null) return null;
+            
+            // Convert git URL to web URL
+            var webUrl = convertGitUrlToWebUrl(remoteUrl);
+            if (webUrl == null) return null;
+            
+            // Calculate relative path from repo root to project directory
+            var relativePath = Path.GetRelativePath(gitRoot, projectDir.FullName)
+                .Replace(Path.DirectorySeparatorChar, '/');
+            
+            return $"{webUrl}/tree/main/{relativePath}";
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    static string? runGitCommand(DirectoryInfo workingDir, string arguments)
+    {
+        try
+        {
+            var startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "git",
+                Arguments = arguments,
+                WorkingDirectory = workingDir.FullName,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(startInfo);
+            if (process == null) return null;
+            
+            var output = process.StandardOutput.ReadToEnd().Trim();
+            process.WaitForExit();
+            
+            return process.ExitCode == 0 && !string.IsNullOrWhiteSpace(output) ? output : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    static string? convertGitUrlToWebUrl(string gitUrl)
+    {
+        // Convert SSH format: git@github.com:owner/repo.git -> https://github.com/owner/repo
+        if (gitUrl.StartsWith("git@"))
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(gitUrl, @"git@([^:]+):(.+?)(?:\.git)?$");
+            if (match.Success)
+                return $"https://{match.Groups[1].Value}/{match.Groups[2].Value}";
+        }
+        
+        // Convert HTTPS format: https://github.com/owner/repo.git -> https://github.com/owner/repo
+        if (gitUrl.StartsWith("http"))
+        {
+            return gitUrl.EndsWith(".git") ? gitUrl.Substring(0, gitUrl.Length - 4) : gitUrl;
+        }
+        
         return null;
     }
 
