@@ -170,10 +170,9 @@ jobs:
             $currentVersion = $packageRef.Version
             Write-Host "  Updating $packageName (current: $currentVersion)..."
             try {
-              # Remove then re-add to force update
+              # Remove then re-add to force update to latest
               dotnet remove "$csprojPath" package $packageName 2>&1 | Out-Null
-              $addOutput = dotnet add "$csprojPath" package $packageName --source $sourceUrl 2>&1
-              Write-Host "  $addOutput"
+              dotnet add "$csprojPath" package $packageName 2>&1 | Out-Null
               if ($LASTEXITCODE -eq 0) {
                 Write-Host "    Updated $packageName" -ForegroundColor Green
               }
