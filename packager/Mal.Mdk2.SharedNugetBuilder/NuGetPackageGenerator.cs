@@ -217,7 +217,7 @@ public class NuGetPackageGenerator
         metadataElement.Add(new XElement("contentFiles",
             new XElement("files",
                 new XAttribute("include", "cs/any/Shared/**/*.*"),
-                new XAttribute("buildAction", "Compile"),
+                new XAttribute("buildAction", "None"),
                 new XAttribute("copyToOutput", "false")
             )
         ));
