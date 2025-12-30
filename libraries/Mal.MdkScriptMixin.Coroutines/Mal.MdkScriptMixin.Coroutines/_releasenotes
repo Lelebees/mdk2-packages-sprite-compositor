@@ -1,5 +1,7 @@
+- 1.0.5
+  Actually fixed packageType issue (rebuilt with updated packager tool 1.0.10)
 - 1.0.4
-  CRITICAL FIX: Removed invalid packageType that prevented package installation
+  (Bad build - packager tool not updated yet)
 - 1.0.3
   Test release to verify project URL now points to library subfolder instead of repository root
 - 1.0.2

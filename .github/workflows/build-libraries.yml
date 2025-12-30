@@ -77,6 +77,13 @@ jobs:
           --password ${{ secrets.GITHUB_TOKEN }} `
           --store-password-in-clear-text
     
+    - name: Clear NuGet cache for Mal.Mdk2 packages
+      shell: pwsh
+      run: |
+        Write-Host "Clearing NuGet cache for Mal.Mdk2.* packages..."
+        dotnet nuget locals all --clear
+        Write-Host "Cache cleared"
+    
     - name: Build Libraries
       shell: pwsh
       env:
@@ -257,7 +264,7 @@ jobs:
           }
           
           Write-Host "Building project in Release mode..."
-          dotnet build "$($demoProj.FullName)" -c Release -p:SpaceEngineersFinderVerbose=true 2>&1 | Tee-Object -Variable buildOutput
+          dotnet build "$($demoProj.FullName)" -c Release 2>&1 | Tee-Object -Variable buildOutput
           Write-Host "Build output captured for analysis"
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Failed to build $package"
