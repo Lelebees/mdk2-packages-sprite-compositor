@@ -106,6 +106,9 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
             if (metadata.ProjectUrl != null) Console.WriteLine($"Project URL: {metadata.ProjectUrl}");
             if (metadata.Tags != null) Console.WriteLine($"Tags: {string.Join(", ", metadata.Tags)}");
             
+            // Validate naming convention
+            ValidateNamingConvention(metadata.PackageId, outputter);
+            
             Console.WriteLine("\n✓ Metadata validation passed");
             
             // Parse dependencies
@@ -183,6 +186,9 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
                 Console.WriteLine($"Version: {metadata.Version}");
                 Console.WriteLine($"Description: {metadata.Description}");
 
+                // Validate naming convention
+                ValidateNamingConvention(metadata.PackageId, outputter);
+
                 // Detect dependencies
                 var detectedDeps = DemoProjectReader.DetectSharedProjectDependencies(
                     sharedProject.ProjectFile, outputDir);
@@ -216,4 +222,51 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
     }
     
     await Task.CompletedTask;
+}
+
+static void ValidateNamingConvention(string packageId, IOutput output)
+{
+    // Expected pattern: {Author}.{Environment}.{Name}
+    // Where {Environment} is one of:
+    //   - MdkScriptMixin: For programmable block scripts
+    //   - MdkModMixin: For mods
+    //   - MdkSharedMixin: For libraries that work in both SE environments
+    //
+    // The "Mdk" prefix ensures these packages are clearly identifiable as
+    // MDK/Space Engineers related in the GitHub Packages listing.
+    //
+    // Examples:
+    //   Mal.MdkScriptMixin.Coroutines ✓
+    //   JohnDoe.MdkModMixin.CoolFeature ✓
+    //   Author.MdkSharedMixin.Utilities ✓
+    //   BadName ✗
+    //   Author.IngameScript.Name ✗ (use MdkScriptMixin)
+    
+    var parts = packageId.Split('.');
+    
+    if (parts.Length < 3)
+    {
+        output.Warning(
+            $"Package name '{packageId}' does not follow the recommended naming convention. " +
+            "Expected pattern: {{Author}}.{{Environment}}.{{Name}} where Environment is:\n" +
+            "  - MdkScriptMixin: For programmable block scripts\n" +
+            "  - MdkModMixin: For mods\n" +
+            "  - MdkSharedMixin: For libraries that work in both SE environments",
+            null);
+        return;
+    }
+    
+    var environment = parts[1];
+    var validEnvironments = new[] { "MdkScriptMixin", "MdkModMixin", "MdkSharedMixin" };
+    
+    if (!validEnvironments.Any(e => string.Equals(e, environment, StringComparison.OrdinalIgnoreCase)))
+    {
+        output.Warning(
+            $"Package name '{packageId}' uses '{environment}' as the environment part. " +
+            "Recommended values are:\n" +
+            "  - MdkScriptMixin: For programmable block scripts\n" +
+            "  - MdkModMixin: For mods\n" +
+            "  - MdkSharedMixin: For libraries that work in both SE environments",
+            null);
+    }
 }
