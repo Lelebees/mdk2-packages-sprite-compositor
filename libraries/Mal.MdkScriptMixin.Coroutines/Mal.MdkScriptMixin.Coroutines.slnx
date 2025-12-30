@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Mal.MdkScriptMixin.Coroutines/Mal.MdkScriptMixin.Coroutines.shproj" />
+  <Project Path="Mal.MdkScriptMixin.Coroutines.Demo/Mal.MdkScriptMixin.Coroutines.Demo.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>
