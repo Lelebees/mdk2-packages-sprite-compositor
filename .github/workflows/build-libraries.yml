@@ -82,12 +82,11 @@ jobs:
     - name: Setup SteamCMD
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
-    - name: Where is steamcmd?
+    - name: SteamCMD appinfo probe
       shell: pwsh
       run: |
-        Get-Command steamcmd -All | Format-Table -AutoSize Source, CommandType, Version
-        Write-Host "setup-steamcmd says executable: ${{ steps.steamcmd.outputs.executable }}"
-
+        steamcmd +login anonymous +app_info_print 298740 +quit
+    
     - name: Install build dependencies
       if: steps.cache-se.outputs.cache-hit != 'true'
       shell: powershell    
