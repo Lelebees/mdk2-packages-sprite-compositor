@@ -78,19 +78,12 @@ jobs:
         key: se-ds-${{ runner.os }}-298740
     
     - name: Setup SteamCMD
+      if: steps.cache-se.outputs.cache-hit != 'true'
+      id: steamcmd
       uses: CyberAndrii/setup-steamcmd@v1.1.5
-    
-    - name: SteamCMD appinfo probe
-      shell: pwsh
-      run: |
-        steamcmd +login anonymous +app_info_print 298740 +quit
-    
-    # - name: Install build dependencies
-      # if: steps.cache-se.outputs.cache-hit != 'true'
-      # shell: powershell    
-      # run: steamcmd +force_install_dir $env:GITHUB_WORKSPACE\se +login anonymous +app_update 298740 +quit
-
-    - name: Install build dependencies (diagnostic)
+        
+    - name: Install build dependencies
+      if: steps.cache-se.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
         $installDir = Join-Path $env:GITHUB_WORKSPACE "se"
@@ -105,12 +98,11 @@ jobs:
           +@sSteamCmdForcePlatformType windows `
           +force_install_dir "$installDir" `
           +login anonymous `
-          +app_update 298740`
+          +app_update 298740 `
           +quit
         Pop-Location
 
     - name: Configure build environment
-      if: steps.cache-se.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
         $sedsPath = "$env:GITHUB_WORKSPACE\se"
