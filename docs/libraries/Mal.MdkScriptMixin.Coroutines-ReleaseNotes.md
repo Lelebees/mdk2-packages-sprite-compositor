@@ -8,19 +8,6 @@
   - Cancellation token support
   - ForEach helper for processing collections over multiple ticks
 
-- 1.0.1-alpha.1
-  Completely broke text scaling...
-  
-- 1.0.0
-  Final decision on the syntax. This release has breaking changes.
-
-- 1.0.0-alpha.10
-  Removed access modifier for Program
-   
-- 1.0.0-alpha.9
-  Just a reformatting.
-  
- 
 ````````
 
 ---
