@@ -1,6 +1,8 @@
 # Release Notes - Mal.MdkScriptMixin.Coroutines
 
 ````````text
+- 1.0.7
+  Rebuild with fixed packager tool (1.0.11) that properly imports .projitems file
 - 1.0.6
   Cancellation system improvements: version-based cancellation, removed Reset() method
   Improved readme with complete airlock controller example
