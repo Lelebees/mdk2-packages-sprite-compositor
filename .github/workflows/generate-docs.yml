@@ -5,11 +5,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'libraries/**/_version'
-      - 'libraries/**/_description'
-      - 'libraries/**/_authors'
-      - 'libraries/**/_releasenotes'
-      - 'libraries/**/readme.md'
+      - 'libraries/**'
       - 'generate-docs.ps1'
 
 jobs:
