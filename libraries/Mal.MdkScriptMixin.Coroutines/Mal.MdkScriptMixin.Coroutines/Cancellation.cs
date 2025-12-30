@@ -6,34 +6,32 @@ namespace IngameScript
     {
         public Cancellation()
         {
-            Token = new CancellationToken(this);
+            Version = 0;
+            Token = new CancellationToken(this, Version);
         }
 
-        public CancellationToken Token { get; }
+        public CancellationToken Token { get; private set; }
 
         public void WhenCancelled(Action action)
         {
-            if (IsCancellationRequested)
-                action();
-            else
-                CancelRequested += c => action();
+            CancelRequested += c => action();
         }
 
-        public bool IsCancellationRequested { get; private set; }
+        public int Version { get; private set; }
 
         public void Cancel()
         {
-            if (IsCancellationRequested)
-                return;
-            IsCancellationRequested = true;
+            Version++;
+            Token = new CancellationToken(this, Version);
             CancelRequested?.Invoke(this);
         }
 
-        public void Reset() => IsCancellationRequested = false;
-
         public event Action<ICancellable> CancelRequested;
 
-        public static CancellationToken Combine(CancellationToken token1, CancellationToken token2) => new CancellationToken(new Combination(token1, token2));
+        public static CancellationToken Combine(CancellationToken token1, CancellationToken token2)
+        {
+            return new CancellationToken(new Combination(token1, token2), 0);
+        }
 
         class Combination : ICancellable
         {
@@ -43,22 +41,21 @@ namespace IngameScript
             {
                 _token1 = token1;
                 _token2 = token2;
+                Version = 0;
             }
 
             public void WhenCancelled(Action action)
             {
-                if (IsCancellationRequested)
-                    action();
-                else
-                {
-                    _token1.WhenCancelled(action);
-                    _token2.WhenCancelled(action);
-                }
+                _token1.WhenCancelled(action);
+                _token2.WhenCancelled(action);
             }
 
-            public bool IsCancellationRequested => _token1.IsCancellationRequested || _token2.IsCancellationRequested;
+            public int Version { get; }
 
-            public void Cancel() { }
+            public void Cancel()
+            {
+                throw new Exception("Cannot cancel a combined token directly.");
+            }
         }
     }
 }
