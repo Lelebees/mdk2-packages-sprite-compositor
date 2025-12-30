@@ -30,10 +30,95 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
+    - name: Setup .NET (for version check)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Add GitHub Packages source (for version check)
+      run: |
+        dotnet nuget add source "https://nuget.pkg.github.com/malforge/index.json" `
+          --name "GitHub" `
+          --username ${{ github.actor }} `
+          --password ${{ secrets.GITHUB_TOKEN }} `
+          --store-password-in-clear-text
+    
+    - name: Quick library version check
+      id: version-check
+      shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $ErrorActionPreference = "Stop"
+        
+        # Determine which libraries to check
+        $librariesToCheck = @()
+        if ("${{ github.event.inputs.package_name }}" -ne "") {
+          $librariesToCheck = @("${{ github.event.inputs.package_name }}")
+        } else {
+          $allLibraries = Get-ChildItem -Path "libraries" -Directory | Where-Object { $_.Name -ne ".idea" }
+          $librariesToCheck = $allLibraries | ForEach-Object { $_.Name }
+        }
+        
+        Write-Host "Checking versions for: $($librariesToCheck -join ', ')"
+        $librariesToBuild = @()
+        
+        foreach ($library in $librariesToCheck) {
+          # Find _version file
+          $versionFile = Get-ChildItem -Path "libraries\$library" -Recurse -Filter "_version" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $versionFile) {
+            Write-Host "$library`: No _version file found, skipping"
+            continue
+          }
+          
+          $localVersion = (Get-Content $versionFile.FullName).Trim()
+          Write-Host "$library`: Local version is v$localVersion"
+          
+          # Try to get package info from NuGet feed
+          try {
+            $result = dotnet package search $library --exact-match --source "GitHub" --format json 2>&1 | Out-String
+            
+            if ($LASTEXITCODE -eq 0 -and $result -match '\{') {
+              $searchResult = $result | ConvertFrom-Json
+              $foundPackage = $searchResult.searchResult | Where-Object { $_.packages.id -eq $library } | Select-Object -First 1
+              
+              if ($foundPackage -and $foundPackage.packages) {
+                $publishedVersion = $foundPackage.packages[0].version
+                Write-Host "$library`: Published version is v$publishedVersion"
+                
+                if ($localVersion -eq $publishedVersion) {
+                  Write-Host "$library`: Already published, skipping"
+                  continue
+                }
+              }
+            }
+            
+            # If we got here, package doesn't exist or version doesn't match
+            Write-Host "$library`: Needs build"
+            $librariesToBuild += $library
+          } catch {
+            Write-Host "$library`: Could not check version, will build"
+            $librariesToBuild += $library
+          }
+        }
+        
+        if ($librariesToBuild.Count -eq 0) {
+          Write-Host "`nNo libraries need building - all current versions already published"
+          echo "needs-build=false" >> $env:GITHUB_OUTPUT
+          echo "libraries=" >> $env:GITHUB_OUTPUT
+        } else {
+          Write-Host "`nLibraries to build: $($librariesToBuild -join ', ')"
+          $librariesJson = ($librariesToBuild | ConvertTo-Json -Compress)
+          echo "needs-build=true" >> $env:GITHUB_OUTPUT
+          echo "libraries=$librariesJson" >> $env:GITHUB_OUTPUT
+        }
+    
     - name: Setup SteamCMD
+      if: steps.version-check.outputs.needs-build == 'true'
       uses: CyberAndrii/setup-steamcmd@v1.1.5
     
     - name: Install Space Engineers Dedicated Server
+      if: steps.version-check.outputs.needs-build == 'true'
       shell: pwsh
       run: |
         $installDir = Join-Path $env:GITHUB_WORKSPACE "se"
@@ -65,11 +150,13 @@ jobs:
         }
     
     - name: Setup .NET
+      if: steps.version-check.outputs.needs-build == 'true'
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
     
     - name: Add GitHub Packages source
+      if: steps.version-check.outputs.needs-build == 'true'
       run: |
         dotnet nuget add source "https://nuget.pkg.github.com/malforge/index.json" `
           --name "GitHub" `
@@ -78,6 +165,7 @@ jobs:
           --store-password-in-clear-text
     
     - name: Clear NuGet cache for Mal.Mdk2 packages
+      if: steps.version-check.outputs.needs-build == 'true'
       shell: pwsh
       run: |
         Write-Host "Clearing NuGet cache for Mal.Mdk2.* packages..."
@@ -85,19 +173,21 @@ jobs:
         Write-Host "Cache cleared"
     
     - name: Build Libraries
+      if: steps.version-check.outputs.needs-build == 'true'
       shell: pwsh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $ErrorActionPreference = "Stop"
         
-        # Determine which packages to build
-        $packagesToBuild = @()
-        if ("${{ github.event.inputs.package_name }}" -ne "") {
-          $packagesToBuild = @("${{ github.event.inputs.package_name }}")
-          Write-Host "Building single package: ${{ github.event.inputs.package_name }}"
-        } else {
-          $allPackages = Get-ChildItem -Path "libraries" -Directory | Where-Object { $_.Name -ne ".idea" }
+        # Get pre-determined list of libraries from version check
+        $librariesJson = '${{ steps.version-check.outputs.libraries }}'
+        $packagesToBuild = $librariesJson | ConvertFrom-Json
+        if ($packagesToBuild -isnot [array]) {
+          $packagesToBuild = @($packagesToBuild)
+        }
+        
+        Write-Host "Building libraries: $($packagesToBuild -join ', ')"
           $packagesToBuild = $allPackages | ForEach-Object { $_.Name }
           Write-Host "Building all packages: $($packagesToBuild -join ', ')"
         }
