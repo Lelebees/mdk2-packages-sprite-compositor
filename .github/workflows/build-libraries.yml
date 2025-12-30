@@ -155,14 +155,7 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Add GitHub Packages source
-      if: steps.version-check.outputs.needs-build == 'true'
-      run: |
-        dotnet nuget add source "https://nuget.pkg.github.com/malforge/index.json" `
-          --name "GitHub" `
-          --username ${{ github.actor }} `
-          --password ${{ secrets.GITHUB_TOKEN }} `
-          --store-password-in-clear-text
+
     
     - name: Clear NuGet cache for Mal.Mdk2 packages
       if: steps.version-check.outputs.needs-build == 'true'
