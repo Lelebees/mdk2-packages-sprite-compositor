@@ -307,89 +307,142 @@ public void Main(string argument, UpdateType updateSource)
 }
 ```
 
-❌ **Don't use Thread.Sleep() or busy loops**
-```csharp
-// WRONG - blocks execution
-Thread.Sleep(1000);
-
-// RIGHT - yields control
-yield return When.TimePassed(1000);
-```
-
 ❌ **Don't assume exact timing**
 ```csharp
 // TimePassed is approximate due to tick granularity
 yield return When.TimePassed(100);  // Actual wait may vary
 ```
 
-## Example: Complete Automated Miner
+## Example: Complete Airlock Controller
 
 ```csharp
 public partial class Program : MyGridProgram
 {
-    Cancellation _miningCancellation;
+    IMyDoor _outerDoor;
+    IMyDoor _innerDoor;
+    IMyAirVent _vent;
+    Cancellation _cycleCancellation;
     
     public Program()
     {
-        _miningCancellation = new Cancellation();
-        Coroutines.Run(AutoMine(_miningCancellation.Token));
-    }
-    
-    public IEnumerator<When> AutoMine(CancellationToken token)
-    {
-        while (!token.IsCancellationRequested)
+        // Find airlock components
+        _outerDoor = GridTerminalSystem.GetBlockWithName("Airlock Outer Door") as IMyDoor;
+        _innerDoor = GridTerminalSystem.GetBlockWithName("Airlock Inner Door") as IMyDoor;
+        _vent = GridTerminalSystem.GetBlockWithName("Airlock Vent") as IMyAirVent;
+        
+        if (_outerDoor == null || _innerDoor == null || _vent == null)
         {
-            Echo("Starting mining run...");
-            yield return When.Completed(Coroutines.Run(MiningCycle()));
-            
-            Echo("Returning to base...");
-            yield return When.Completed(Coroutines.Run(ReturnToBase()));
-            
-            Echo("Unloading cargo...");
-            yield return When.Completed(Coroutines.Run(UnloadCargo()));
-            
-            Echo("Waiting before next run...");
-            yield return When.TimePassed(5000);
+            Echo("ERROR: Airlock components not found!");
+            return;
         }
-    }
-    
-    public IEnumerator<When> MiningCycle()
-    {
-        SetDrills(true);
-        while (!IsInventoryFull())
-        {
-            Echo("Mining...");
-            yield return When.NextUpdate();
-        }
-        SetDrills(false);
-    }
-    
-    public IEnumerator<When> ReturnToBase()
-    {
-        // Navigate to base coordinates
-        yield return When.True(() => IsAtBase());
-    }
-    
-    public IEnumerator<When> UnloadCargo()
-    {
-        // Unload logic here
-        yield return When.TimePassed(3000);
+        
+        _cycleCancellation = new Cancellation();
     }
     
     public void Main(string argument, UpdateType updateSource)
     {
-        if (argument == "stop")
-            _miningCancellation.Cancel();
-        
         Coroutines.Main(argument, updateSource);
+        
+        // Start airlock cycle based on argument
+        if (argument == "enter")
+        {
+            _cycleCancellation.Cancel(); // Cancel any ongoing cycle and start new one
+            Coroutines.Run(CycleEnter(_cycleCancellation.Token));
+        }
+        else if (argument == "exit")
+        {
+            _cycleCancellation.Cancel();
+            Coroutines.Run(CycleExit(_cycleCancellation.Token));
+        }
+        
+        // Display status
+        Echo($"Outer Door: {(_outerDoor.Status == DoorStatus.Open ? "OPEN" : "CLOSED")}");
+        Echo($"Inner Door: {(_innerDoor.Status == DoorStatus.Open ? "OPEN" : "CLOSED")}");
+        Echo($"Pressurized: {(_vent.GetOxygenLevel() > 0.9f ? "YES" : "NO")}");
+        Echo($"Active Coroutines: {Coroutines.Count}");
     }
     
-    // Helper methods...
-    void SetDrills(bool enabled) { }
-    bool IsInventoryFull() => false;
-    bool IsAtBase() => false;
+    public IEnumerator<When> CycleEnter(CancellationToken token)
+    {
+        Echo(">> Entering from outside");
+        
+        // Close inner door for safety
+        _innerDoor.CloseDoor();
+        yield return When.True(() => _innerDoor.Status == DoorStatus.Closed);
+        if (token.IsCancellationRequested) yield break;
+        
+        // Depressurize to match outside
+        _vent.Depressurize = true;
+        Echo(">> Depressurizing...");
+        yield return When.True(() => _vent.GetOxygenLevel() < 0.1f);
+        if (token.IsCancellationRequested) yield break;
+        
+        // Open outer door
+        Echo(">> Opening outer door");
+        _outerDoor.OpenDoor();
+        yield return When.TimePassed(3000); // Wait for person to enter
+        if (token.IsCancellationRequested) yield break;
+        
+        // Close outer door
+        _outerDoor.CloseDoor();
+        yield return When.True(() => _outerDoor.Status == DoorStatus.Closed);
+        if (token.IsCancellationRequested) yield break;
+        
+        // Pressurize airlock
+        _vent.Depressurize = false;
+        Echo(">> Pressurizing...");
+        yield return When.True(() => _vent.GetOxygenLevel() > 0.9f);
+        if (token.IsCancellationRequested) yield break;
+        
+        // Open inner door
+        Echo(">> Opening inner door");
+        _innerDoor.OpenDoor();
+        yield return When.TimePassed(3000); // Wait for person to exit airlock
+        
+        // Close inner door
+        _innerDoor.CloseDoor();
+        Echo(">> Entry complete");
+    }
+    
+    public IEnumerator<When> CycleExit(CancellationToken token)
+    {
+        Echo(">> Exiting to outside");
+        
+        // Close outer door for safety
+        _outerDoor.CloseDoor();
+        yield return When.True(() => _outerDoor.Status == DoorStatus.Closed);
+        if (token.IsCancellationRequested) yield break;
+        
+        // Open inner door
+        Echo(">> Opening inner door");
+        _innerDoor.OpenDoor();
+        yield return When.TimePassed(3000); // Wait for person to enter
+        if (token.IsCancellationRequested) yield break;
+        
+        // Close inner door
+        _innerDoor.CloseDoor();
+        yield return When.True(() => _innerDoor.Status == DoorStatus.Closed);
+        if (token.IsCancellationRequested) yield break;
+        
+        // Depressurize airlock
+        _vent.Depressurize = true;
+        Echo(">> Depressurizing...");
+        yield return When.True(() => _vent.GetOxygenLevel() < 0.1f);
+        if (token.IsCancellationRequested) yield break;
+        
+        // Open outer door
+        Echo(">> Opening outer door");
+        _outerDoor.OpenDoor();
+        yield return When.TimePassed(3000); // Wait for person to exit
+        
+        // Close outer door
+        _outerDoor.CloseDoor();
+        Echo(">> Exit complete");
+    }
 }
 ```
+
+**To use:** Name your airlock doors "Airlock Outer Door" and "Airlock Inner Door", and the vent "Airlock Vent". Run the script with argument "enter" or "exit" to cycle the airlock. The script safely manages pressure, prevents both doors from opening simultaneously, and can be cancelled mid-cycle.
 
 ## API Reference
 
