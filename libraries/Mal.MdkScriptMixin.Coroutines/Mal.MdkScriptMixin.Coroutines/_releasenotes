@@ -1,3 +1,5 @@
+- 1.0.8
+  Rebuild with fixed packager tool (1.0.12) that prevents duplicate compile includes
 - 1.0.7
   Rebuild with fixed packager tool (1.0.11) that properly imports .projitems file
 - 1.0.6
