@@ -28,9 +28,7 @@ This naming helps you quickly identify which libraries are suitable for your pro
 
 | Package | Version | Author(s) | Description |
 |---------|---------|-----------|-------------|
-| [Mal.MdkModMixin.LazyLibrary](./docs/libraries/Mal.MdkModMixin.LazyLibrary.md) | 2.0.0 | Lazy Developer | A library created by someone who was too busy to write documentation. It probably does something useful. |
 | [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.2 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
-| [Mal.MdkScriptMixin.TestLibrary1](./docs/libraries/Mal.MdkScriptMixin.TestLibrary1.md) | 1.2.3 | Alice Developer, Bob Coder | A comprehensive test library that demonstrates all the cool features you could ever want in a Space Engineers mixin. |
 
 **Click on any library name above** to see its documentation, including detailed installation instructions for Visual Studio, Rider, and VS Code.
 
