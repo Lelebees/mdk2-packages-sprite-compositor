@@ -62,8 +62,6 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.packages != '[]'
     runs-on: windows-latest
-    permissions:
-      contents: write
     strategy:
       matrix:
         package_name: ${{ fromJson(needs.detect-changes.outputs.packages) }}
@@ -97,37 +95,19 @@ jobs:
       run: |
         $installDir = Join-Path $env:GITHUB_WORKSPACE "se"
         $homeDir    = Join-Path $env:GITHUB_WORKSPACE "steamcmd-home"
-
-        New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-        New-Item -ItemType Directory -Force -Path $homeDir    | Out-Null
-
-        Write-Host "SteamCMD exe: $((Get-Command steamcmd).Source)"
-        Write-Host "SteamCMD cwd: $homeDir"
-        Write-Host "Install dir : $installDir"
-
+        
+        New-Item -ItemType Directory -Force -Path $homeDir | Out-Null
+        
         Push-Location $homeDir
-
-        # Force platform, fail fast, and be explicit about where state lives.
         steamcmd `
           +@ShutdownOnFailedCommand 1 `
           +@NoPromptForPassword 1 `
           +@sSteamCmdForcePlatformType windows `
           +force_install_dir "$installDir" `
           +login anonymous `
-          +app_update 298740 validate `
+          +app_update 298740`
           +quit
-
-        $code = $LASTEXITCODE
         Pop-Location
-
-        Write-Host "Exit code: $code"
-        Write-Host "==== steamcmd-home contents ===="
-        Get-ChildItem -Recurse -Force $homeDir | Select-Object FullName,Length | Format-Table -AutoSize
-
-        Write-Host "==== install dir contents (top) ===="
-        Get-ChildItem -Force $installDir | Format-Table -AutoSize
-
-        exit $code
 
     - name: Configure build environment
       if: steps.cache-se.outputs.cache-hit != 'true'
