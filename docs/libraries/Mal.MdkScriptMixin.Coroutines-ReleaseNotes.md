@@ -1,6 +1,8 @@
 # Release Notes - Mal.MdkScriptMixin.Coroutines
 
 ````````text
+- 1.0.3
+  Test release to verify project URL now points to library subfolder instead of repository root
 - 1.0.2
   Initial public release
   - Core coroutine scheduler with update frequency management
