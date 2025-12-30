@@ -247,11 +247,7 @@ static void ValidateNamingConvention(string packageId, IOutput output)
     if (parts.Length < 3)
     {
         output.Warning(
-            $"Package name '{packageId}' does not follow the recommended naming convention. " +
-            "Expected pattern: {{Author}}.{{Environment}}.{{Name}} where Environment is:\n" +
-            "  - MdkScriptMixin: For programmable block scripts\n" +
-            "  - MdkModMixin: For mods\n" +
-            "  - MdkSharedMixin: For libraries that work in both SE environments",
+            $"Package name '{packageId}' should follow pattern: Author.Environment.Name (e.g., Mal.MdkScriptMixin.Coroutines)",
             null);
         return;
     }
@@ -262,11 +258,7 @@ static void ValidateNamingConvention(string packageId, IOutput output)
     if (!validEnvironments.Any(e => string.Equals(e, environment, StringComparison.OrdinalIgnoreCase)))
     {
         output.Warning(
-            $"Package name '{packageId}' uses '{environment}' as the environment part. " +
-            "Recommended values are:\n" +
-            "  - MdkScriptMixin: For programmable block scripts\n" +
-            "  - MdkModMixin: For mods\n" +
-            "  - MdkSharedMixin: For libraries that work in both SE environments",
+            $"Package name '{packageId}' uses '{environment}'. Recommended: MdkScriptMixin (for PB scripts), MdkModMixin (for mods), or MdkSharedMixin (for both)",
             null);
     }
 }

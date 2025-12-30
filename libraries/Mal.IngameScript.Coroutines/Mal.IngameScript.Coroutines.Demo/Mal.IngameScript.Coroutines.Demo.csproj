@@ -8,16 +8,16 @@
         <Platforms>x64</Platforms>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Mal.Mdk2.PbAnalyzers" Version="2.1.11">
+        <PackageReference Include="Mal.Mdk2.PbAnalyzers" Version="2.1.14">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.1.1">
+        <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.1.10">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Mal.Mdk2.References" Version="2.2.7"/>
-        <PackageReference Include="mal.mdk2.sharednugetbuilder" Version="1.0.3" />
+        <PackageReference Include="mal.mdk2.sharednugetbuilder" Version="1.0.6" />
 <!--        <PackageReference Include="Mal.Mdk2.SharedNugetBuilder" Version="1.0.2" />-->
     </ItemGroup>
     <ItemGroup>
