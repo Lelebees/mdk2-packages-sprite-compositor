@@ -182,7 +182,7 @@ jobs:
           }
           
           Write-Host "Building project in Release mode..."
-          dotnet build "$($demoProj.FullName)" -c Release
+          dotnet build "$($demoProj.FullName)" -c Release -p:ProjectPath="$($demoProj.FullName)"
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Failed to build $package"
             exit 1
