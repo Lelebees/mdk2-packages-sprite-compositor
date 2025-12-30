@@ -1,0 +1,57 @@
+# MDK Package Libraries
+
+Welcome to the Malforge MDK Package Libraries! This repository contains reusable code libraries (mixins) for Space Engineers, designed to work with [Malware's Development Kit (MDK)](https://github.com/malware-dev/mdk2).
+
+## Getting Started
+
+**Important:** Before you can use these libraries, you need to configure GitHub Packages as a NuGet source. This is a one-time setup that takes just a few minutes.
+
+👉 **[Follow the setup guide here](./docs/Setting-Up-GitHub-Packages.md)**
+
+Once configured, you can install any library from this repository using your IDE's NuGet package manager.
+
+## What Are Mixins?
+
+Mixins are reusable code libraries that get compiled directly into your Space Engineers projects. Since SE doesn't support external DLL references, mixins provide the only practical way to share code between scripts and mods. [Learn more about how mixins work](./docs/Understanding-Mixins.md).
+
+## Library Naming Convention
+
+All libraries follow the MDK naming convention to clearly indicate where they can be used:
+
+- **MdkScriptMixin** - For programmable block scripts only
+- **MdkModMixin** - For mods only
+- **MdkSharedMixin** - For libraries that work in both environments
+
+This naming helps you quickly identify which libraries are suitable for your project type.
+
+## Available Libraries
+
+| Package | Version | Author(s) | Description |
+|---------|---------|-----------|-------------|
+| [Mal.MdkModMixin.LazyLibrary](./docs/libraries/Mal.MdkModMixin.LazyLibrary.md) | 2.0.0 | Lazy Developer | A library created by someone who was too busy to write documentation. It probably does something useful. |
+| [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.2 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
+| [Mal.MdkScriptMixin.TestLibrary1](./docs/libraries/Mal.MdkScriptMixin.TestLibrary1.md) | 1.2.3 | Alice Developer, Bob Coder | A comprehensive test library that demonstrates all the cool features you could ever want in a Space Engineers mixin. |
+
+**Click on any library name above** to see its documentation, including detailed installation instructions for Visual Studio, Rider, and VS Code.
+
+## Contributing Your Own Library
+
+Want to share your own Space Engineers code libraries? We'd love to have your contributions! 
+
+See our guides for creating mixins:
+- [Creating a Mixin with Visual Studio](./docs/Creating-A-Mixin-VisualStudio.md)
+- [Creating a Mixin with Rider](./docs/Creating-A-Mixin-Rider.md)
+- [Creating a Mixin with VS Code](./docs/Creating-A-Mixin-VSCode.md)
+
+Once your library is ready, submit a pull request to this repository. All contributions are reviewed to ensure quality and consistency.
+
+## Resources
+
+- [Understanding Mixins](./docs/Understanding-Mixins.md) - Learn how mixins work and why they're perfect for SE
+- [MDK Documentation](https://malforge.github.io/spaceengineers/mdk2/) - Full MDK documentation
+- [MDK GitHub](https://github.com/malware-dev/mdk2) - MDK source code
+
+---
+
+*This README was auto-generated from library metadata. Last updated: 2025-12-30*
+

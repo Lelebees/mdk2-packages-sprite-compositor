@@ -8,7 +8,7 @@
     
     <!-- NuGet Package Settings -->
     <PackageId>Mal.Mdk2.SharedNugetBuilder</PackageId>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <Authors>Malware</Authors>
     <Description>A tool for packaging .NET Shared Projects (.shproj) as NuGet packages. Supports both manual packaging and automatic demo-driven mode.</Description>
     <PackageProjectUrl>https://github.com/malware-dev/mdk2-nuget</PackageProjectUrl>

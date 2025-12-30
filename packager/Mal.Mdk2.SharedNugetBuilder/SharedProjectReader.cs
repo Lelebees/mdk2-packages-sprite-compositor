@@ -52,6 +52,12 @@ public class SharedProjectReader
         var projectUrl = readOptionalFile(projectDir, "_projecturl");
         var tags = readOptionalFileLines(projectDir, "_tags");
         var readmePath = findReadmeFile(projectDir);
+        
+        // Warn if readme is missing
+        if (readmePath == null)
+        {
+            output.Warning($"No readme.md file found for package '{packageId}'. Consider adding documentation.", sharedProjectFile.FullName);
+        }
 
         return new SharedProjectMetadata
         {

@@ -1,3 +1,6 @@
+# Release Notes - Mal.MdkScriptMixin.Coroutines
+
+````````text
 - 1.0.2
   Initial public release
   - Core coroutine scheduler with update frequency management
@@ -18,3 +21,8 @@
   Just a reformatting.
   
  
+````````
+
+---
+
+*Release notes auto-generated from `_releasenotes` file. Last updated: 2025-12-30*

@@ -1,0 +1,34 @@
+name: Generate Documentation
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [ main ]
+    paths:
+      - 'libraries/**/_version'
+      - 'libraries/**/_description'
+      - 'libraries/**/_authors'
+      - 'libraries/**/_releasenotes'
+      - 'libraries/**/readme.md'
+      - 'generate-docs.ps1'
+
+jobs:
+  generate-docs:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Generate documentation
+        shell: pwsh
+        run: |
+          .\generate-docs.ps1
+      
+      - name: Commit and push documentation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md docs/libraries/
+          git diff --staged --quiet || git commit -m "📚 Auto-generate documentation"
+          git push
