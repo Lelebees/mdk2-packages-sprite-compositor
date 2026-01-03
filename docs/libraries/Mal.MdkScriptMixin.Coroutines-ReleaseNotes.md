@@ -1,6 +1,8 @@
 # Release Notes - Mal.MdkScriptMixin.Coroutines
 
 ````````text
+- 1.0.9
+  Rebuild with fixed packager tool (1.0.13) that resolves msbuild property issue
 - 1.0.8
   Rebuild with fixed packager tool (1.0.12) that prevents duplicate compile includes
 - 1.0.7
@@ -25,4 +27,4 @@
 
 ---
 
-*Release notes auto-generated from `_releasenotes` file. Last updated: 2025-12-30*
+*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-01-03*

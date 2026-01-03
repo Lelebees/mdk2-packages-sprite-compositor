@@ -1,7 +1,7 @@
 # Mal.MdkScriptMixin.Coroutines
 
 > [!NOTE]
-> **Version:** 1.0.8  
+> **Version:** 1.0.9  
 > **Authors:** Malware  
 > **Package:** `Mal.MdkScriptMixin.Coroutines`
 > 
@@ -474,4 +474,4 @@ public partial class Program : MyGridProgram
 
 ---
 
-*Documentation auto-generated from package metadata. Last updated: 2025-12-30*
+*Documentation auto-generated from package metadata. Last updated: 2026-01-03*

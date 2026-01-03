@@ -28,7 +28,7 @@ This naming helps you quickly identify which libraries are suitable for your pro
 
 | Package | Version | Author(s) | Description |
 |---------|---------|-----------|-------------|
-| [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.8 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
+| [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.9 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
 
 **Click on any library name above** to see its documentation, including detailed installation instructions for Visual Studio, Rider, and VS Code.
 
@@ -61,5 +61,5 @@ Look, I hate having to add this section. I'd rather just share cool code with fe
 
 ---
 
-*This README was auto-generated from library metadata. Last updated: 2025-12-30*
+*This README was auto-generated from library metadata. Last updated: 2026-01-03*
 
