@@ -1,4 +1,4 @@
-namespace Mdk.SharedNuGet;
+namespace Mal.Mdk2.SharedNugetBuilder;
 
 public interface IOutput
 {

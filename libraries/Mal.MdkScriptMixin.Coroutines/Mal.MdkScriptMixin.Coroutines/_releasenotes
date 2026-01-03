@@ -1,3 +1,5 @@
+- 1.0.9
+  Rebuild with fixed packager tool (1.0.13) that resolves msbuild property issue
 - 1.0.8
   Rebuild with fixed packager tool (1.0.12) that prevents duplicate compile includes
 - 1.0.7

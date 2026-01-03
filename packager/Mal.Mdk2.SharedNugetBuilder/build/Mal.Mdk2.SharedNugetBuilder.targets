@@ -1,28 +1,28 @@
 <Project>
-  
-  <Target Name="MdkPackageSharedProjects" AfterTargets="Build" Condition="('$(Configuration)' == 'Release' OR '$(Configuration)' == 'Debug') AND '$(MdkDisableAutoPackage)' != 'true'">
-    <PropertyGroup>
-      <!-- Detect OS and set appropriate path -->
-      <MdkPackagerRid Condition="$([MSBuild]::IsOSPlatform('Windows'))">win-x64</MdkPackagerRid>
-      <MdkPackagerRid Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</MdkPackagerRid>
-      
-      <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Windows'))">Mal.Mdk2.SharedNugetBuilder.exe</MdkPackagerExe>
-      <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Linux'))">Mal.Mdk2.SharedNugetBuilder</MdkPackagerExe>
-      
-      <MdkPackagerPath>$(MSBuildThisFileDirectory)..\tools\net8.0\$(MdkPackagerRid)\$(MdkPackagerExe)</MdkPackagerPath>
-      
-      <!-- Build command with optional flags -->
-      <MdkPackagerArgs>--demo "$(MSBuildProjectFullPath)" --ide-output</MdkPackagerArgs>
-      <MdkPackagerArgs Condition="'$(Configuration)' == 'Debug'">$(MdkPackagerArgs) --dry-run</MdkPackagerArgs>
-      <MdkPackagerArgs Condition="'$(MdkAutoBumpVersion)' == 'true'">$(MdkPackagerArgs) --auto-bump</MdkPackagerArgs>
-      <MdkPackagerArgs Condition="'$(MdkForceRebuild)' == 'true'">$(MdkPackagerArgs) --force</MdkPackagerArgs>
-    </PropertyGroup>
-    
-    <Message Text="MDK Shared Project Packager: Packaging shared projects..." Importance="high" />
-    
-    <Exec Command="&quot;$(MdkPackagerPath)&quot; $(MdkPackagerArgs)" 
-          IgnoreExitCode="false"
-          WorkingDirectory="$(MSBuildProjectDirectory)" />
-  </Target>
+
+    <Target Name="MdkPackageSharedProjects" AfterTargets="Build" Condition="('$(Configuration)' == 'Release' OR '$(Configuration)' == 'Debug') AND '$(MdkDisableAutoPackage)' != 'true'">
+        <PropertyGroup>
+            <!-- Detect OS and set appropriate path -->
+            <MdkPackagerRid Condition="$([MSBuild]::IsOSPlatform('Windows'))">win-x64</MdkPackagerRid>
+            <MdkPackagerRid Condition="$([MSBuild]::IsOSPlatform('Linux'))">linux-x64</MdkPackagerRid>
+
+            <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Windows'))">Mal.Mdk2.SharedNugetBuilder.exe</MdkPackagerExe>
+            <MdkPackagerExe Condition="$([MSBuild]::IsOSPlatform('Linux'))">Mal.Mdk2.SharedNugetBuilder</MdkPackagerExe>
+
+            <MdkPackagerPath>$(MSBuildThisFileDirectory)..\tools\net8.0\$(MdkPackagerRid)\$(MdkPackagerExe)</MdkPackagerPath>
+
+            <!-- Build command with optional flags -->
+            <MdkPackagerArgs>--demo "$(MSBuildProjectFullPath)" --ide-output</MdkPackagerArgs>
+            <MdkPackagerArgs Condition="'$(Configuration)' == 'Debug'">$(MdkPackagerArgs) --dry-run</MdkPackagerArgs>
+            <MdkPackagerArgs Condition="'$(MdkAutoBumpVersion)' == 'true'">$(MdkPackagerArgs) --auto-bump</MdkPackagerArgs>
+            <MdkPackagerArgs Condition="'$(MdkForceRebuild)' == 'true'">$(MdkPackagerArgs) --force</MdkPackagerArgs>
+        </PropertyGroup>
+
+        <Message Text="MDK Shared Project Packager: Packaging shared projects..." Importance="high"/>
+
+        <Exec Command="&quot;$(MdkPackagerPath)&quot; $(MdkPackagerArgs)"
+              IgnoreExitCode="false"
+              WorkingDirectory="$(MSBuildProjectDirectory)"/>
+    </Target>
 
 </Project>

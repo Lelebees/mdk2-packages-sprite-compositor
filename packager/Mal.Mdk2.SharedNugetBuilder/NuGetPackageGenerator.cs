@@ -1,9 +1,7 @@
-using System.Text;
 using System.Xml.Linq;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
 
-namespace Mdk.SharedNuGet;
+namespace Mal.Mdk2.SharedNugetBuilder;
 
 public class PackageDependency
 {
@@ -53,22 +51,19 @@ public class NuGetPackageGenerator
             {
                 Console.WriteLine("\n=== Generated .nuspec ===");
                 Console.WriteLine(nuspecContent);
-                if (metadata.ReadmePath != null)
-                {
-                    Console.WriteLine($"\n✓ Would include readme: {Path.GetFileName(metadata.ReadmePath)}");
-                }
+                if (metadata.ReadmePath != null) Console.WriteLine($"\n✓ Would include readme: {Path.GetFileName(metadata.ReadmePath)}");
             }
             else
             {
                 await File.WriteAllTextAsync(nuspecPath, nuspecContent);
                 Console.WriteLine($"✓ Created .nuspec: {nuspecPath}");
-                
+
                 // Copy readme to package root
                 if (metadata.ReadmePath != null)
                 {
                     var readmeDestPath = Path.Combine(tempDir, "readme.md");
                     File.Copy(metadata.ReadmePath, readmeDestPath, true);
-                    Console.WriteLine($"✓ Included readme.md");
+                    Console.WriteLine("✓ Included readme.md");
                 }
             }
 
@@ -78,11 +73,11 @@ public class NuGetPackageGenerator
             {
                 Directory.CreateDirectory(contentDir);
                 copySharedProjectFiles(projectDir, contentDir, sharedProjectFile.Name);
-                Console.WriteLine($"✓ Copied shared project files to content");
+                Console.WriteLine("✓ Copied shared project files to content");
             }
             else
             {
-                Console.WriteLine($"\n=== Files to include ===");
+                Console.WriteLine("\n=== Files to include ===");
                 var files = getSharedProjectFiles(projectDir, sharedProjectFile.Name);
                 foreach (var file in files)
                 {
@@ -114,10 +109,10 @@ public class NuGetPackageGenerator
                         var relativePath = Path.GetRelativePath(projectDir.FullName, file);
                         var fileName = Path.GetFileName(file);
                         var reason = fileName.StartsWith("_") ? "metadata" :
-                                   fileName.Equals("readme.md", StringComparison.OrdinalIgnoreCase) ? "readme (added to package root)" :
-                                   file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") || 
-                                   file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}") ? "build artifact" :
-                                   "excluded";
+                            fileName.Equals("readme.md", StringComparison.OrdinalIgnoreCase) ? "readme (added to package root)" :
+                            file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") ||
+                            file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}") ? "build artifact" :
+                            "excluded";
                         Console.WriteLine($"    - {relativePath} ({reason})");
                     }
                 }
@@ -140,7 +135,7 @@ public class NuGetPackageGenerator
                 Directory.CreateDirectory(buildDir);
                 await File.WriteAllTextAsync(Path.Combine(buildDir, $"{metadata.PackageId}.props"), propsContent);
                 await File.WriteAllTextAsync(Path.Combine(buildDir, $"{metadata.PackageId}.targets"), targetsContent);
-                Console.WriteLine($"✓ Created MSBuild integration files");
+                Console.WriteLine("✓ Created MSBuild integration files");
             }
 
             // 4. Create .nupkg
@@ -150,9 +145,7 @@ public class NuGetPackageGenerator
                 Console.WriteLine($"✓ Created package: {packagePath}");
             }
             else
-            {
                 Console.WriteLine($"\nWould create package: {packagePath}");
-            }
 
             return packagePath;
         }
@@ -160,8 +153,14 @@ public class NuGetPackageGenerator
         {
             if (!dryRun && Directory.Exists(tempDir))
             {
-                try { Directory.Delete(tempDir, true); }
-                catch { /* Ignore cleanup errors */ }
+                try
+                {
+                    Directory.Delete(tempDir, true);
+                }
+                catch
+                {
+                    /* Ignore cleanup errors */
+                }
             }
         }
     }
@@ -191,7 +190,7 @@ public class NuGetPackageGenerator
             metadataElement.Add(new XElement("projectUrl", metadata.ProjectUrl));
 
         // Always add mdk-mixin tag to identify these packages
-        var tags = metadata.Tags != null && metadata.Tags.Length > 0 
+        var tags = metadata.Tags != null && metadata.Tags.Length > 0
             ? string.Join(" ", metadata.Tags.Append("mdk-mixin"))
             : "mdk-mixin";
         metadataElement.Add(new XElement("tags", tags));
@@ -227,10 +226,11 @@ public class NuGetPackageGenerator
 
     static string generatePropsFile(SharedProjectMetadata metadata)
     {
+        var msbuildSafePackageId = metadata.PackageId.Replace('.', '_').Replace('-', '_');
         var props = new XDocument(
             new XElement("Project",
                 new XElement("PropertyGroup",
-                    new XElement($"{metadata.PackageId}Imported", "true")
+                    new XElement($"{msbuildSafePackageId}Imported", "true")
                 )
             )
         );
@@ -253,7 +253,7 @@ public class NuGetPackageGenerator
     static string[] getSharedProjectFiles(DirectoryInfo projectDir, string shprojName)
     {
         var files = Directory.GetFiles(projectDir.FullName, "*.*", SearchOption.AllDirectories)
-            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && 
+            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") &&
                         !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
             .Where(f => !Path.GetFileName(f).StartsWith("_"))
             .Where(f => !Path.GetFileName(f).Equals("readme.md", StringComparison.OrdinalIgnoreCase))
@@ -264,7 +264,7 @@ public class NuGetPackageGenerator
     static string[] getAllProjectFiles(DirectoryInfo projectDir)
     {
         var files = Directory.GetFiles(projectDir.FullName, "*.*", SearchOption.AllDirectories)
-            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && 
+            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") &&
                         !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
             .ToArray();
         return files;
@@ -293,10 +293,10 @@ public class NuGetPackageGenerator
             File.Delete(outputPath);
 
         var builder = new PackageBuilder();
-        
+
         using (var nuspecStream = File.OpenRead(nuspecPath))
         {
-            var manifest = Manifest.ReadFrom(nuspecStream, validateSchema: false);
+            var manifest = Manifest.ReadFrom(nuspecStream, false);
             builder.Populate(manifest.Metadata);
         }
 
@@ -305,7 +305,7 @@ public class NuGetPackageGenerator
         foreach (var file in Directory.GetFiles(workingDir, "*.*", SearchOption.AllDirectories))
         {
             var relativePath = Path.GetRelativePath(workingDir, file);
-            
+
             // Skip the nuspec file itself
             if (relativePath.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase))
                 continue;
@@ -319,11 +319,8 @@ public class NuGetPackageGenerator
         }
 
         // Create the package
-        using (var outputStream = File.Create(outputPath))
-        {
-            builder.Save(outputStream);
-        }
-        
+        using (var outputStream = File.Create(outputPath)) builder.Save(outputStream);
+
         await Task.CompletedTask;
     }
 

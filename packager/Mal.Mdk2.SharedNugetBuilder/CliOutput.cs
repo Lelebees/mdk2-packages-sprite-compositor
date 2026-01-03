@@ -1,9 +1,9 @@
-namespace Mdk.SharedNuGet;
+namespace Mal.Mdk2.SharedNugetBuilder;
 
 public class CliOutput : IOutput
 {
-    private int _errorCount = 0;
-    
+    int _errorCount;
+
     public void Info(string message)
     {
         Console.WriteLine(message);

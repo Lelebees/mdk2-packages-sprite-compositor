@@ -1,5 +1,5 @@
 ﻿using System.CommandLine;
-using Mdk.SharedNuGet;
+using Mal.Mdk2.SharedNugetBuilder;
 
 var rootCommand = new RootCommand("Mdk.SharedNuGet - Generate NuGet packages for .NET Shared Projects");
 
@@ -16,9 +16,9 @@ var outputOption = new Option<DirectoryInfo?>(
     "Output directory for generated .nupkg files");
 
 var dependencyOption = new Option<string[]>(
-    "--dependency",
-    "Specify dependency as PackageId:Version (repeatable)")
-{ AllowMultipleArgumentsPerToken = true };
+        "--dependency",
+        "Specify dependency as PackageId:Version (repeatable)")
+    { AllowMultipleArgumentsPerToken = true };
 
 var forceOption = new Option<bool>(
     "--force",
@@ -88,7 +88,7 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
         if (shared != null)
         {
             var metadata = SharedProjectReader.ReadMetadata(shared, outputter);
-            
+
             // Auto-bump version if requested
             if (autoBump && !dryRun)
             {
@@ -96,7 +96,7 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
                 Console.WriteLine($"Version bumped: {metadata.Version} -> {newVersion}");
                 metadata = metadata with { Version = newVersion };
             }
-            
+
             Console.WriteLine($"Package ID: {metadata.PackageId}");
             Console.WriteLine($"Version: {metadata.Version}");
             Console.WriteLine($"Description: {metadata.Description}");
@@ -105,34 +105,28 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
             if (metadata.License != null) Console.WriteLine($"License: {metadata.License}");
             if (metadata.ProjectUrl != null) Console.WriteLine($"Project URL: {metadata.ProjectUrl}");
             if (metadata.Tags != null) Console.WriteLine($"Tags: {string.Join(", ", metadata.Tags)}");
-            
+
             // Validate naming convention
             ValidateNamingConvention(metadata.PackageId, outputter);
-            
+
             Console.WriteLine("\n✓ Metadata validation passed");
-            
+
             // Parse dependencies
             var deps = NuGetPackageGenerator.ParseDependencies(dependencies);
-            if (deps.Length > 0)
-            {
-                Console.WriteLine($"Dependencies: {string.Join(", ", deps.Select(d => $"{d.Id}:{d.Version}"))}");
-            }
-            
+            if (deps.Length > 0) Console.WriteLine($"Dependencies: {string.Join(", ", deps.Select(d => $"{d.Id}:{d.Version}"))}");
+
             // Generate package
             Console.WriteLine();
             var packagePath = await NuGetPackageGenerator.GeneratePackage(
                 shared, metadata, output!, deps, dryRun, force);
-            
-            if (!dryRun)
-            {
-                Console.WriteLine($"\n✓ Package created successfully: {packagePath}");
-            }
+
+            if (!dryRun) Console.WriteLine($"\n✓ Package created successfully: {packagePath}");
         }
         else
         {
             // Demo-driven mode
             var sharedProjects = DemoProjectReader.FindSharedProjectReferences(demo);
-            
+
             if (sharedProjects.Length == 0)
             {
                 Console.WriteLine("No shared project references found in demo project.");
@@ -140,18 +134,13 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
             }
 
             Console.WriteLine($"Found {sharedProjects.Length} shared project reference(s):");
-            foreach (var sp in sharedProjects)
-            {
-                Console.WriteLine($"  - {sp.PackageId}");
-            }
+            foreach (var sp in sharedProjects) Console.WriteLine($"  - {sp.PackageId}");
             Console.WriteLine();
 
             // Determine output directory
             DirectoryInfo outputDir;
             if (output != null)
-            {
                 outputDir = output;
-            }
             else
             {
                 var solutionRoot = DemoProjectReader.FindSolutionRoot(demo);
@@ -161,6 +150,7 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
                     Environment.ExitCode = 1;
                     return;
                 }
+
                 outputDir = new DirectoryInfo(Path.Combine(solutionRoot.FullName, "packages"));
                 Console.WriteLine($"Output directory: {outputDir.FullName} (solution root)");
             }
@@ -172,9 +162,9 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
             foreach (var sharedProject in sharedProjects)
             {
                 Console.WriteLine($"\n=== Packaging {sharedProject.PackageId} ===");
-                
+
                 var metadata = SharedProjectReader.ReadMetadata(sharedProject.ProjectFile, outputter);
-                
+
                 // Auto-bump version if requested
                 if (autoBump && !dryRun)
                 {
@@ -182,7 +172,7 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
                     Console.WriteLine($"Version bumped: {metadata.Version} -> {newVersion}");
                     metadata = metadata with { Version = newVersion };
                 }
-                
+
                 Console.WriteLine($"Version: {metadata.Version}");
                 Console.WriteLine($"Description: {metadata.Description}");
 
@@ -192,11 +182,8 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
                 // Detect dependencies
                 var detectedDeps = DemoProjectReader.DetectSharedProjectDependencies(
                     sharedProject.ProjectFile, outputDir);
-                
-                if (detectedDeps.Length > 0)
-                {
-                    Console.WriteLine($"Detected dependencies: {string.Join(", ", detectedDeps)}");
-                }
+
+                if (detectedDeps.Length > 0) Console.WriteLine($"Detected dependencies: {string.Join(", ", detectedDeps)}");
 
                 var deps = NuGetPackageGenerator.ParseDependencies(detectedDeps);
 
@@ -204,15 +191,12 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
                 {
                     var packagePath = await NuGetPackageGenerator.GeneratePackage(
                         sharedProject.ProjectFile, metadata, outputDir, deps, dryRun, force);
-                    
+
                     Console.WriteLine($"✓ Package created: {packagePath}");
                 }
             }
 
-            if (!dryRun)
-            {
-                Console.WriteLine($"\n✓ Successfully packaged {sharedProjects.Length} shared project(s)");
-            }
+            if (!dryRun) Console.WriteLine($"\n✓ Successfully packaged {sharedProjects.Length} shared project(s)");
         }
     }
     catch (Exception ex)
@@ -220,7 +204,7 @@ async Task handleCommand(FileInfo? demo, FileInfo? shared, DirectoryInfo? output
         Console.Error.WriteLine($"\n✗ Error: {ex.Message}");
         Environment.ExitCode = 1;
     }
-    
+
     await Task.CompletedTask;
 }
 
@@ -241,24 +225,22 @@ static void ValidateNamingConvention(string packageId, IOutput output)
     //   Author.MdkSharedMixin.Utilities ✓
     //   BadName ✗
     //   Author.IngameScript.Name ✗ (use MdkScriptMixin)
-    
+
     var parts = packageId.Split('.');
-    
+
     if (parts.Length < 3)
     {
         output.Warning(
-            $"Package name '{packageId}' should follow pattern: Author.Environment.Name (e.g., Mal.MdkScriptMixin.Coroutines)",
-            null);
+            $"Package name '{packageId}' should follow pattern: Author.Environment.Name (e.g., Mal.MdkScriptMixin.Coroutines)");
         return;
     }
-    
+
     var environment = parts[1];
     var validEnvironments = new[] { "MdkScriptMixin", "MdkModMixin", "MdkSharedMixin" };
-    
+
     if (!validEnvironments.Any(e => string.Equals(e, environment, StringComparison.OrdinalIgnoreCase)))
     {
         output.Warning(
-            $"Package name '{packageId}' uses '{environment}'. Recommended: MdkScriptMixin (for PB scripts), MdkModMixin (for mods), or MdkSharedMixin (for both)",
-            null);
+            $"Package name '{packageId}' uses '{environment}'. Recommended: MdkScriptMixin (for PB scripts), MdkModMixin (for mods), or MdkSharedMixin (for both)");
     }
 }

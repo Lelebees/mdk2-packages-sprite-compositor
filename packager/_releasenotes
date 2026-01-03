@@ -1,3 +1,5 @@
+- 1.0.13
+  - FIX: Generated packages generated an invalid msbuild property
 - 1.0.12
   - CRITICAL FIX: Changed contentFiles buildAction from "Compile" to "None" to prevent duplicate includes when .projitems is imported
 - 1.0.11

@@ -1,43 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    
-    <!-- NuGet Package Settings -->
-    <PackageId>Mal.Mdk2.SharedNugetBuilder</PackageId>
-    <Version>1.0.12</Version>
-    <Authors>Malware</Authors>
-    <Description>A tool for packaging .NET Shared Projects (.shproj) as NuGet packages. Supports both manual packaging and automatic demo-driven mode.</Description>
-    <PackageProjectUrl>https://github.com/malforge/mdk2-packages</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/malforge/mdk2-packages</RepositoryUrl>
-    <PackageTags>mdk;mdk2;shared-project;nuget;space-engineers</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>PACKAGER-README.md</PackageReadmeFile>
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/../_releasenotes'))</PackageReleaseNotes>
-    
-    <!-- Include build output in package -->
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-  <ItemGroup>
-    <None Include="..\PACKAGER-README.md" Pack="true" PackagePath="\" />
-    <None Include="..\_releasenotes" Pack="true" PackagePath="\" />
-    <None Include="build\Mal.Mdk2.SharedNugetBuilder.targets" Pack="true" PackagePath="build\" />
-  </ItemGroup>
-  
-  <!-- Include platform-specific executables -->
-  <ItemGroup>
-    <None Include="bin\Release\net8.0\win-x64\publish\**\*.*" Pack="true" PackagePath="tools\net8.0\win-x64\" />
-    <None Include="bin\Release\net8.0\linux-x64\publish\**\*.*" Pack="true" PackagePath="tools\net8.0\linux-x64\" />
-  </ItemGroup>
+        <!-- NuGet Package Settings -->
+        <PackageId>Mal.Mdk2.SharedNugetBuilder</PackageId>
+        <Version>1.0.13</Version>
+        <Authors>Malware</Authors>
+        <Description>A tool for packaging .NET Shared Projects (.shproj) as NuGet packages. Supports both manual packaging and automatic demo-driven mode.</Description>
+        <PackageProjectUrl>https://github.com/malforge/mdk2-packages</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/malforge/mdk2-packages</RepositoryUrl>
+        <PackageTags>mdk;mdk2;shared-project;nuget;space-engineers</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>PACKAGER-README.md</PackageReadmeFile>
+        <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/../_releasenotes'))</PackageReleaseNotes>
 
-  <ItemGroup>
-    <PackageReference Include="NuGet.Packaging" Version="6.11.1" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-  </ItemGroup>
+        <!-- Include build output in package -->
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\PACKAGER-README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\_releasenotes" Pack="true" PackagePath="\"/>
+        <None Include="build\Mal.Mdk2.SharedNugetBuilder.targets" Pack="true" PackagePath="build\"/>
+    </ItemGroup>
+
+    <!-- Include platform-specific executables -->
+    <ItemGroup>
+        <None Include="bin\Release\net8.0\win-x64\publish\**\*.*" Pack="true" PackagePath="tools\net8.0\win-x64\"/>
+        <None Include="bin\Release\net8.0\linux-x64\publish\**\*.*" Pack="true" PackagePath="tools\net8.0\linux-x64\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NuGet.Packaging" Version="6.11.1"/>
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1"/>
+    </ItemGroup>
 
 </Project>

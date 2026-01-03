@@ -1,6 +1,7 @@
+using System.IO.Compression;
 using System.Xml.Linq;
 
-namespace Mdk.SharedNuGet;
+namespace Mal.Mdk2.SharedNugetBuilder;
 
 public class SharedProjectReference
 {
@@ -32,17 +33,14 @@ public class DemoProjectReader
                 continue;
 
             var importPath = projectAttr.Value;
-            
+
             // Resolve relative path
             var projectDir = demoProjectFile.Directory!;
             var fullPath = Path.GetFullPath(Path.Combine(projectDir.FullName, importPath));
-            
+
             // If it's a .projitems file, convert to .shproj
-            if (fullPath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase))
-            {
-                fullPath = fullPath.Substring(0, fullPath.Length - ".projitems".Length) + ".shproj";
-            }
-            
+            if (fullPath.EndsWith(".projitems", StringComparison.OrdinalIgnoreCase)) fullPath = fullPath.Substring(0, fullPath.Length - ".projitems".Length) + ".shproj";
+
             if (!File.Exists(fullPath))
             {
                 Console.WriteLine($"Warning: Referenced shared project not found: {fullPath}");
@@ -65,7 +63,7 @@ public class DemoProjectReader
     public static string[] DetectSharedProjectDependencies(FileInfo sharedProjectFile, DirectoryInfo nugetSourceDir)
     {
         var projectDir = sharedProjectFile.Directory!;
-        var projItemsFile = Path.Combine(projectDir.FullName, 
+        var projItemsFile = Path.Combine(projectDir.FullName,
             Path.GetFileNameWithoutExtension(sharedProjectFile.Name) + ".projitems");
 
         if (!File.Exists(projItemsFile))
@@ -90,10 +88,7 @@ public class DemoProjectReader
             var version = versionAttr.Value;
 
             // Check if this is a shared project package
-            if (IsSharedProjectPackage(packageId, version, nugetSourceDir))
-            {
-                dependencies.Add($"{packageId}:{version}");
-            }
+            if (IsSharedProjectPackage(packageId, version, nugetSourceDir)) dependencies.Add($"{packageId}:{version}");
         }
 
         return dependencies.ToArray();
@@ -111,9 +106,9 @@ public class DemoProjectReader
         try
         {
             // Open the package and check for our marker
-            using var zip = System.IO.Compression.ZipFile.OpenRead(packagePath);
+            using var zip = ZipFile.OpenRead(packagePath);
             var nuspecEntry = zip.Entries.FirstOrDefault(e => e.Name.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase));
-            
+
             if (nuspecEntry == null)
                 return false;
 
@@ -133,7 +128,7 @@ public class DemoProjectReader
     public static DirectoryInfo? FindSolutionRoot(FileInfo projectFile)
     {
         var dir = projectFile.Directory;
-        
+
         while (dir != null)
         {
             // Look for .sln or .slnx files

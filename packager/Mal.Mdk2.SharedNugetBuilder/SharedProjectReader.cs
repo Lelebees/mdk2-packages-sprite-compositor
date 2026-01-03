@@ -1,4 +1,7 @@
-namespace Mdk.SharedNuGet;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+
+namespace Mal.Mdk2.SharedNugetBuilder;
 
 public record SharedProjectMetadata
 {
@@ -33,17 +36,14 @@ public class SharedProjectReader
         var packageId = Path.GetFileNameWithoutExtension(sharedProjectFile.Name);
 
         var errors = new List<string>();
-        
+
         var version = tryReadRequiredFile(projectDir, "_version", "version", errors);
         var description = tryReadRequiredFile(projectDir, "_description", "description", errors);
         var authors = tryReadRequiredFileLines(projectDir, "_authors", "authors", errors);
 
         if (errors.Count > 0)
         {
-            foreach (var error in errors)
-            {
-                output.Error(error, sharedProjectFile.FullName);
-            }
+            foreach (var error in errors) output.Error(error, sharedProjectFile.FullName);
             throw new InvalidOperationException("Validation failed. See errors above.");
         }
 
@@ -52,12 +52,9 @@ public class SharedProjectReader
         var projectUrl = readOptionalFile(projectDir, "_projecturl") ?? generateProjectUrl(sharedProjectFile);
         var tags = readOptionalFileLines(projectDir, "_tags");
         var readmePath = findReadmeFile(projectDir);
-        
+
         // Warn if readme is missing
-        if (readmePath == null)
-        {
-            output.Warning($"No readme.md file found for package '{packageId}'. Consider adding documentation.", sharedProjectFile.FullName);
-        }
+        if (readmePath == null) output.Warning($"No readme.md file found for package '{packageId}'. Consider adding documentation.", sharedProjectFile.FullName);
 
         return new SharedProjectMetadata
         {
@@ -154,7 +151,7 @@ public class SharedProjectReader
     static string? findReadmeFile(DirectoryInfo dir)
     {
         var readmeFiles = new[] { "readme.md", "README.md", "Readme.md", "ReadMe.md" };
-        
+
         foreach (var fileName in readmeFiles)
         {
             var filePath = Path.Combine(dir.FullName, fileName);
@@ -170,23 +167,23 @@ public class SharedProjectReader
         try
         {
             var projectDir = sharedProjectFile.Directory!;
-            
+
             // Get git repository root
             var gitRoot = runGitCommand(projectDir, "rev-parse --show-toplevel");
             if (gitRoot == null) return null;
-            
+
             // Get remote origin URL
             var remoteUrl = runGitCommand(projectDir, "config --get remote.origin.url");
             if (remoteUrl == null) return null;
-            
+
             // Convert git URL to web URL
             var webUrl = convertGitUrlToWebUrl(remoteUrl);
             if (webUrl == null) return null;
-            
+
             // Calculate relative path from repo root to project directory
             var relativePath = Path.GetRelativePath(gitRoot, projectDir.FullName)
                 .Replace(Path.DirectorySeparatorChar, '/');
-            
+
             return $"{webUrl}/tree/main/{relativePath}";
         }
         catch
@@ -199,7 +196,7 @@ public class SharedProjectReader
     {
         try
         {
-            var startInfo = new System.Diagnostics.ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = "git",
                 Arguments = arguments,
@@ -210,12 +207,12 @@ public class SharedProjectReader
                 CreateNoWindow = true
             };
 
-            using var process = System.Diagnostics.Process.Start(startInfo);
+            using var process = Process.Start(startInfo);
             if (process == null) return null;
-            
+
             var output = process.StandardOutput.ReadToEnd().Trim();
             process.WaitForExit();
-            
+
             return process.ExitCode == 0 && !string.IsNullOrWhiteSpace(output) ? output : null;
         }
         catch
@@ -229,17 +226,14 @@ public class SharedProjectReader
         // Convert SSH format: git@github.com:owner/repo.git -> https://github.com/owner/repo
         if (gitUrl.StartsWith("git@"))
         {
-            var match = System.Text.RegularExpressions.Regex.Match(gitUrl, @"git@([^:]+):(.+?)(?:\.git)?$");
+            var match = Regex.Match(gitUrl, @"git@([^:]+):(.+?)(?:\.git)?$");
             if (match.Success)
                 return $"https://{match.Groups[1].Value}/{match.Groups[2].Value}";
         }
-        
+
         // Convert HTTPS format: https://github.com/owner/repo.git -> https://github.com/owner/repo
-        if (gitUrl.StartsWith("http"))
-        {
-            return gitUrl.EndsWith(".git") ? gitUrl.Substring(0, gitUrl.Length - 4) : gitUrl;
-        }
-        
+        if (gitUrl.StartsWith("http")) return gitUrl.EndsWith(".git") ? gitUrl.Substring(0, gitUrl.Length - 4) : gitUrl;
+
         return null;
     }
 
