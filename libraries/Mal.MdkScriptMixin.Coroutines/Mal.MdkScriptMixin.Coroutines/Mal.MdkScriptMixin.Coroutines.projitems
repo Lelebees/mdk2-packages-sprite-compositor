@@ -9,6 +9,7 @@
         <Import_RootNamespace>IngameScript</Import_RootNamespace>
     </PropertyGroup>
     <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)readme.md" />
     <Content Include="$(MSBuildThisFileDirectory)_authors" />
     <Content Include="$(MSBuildThisFileDirectory)_version" />
     <Content Include="$(MSBuildThisFileDirectory)_releasenotes" />

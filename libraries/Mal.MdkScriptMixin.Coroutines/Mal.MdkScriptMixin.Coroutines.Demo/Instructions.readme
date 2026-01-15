@@ -1,5 +1,88 @@
-﻿R e a d m e
------------
+﻿Coroutines Demo - Script Mixins for Space Engineers
+===================================================
 
-In this file you can include any instructions or other comments you want to have injected onto the 
-top of your final script. You can safely delete this file if you do not want any such comments.
+This demo showcases the Coroutines mixin, which brings async-style programming to Space Engineers.
+
+WHAT ARE COROUTINES?
+--------------------
+Coroutines let you write sequential code that spans multiple game ticks without blocking. Instead
+of complex state machines, you can write natural "do this, wait, then do that" logic using yield return.
+
+WHAT THIS DEMO DOES:
+--------------------
+1. Runs a continuous coroutine that prints "Hello, World!" every update cycle
+2. Shows how to wait for other coroutines to complete (sequence -> subsequence pattern)
+3. Demonstrates cancellation tokens for stopping long-running tasks
+4. Examples of condition-based waiting
+
+HOW TO USE THIS DEMO:
+---------------------
+- The script runs automatically - you'll see "Hello, World!" echoed continuously
+- Run with argument "raise" to start a sequence that waits for a command
+- Run with argument "command" while sequence is waiting to fulfill the condition
+- Run with argument "cancel" to stop the main Hello World loop
+
+KEY CONCEPTS DEMONSTRATED:
+--------------------------
+1. BASIC COROUTINE: MainCr() - Runs continuously until cancelled
+2. SEQUENTIAL EXECUTION: SequenceCr() waits for SubsequenceCr() to complete
+3. CONDITION WAITING: SubsequenceCr() waits until _didRaiseCommand becomes true
+4. CANCELLATION: The main loop can be cancelled, cleanly stopping execution
+
+COROUTINE STRUCTURE:
+--------------------
+Coroutines are methods that return IEnumerator<When> and use yield return:
+
+    public IEnumerator<When> MyCoroutine()
+    {
+        Echo("Starting...");
+        yield return When.NextUpdate();      // Wait one tick
+        Echo("After one tick");
+        yield return When.TimePassed(1000);  // Wait 1 second
+        Echo("Done!");
+    }
+
+COMMON WAIT CONDITIONS:
+-----------------------
+- When.NextUpdate()          - Wait for next update (10 ticks, ~167ms)
+- When.NextUpdate1()         - Wait one tick (16.67ms) - use sparingly!
+- When.NextUpdate100()       - Wait 100 ticks (~1.67s) - for slow polling
+- When.TimePassed(ms)        - Wait specified milliseconds
+- When.True(() => condition) - Wait until condition becomes true
+- When.Completed(id)         - Wait for another coroutine to finish
+
+STARTING COROUTINES:
+--------------------
+Use Coroutines.Run() to start a coroutine:
+    
+    Coroutines.Run(MyCoroutine());
+    
+Returns a ulong ID that can be used with When.Completed() to wait for it.
+
+REQUIRED: CALL Coroutines.Main() IN YOUR Main() METHOD:
+--------------------------------------------------------
+    public void Main(string argument, UpdateType updateSource)
+    {
+        Coroutines.Main(argument, updateSource);  // Process all coroutines
+        // Your other code here
+    }
+
+WHY USE COROUTINES?
+-------------------
+✓ Write sequential logic instead of complex state machines
+✓ Spread heavy work across multiple ticks to avoid script timeout
+✓ Wait for conditions, timers, or other coroutines naturally
+✓ Run multiple tasks in parallel easily
+✓ Cancel long-running operations cleanly
+
+PERFORMANCE NOTES:
+------------------
+- Use Update10 (default) for most cases - it's efficient
+- Only use Update1 when precise timing is critical
+- Keep condition checks lightweight - they run every check cycle
+- Monitor Coroutines.Count if spawning many dynamic coroutines
+
+LEARN MORE:
+-----------
+See the full readme.md in the Coroutines source folder for comprehensive documentation,
+including ForEach for processing collections, advanced patterns, and a complete airlock example.

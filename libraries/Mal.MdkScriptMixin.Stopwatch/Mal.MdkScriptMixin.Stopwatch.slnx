@@ -1,0 +1,14 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Mal.MdkScriptMixin.Stopwatch/Mal.MdkScriptMixin.Stopwatch.shproj">
+    <Build />
+  </Project>
+  <Project Path="Mal.MdkScriptMixin.Stopwatch.Demo/Mal.MdkScriptMixin.Stopwatch.Demo.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="Mal.MdkScriptMixin.Stopwatch.Tests/Mal.MdkScriptMixin.Stopwatch.Tests.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>

@@ -1,0 +1,61 @@
+﻿Stopwatch Demo - Simple Timing for Space Engineers
+===================================================
+
+This demo shows you how to use the Stopwatch to measure time across script runs.
+
+IMPORTANT: This stopwatch measures GAME TICKS, not execution time within a single run.
+It's useful for timing things that happen over multiple script executions.
+
+BASIC USAGE:
+------------
+1. Create a stopwatch: new Stopwatch(this)
+2. Start it: stopwatch.Start()
+3. Stop it: stopwatch.Stop()
+4. Read time: stopwatch.Elapsed
+
+WHAT THIS DEMO DOES:
+--------------------
+- Creates one stopwatch that you control with commands
+- Shows the elapsed time (in game ticks) and whether it's running
+- Demonstrates measuring time between script runs
+
+TRY THESE COMMANDS:
+-------------------
+start   - Start the stopwatch (it will count game time from now)
+stop    - Stop the stopwatch (time is preserved)
+reset   - Reset to zero
+
+EXAMPLE OUTPUT:
+---------------
+=== STOPWATCH DEMO ===
+
+Time: 00:12.345
+Running: True
+
+Commands: start, stop, reset
+
+WHAT CAN YOU USE THIS FOR?
+---------------------------
+✓ Measure how long a task takes across multiple script runs
+✓ Create timers (e.g., "do something every 5 seconds")
+✓ Track how long your script has been running
+✓ Implement cooldowns
+
+✗ NOT for measuring performance within a single script run
+✗ NOT for finding bottlenecks in your code
+✗ NOT for sub-tick precision timing
+
+THE CODE:
+---------
+The demo shows manual control of a stopwatch:
+   _stopwatch.Start();   // Start counting game time
+   _stopwatch.Stop();    // Stop counting
+   _stopwatch.Reset();   // Reset to zero
+
+TIME FORMAT:
+------------
+The Elapsed property gives you a TimeSpan:
+- stopwatch.Elapsed.TotalSeconds       // 12.3
+- stopwatch.Elapsed.ToString("mm\\:ss") // "00:12"
+
+Resolution: ~16.67ms (one game tick at 60 ticks/second)
