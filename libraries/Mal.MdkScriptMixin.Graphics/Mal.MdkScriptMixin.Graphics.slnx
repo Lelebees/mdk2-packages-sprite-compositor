@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Mal.MdkScriptMixin.Graphics/Mal.MdkScriptMixin.Graphics.shproj">
+    <Build />
+  </Project>
+  <Project Path="Mal.MdkScriptMixin.Graphics.Demo/Mal.MdkScriptMixin.Graphics.Demo.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>

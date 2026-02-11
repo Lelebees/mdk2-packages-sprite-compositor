@@ -1,0 +1,113 @@
+Graphics Library Demo - Analog Clock
+=====================================
+
+This demo shows how to use the Graphics mixin to draw on LCD panels with virtual coordinates
+that work consistently across different display sizes.
+
+WHAT THIS DEMO DOES:
+--------------------
+- Draws a real-time analog clock on the programmable block's display
+- Demonstrates virtual viewport (512x512) that scales to any display
+- Shows procedural paints that adapt to user's theme colors
+- Uses sprites, lines, and dynamic drawing
+
+KEY CONCEPTS DEMONSTRATED:
+--------------------------
+1. VIRTUAL COORDINATES: Define UI in fixed coordinate system (512x512)
+2. ASPECT-AWARE SCALING: AspectMode.Fit scales content without distortion
+3. PROCEDURAL PAINTS: Colors adapt to user's foreground/background settings
+4. REUSABLE PAINTS: Create paints once in constructor, reuse every frame
+5. BEGINDRAW PATTERN: All drawing happens within using (dc.BeginDraw()) block
+
+BASIC USAGE:
+------------
+1. Create virtual viewport: new RectangleF(0, 0, 512, 512)
+2. Create context with aspect handling:
+   SurfaceDc.CreateWithAspect(surface, AspectMode.Fit, ref viewport, out _)
+3. Create paints ONCE (in constructor)
+4. Draw using virtual coordinates (0-512 range)
+5. Everything scales automatically to fit the display
+
+PAINT PATTERN - IMPORTANT:
+--------------------------
+Always create Paint objects ONCE and reuse them. Do NOT create new paints every frame.
+
+GOOD (in constructor):
+  _fgPaint = new ForegroundPaint(display);
+  _accentPaint = new AccentPaint(_fgPaint);
+
+BAD (in Main loop):
+  dc.Rect(new Paint(Color.Red), rect);  // Creates garbage every frame!
+
+PAINT TYPES IN THIS DEMO:
+-------------------------
+- BackgroundPaint(surface) - User's selected background color
+- ForegroundPaint(surface) - User's selected foreground color
+- AccentPaint(basePaint)   - Complementary accent color
+- ContrastStepPaint(base, amount) - Auto-contrast adjustment
+
+DRAWING OPERATIONS USED:
+------------------------
+dc.Rect(paint, rect)              - Fill rectangles
+dc.Sprite(texture, color, rect)   - Draw circular sprites
+dc.Line(paint, from, to, width)   - Draw clock hands
+
+ASPECT MODES:
+-------------
+- AspectMode.Fit   - Scale to fit, maintain aspect (adds letterboxing)
+- AspectMode.Fill  - Scale to fill, maintain aspect (crops edges)
+- AspectMode.Native - No scaling, 1:1 pixel mapping
+- AspectMode.FitAndExpand - Fit then expand viewport to fill
+- AspectMode.FillAndContract - Fill then contract viewport to visible area
+
+WHY USE THIS LIBRARY:
+---------------------
+✓ Draw with simple method calls instead of managing MySprite objects
+✓ Define UI once, works on all display sizes and aspect ratios
+✓ Virtual coordinates eliminate pixel-perfect positioning headaches
+✓ Procedural paints create theme-aware UIs automatically
+✓ Transform stack for complex coordinate systems
+✓ Clipping support for scrollable regions
+
+X NOT for pixel-perfect artwork (use Native mode for that)
+X NOT for displays that change size at runtime
+
+AVAILABLE DRAWING OPERATIONS:
+------------------------------
+dc.Rect(paint, rect)              - Fill a rectangle
+dc.Line(paint, from, to, width)   - Draw a line
+dc.Text(font, paint, text, pos, size) - Draw text
+dc.Sprite(texture, color, rect)   - Draw a texture sprite
+dc.MeasureText(font, text, size)  - Get text dimensions
+
+FONTS:
+------
+Fonts are auto-loaded by SurfaceDc. Access via dc.GetFont(name):
+- "Debug" - Standard proportional font
+- "Monospace" - Fixed-width font
+
+TRANSFORMS:
+-----------
+Use dc.Transform for rotations, scaling, translation:
+  dc.Transform = Transform.Identity.Translate(offset).Rotate(angle);
+
+Use dc.Push() / dc.Pop() to save and restore transform state:
+  using (dc.Push())
+  {
+      dc.Transform = dc.Transform.Rotate(angle);
+      DrawRotatedWidget();
+  }  // Transform automatically restored
+
+THE CODE:
+---------
+Check Program.cs to see:
+- How paints are created once and stored as fields
+- Using DateTime.Now for real-time clock display
+- Math for converting time to angles
+- Drawing clock face with sprites and lines
+
+LEARN MORE:
+-----------
+See the full readme.md in the Graphics library folder for comprehensive documentation,
+including all paint types, transform usage, clipping, sprite caching, and performance tips.
+

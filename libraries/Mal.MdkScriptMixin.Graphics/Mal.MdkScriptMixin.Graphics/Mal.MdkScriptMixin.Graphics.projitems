@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+        <HasSharedItems>true</HasSharedItems>
+        <SharedGUID>79b63142-c9d4-4e2c-82f3-a3fc9d53314c</SharedGUID>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)_authors"/>
+        <Content Include="$(MSBuildThisFileDirectory)_description"/>
+        <Content Include="$(MSBuildThisFileDirectory)_releasenotes"/>
+        <Content Include="$(MSBuildThisFileDirectory)_version"/>
+        <Content Include="$(MSBuildThisFileDirectory)readme.md"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="$(MSBuildThisFileDirectory)AccentPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)AspectMode.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)AspectModeExtensions.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)BackdropPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)BackgroundPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)ContrastStepPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)Drawing.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)ForegroundPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)IDC.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)IFont.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)IPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)Paint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)ProceduralPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)RectangleFExtensions.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)SemanticPaint.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)SurfaceDc.cs"/>
+        <Compile Include="$(MSBuildThisFileDirectory)Transform.cs"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory).editorconfig"/>
+    </ItemGroup>
+</Project>
