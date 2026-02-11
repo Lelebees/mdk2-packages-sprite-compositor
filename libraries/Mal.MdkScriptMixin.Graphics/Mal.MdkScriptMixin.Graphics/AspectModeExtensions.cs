@@ -26,14 +26,10 @@ namespace IngameScript
                 case AspectMode.FitAndExpand:
                 {
                     scale = Math.Min(scaleX, scaleY);
-
                     var visible = new Vector2(containerSize.X / scale, containerSize.Y / scale);
-
                     var expanded = virtualSize;
                     if (visible.X > virtualSize.X) expanded.X = visible.X;
                     if (visible.Y > virtualSize.Y) expanded.Y = visible.Y;
-
-                    // FitAndExpand: top-left aligned, expand the dimension that's too small
                     virtualViewport = new RectangleF(0, 0, expanded.X, expanded.Y);
                     break;
                 }
@@ -41,9 +37,7 @@ namespace IngameScript
                 case AspectMode.FillAndContract:
                 {
                     scale = Math.Max(scaleX, scaleY);
-
                     var visible = new Vector2(containerSize.X / scale, containerSize.Y / scale);
-                    // FillAndContract: top-left aligned, contract the dimension that doesn't fit
                     virtualViewport = new RectangleF(0, 0, visible.X, visible.Y);
                     break;
                 }

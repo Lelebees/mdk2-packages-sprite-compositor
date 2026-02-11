@@ -31,7 +31,6 @@ namespace IngameScript
             var rgb = hsv.HSVtoColor();
             color = new Color(rgb.R, rgb.G, rgb.B, bc.A);
             texture = _base.Texture;
-
             _lastColor = bc;
             _lastTexture = texture;
         }

@@ -4,9 +4,8 @@ namespace IngameScript
 {
     public sealed class ContrastStepPaint : ProceduralPaint
     {
-        readonly float _amount;
+        readonly float _amount, _pivot;
         readonly IPaint _basePaint;
-        readonly float _pivot;
         Color _lastColor;
         string _lastTexture;
 

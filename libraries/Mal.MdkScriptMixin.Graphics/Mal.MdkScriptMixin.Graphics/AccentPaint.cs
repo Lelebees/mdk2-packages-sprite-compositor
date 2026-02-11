@@ -39,9 +39,7 @@ namespace IngameScript
                 if (accentHsv.X >= 1f)
                     accentHsv.X -= 1f;
             }
-
-            if (accentHsv.Y < _minSaturation)
-                accentHsv.Y = _minSaturation;
+            if (accentHsv.Y < _minSaturation) accentHsv.Y = _minSaturation;
             var dv = accentHsv.Z - baseHsv.Z;
             if (Math.Abs(dv) < _minValueDistance)
             {
@@ -50,12 +48,9 @@ namespace IngameScript
                 else
                     accentHsv.Z = MathHelper.Clamp(baseHsv.Z - _minValueDistance, 0f, 1f);
             }
-
             var rgb = accentHsv.HSVtoColor();
-
             color = new Color(rgb.R, rgb.G, rgb.B, baseColor.A);
             texture = _basePaint.Texture;
-
             _lastBaseColor = baseColor;
             _lastBaseTexture = texture;
         }

@@ -11,8 +11,7 @@ namespace IngameScript
         {
             get
             {
-                if (NeedsUpdate())
-                    Update(ref _color, ref _texture);
+                if (NeedsUpdate()) Update(ref _color, ref _texture);
                 return _color;
             }
         }
@@ -21,8 +20,7 @@ namespace IngameScript
         {
             get
             {
-                if (NeedsUpdate())
-                    Update(ref _color, ref _texture);
+                if (NeedsUpdate()) Update(ref _color, ref _texture);
                 return _texture;
             }
         }
