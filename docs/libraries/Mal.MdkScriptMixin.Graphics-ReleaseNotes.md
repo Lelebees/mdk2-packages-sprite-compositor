@@ -1,9 +1,7 @@
-# Release Notes - Mal.MdkScriptMixin.Stopwatch
+# Release Notes - Mal.MdkScriptMixin.Graphics
 
 ````````text
-- 1.0.0
-  Initial public release
-  
+Initial release
 ````````
 
 ---
