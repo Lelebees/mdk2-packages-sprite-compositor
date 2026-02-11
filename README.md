@@ -29,6 +29,7 @@ This naming helps you quickly identify which libraries are suitable for your pro
 | Package | Version | Author(s) | Description |
 |---------|---------|-----------|-------------|
 | [Mal.MdkScriptMixin.Coroutines](./docs/libraries/Mal.MdkScriptMixin.Coroutines.md) | 1.0.9 | Malware | A lightweight coroutine scheduler for Space Engineers programmable blocks, enabling async-style programming patterns. |
+| [Mal.MdkScriptMixin.Graphics](./docs/libraries/Mal.MdkScriptMixin.Graphics.md) | 1.0.0 | Malware | A graphics library for Space Engineers providing high-level drawing abstractions, aspect-aware viewports, and an advanced paint system for creating responsive UIs. |
 | [Mal.MdkScriptMixin.Stopwatch](./docs/libraries/Mal.MdkScriptMixin.Stopwatch.md) | 1.0.0 | Malware | A lightweight timing utility for measuring elapsed game time across script runs. |
 
 **Click on any library name above** to see its documentation, including detailed installation instructions for Visual Studio, Rider, and VS Code.
@@ -62,5 +63,5 @@ Look, I hate having to add this section. I'd rather just share cool code with fe
 
 ---
 
-*This README was auto-generated from library metadata. Last updated: 2026-01-15*
+*This README was auto-generated from library metadata. Last updated: 2026-02-11*
 

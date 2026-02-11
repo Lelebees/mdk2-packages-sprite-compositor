@@ -1,4 +1,4 @@
-# Installing Mal.MdkScriptMixin.Coroutines
+# Installing Mal.MdkScriptMixin.Graphics
 
 **Quick Links:** [Visual Studio](#visual-studio) | [JetBrains Rider](#jetbrains-rider) | [Command Line](#command-line--manual)
 
@@ -13,7 +13,7 @@
    - Name: `Malforge`
    - Source: `https://nuget.pkg.github.com/malforge/index.json`
 5. Click **OK** to save
-6. Search for `Mal.MdkScriptMixin.Coroutines`
+6. Search for `Mal.MdkScriptMixin.Graphics`
 7. Click **Install**
 
 ---
@@ -26,7 +26,7 @@
    - URL: `https://nuget.pkg.github.com/malforge/index.json`
 3. Click **OK** to save
 4. Open the **NuGet** tool window
-5. Search for `Mal.MdkScriptMixin.Coroutines`
+5. Search for `Mal.MdkScriptMixin.Graphics`
 6. Click **Install**
 
 ---
@@ -42,7 +42,7 @@ dotnet nuget add source https://nuget.pkg.github.com/malforge/index.json --name 
 ### Install the Package
 
 ```bash
-dotnet add package Mal.MdkScriptMixin.Coroutines
+dotnet add package Mal.MdkScriptMixin.Graphics
 ```
 
 ### Or Edit .csproj Directly
@@ -50,7 +50,7 @@ dotnet add package Mal.MdkScriptMixin.Coroutines
 Add this to your `.csproj` file:
 
 ```xml
-<PackageReference Include="Mal.MdkScriptMixin.Coroutines" Version="1.0.9" />
+<PackageReference Include="Mal.MdkScriptMixin.Graphics" Version="1.0.0" />
 ```
 
 ---
