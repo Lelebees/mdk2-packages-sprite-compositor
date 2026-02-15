@@ -150,7 +150,7 @@ namespace IngameScript
             return this;
         }
 
-        public IDc Text(IFont font, IPaint paint, string text, Vector2 position, float sizePx, TextAlignment alignment = TextAlignment.LEFT)
+        public IDc Text(IFont font, IPaint paint, string text, Vector2 position, float sizePx, TextAlignment alignment = TextAlignment.LEFT, bool measure = false)
         {
             if (string.IsNullOrEmpty(text)) return this;
             var p = Transform.TransformPoint(position);
@@ -167,54 +167,37 @@ namespace IngameScript
                 RotationOrScale = scale,
                 Alignment = alignment
             };
+            if (measure)
+            {
+                if (_measureBuilder.Capacity < text.Length) _measureBuilder.Capacity = text.Length;
+                _measureBuilder.Clear().Append(text);
+                var measuredSize = _surface.MeasureStringInPixels(_measureBuilder, font.Name, scale) / Transform.Scale;
+                sprite.Size = measuredSize;
+            }
+
             AddSprite(ref sprite);
             return this;
         }
 
-        public Vector2 MeasureText(IFont font, string text, float sizePx)
+        public void AddSprite(ref MySprite sprite)
         {
-            if (_measureBuilder.Capacity < text.Length) _measureBuilder.Capacity = text.Length;
-            _measureBuilder.Clear().Append(text);
-            return _surface.MeasureStringInPixels(_measureBuilder, font.Name, font.PxToScale(sizePx * Transform.Scale)) / Transform.Scale;
-        }
-
-        public Vector2 MeasureText(IFont font, StringSegment text, float sizePx)
-        {
-            if (_measureBuilder.Capacity < text.Length) _measureBuilder.Capacity = text.Length;
-            _measureBuilder.Clear().Append(text.Text, text.Start, text.Length);
-            return _surface.MeasureStringInPixels(_measureBuilder, font.Name, font.PxToScale(sizePx * Transform.Scale)) / Transform.Scale;
-        }
-
-        public virtual void AddSprite(ref MySprite sprite)
-        {
-            if (_mustEmitClip)
-            {
-                _mustEmitClip = false;
-                var clipSprite = CreateClipSprite();
-                _frame?.Add(clipSprite);
-                if (_captureStack.Count > 0) _captureStack.Peek().Add(clipSprite);
-            }
-            _frame?.Add(sprite);
-            if (_captureStack.Count > 0) _captureStack.Peek().Add(sprite);
+            FlushClip();
+            Record(ref sprite);
         }
 
         public void AddSprites(List<MySprite> sprites)
         {
-            for (var i = 0; i < sprites.Count; i++)
+            FlushClip();
+            foreach (var s in sprites)
             {
-                var sprite = sprites[i];
-                AddSprite(ref sprite);
+                var sprite = s;
+                Record(ref sprite);
             }
         }
 
         public IDisposable BeginCapture(List<MySprite> targetList)
         {
-            if (_mustEmitClip)
-            {
-                var clipSprite = CreateClipSprite();
-                _frame?.Add(clipSprite);
-                _mustEmitClip = false;
-            }
+            FlushClip();
             targetList.Clear();
             _captureStack.Push(targetList);
             return _captureHandle;
@@ -222,13 +205,7 @@ namespace IngameScript
 
         public void EndCapture()
         {
-            if (_mustEmitClip && _captureStack.Count > 0)
-            {
-                var clipSprite = CreateClipSprite();
-                _frame?.Add(clipSprite);
-                _captureStack.Peek().Add(clipSprite);
-                _mustEmitClip = false;
-            }
+            FlushClip();
             _captureStack.Pop();
         }
 
@@ -236,6 +213,20 @@ namespace IngameScript
         {
             IFont font;
             return _fonts.TryGetValue(fontName, out font) ? font : null;
+        }
+
+        protected virtual void Record(ref MySprite sprite)
+        {
+            _frame?.Add(sprite);
+            if (_captureStack.Count > 0) _captureStack.Peek().Add(sprite);
+        }
+
+        void FlushClip()
+        {
+            if (!_mustEmitClip) return;
+            _mustEmitClip = false;
+            var clipSprite = CreateClipSprite();
+            Record(ref clipSprite);
         }
 
         void InitializeFonts()
@@ -285,9 +276,9 @@ namespace IngameScript
             return MySprite.CreateClipRect(quantizedRect);
         }
 
-        public IDisposable BeginDraw()
+        public IDisposable BeginDraw(bool render = true)
         {
-            if (_openCount == 0) _frame = _surface.DrawFrame();
+            if (render && _openCount == 0) _frame = _surface.DrawFrame();
             _openCount++;
             return _drawHandle;
         }
@@ -315,17 +306,17 @@ namespace IngameScript
             }
 
             public string Name { get; }
-
             public float ScaleToPx(float scale) => scale * _em;
-
             public float PxToScale(float px) => px / _em;
+            public Vector2 MeasureText(string text, float sizePx) => MeasureText(new StringSegment(text), sizePx);
 
-            public Vector2 MeasureText(string text, float sizePx)
+            public Vector2 MeasureText(StringSegment text, float sizePx)
             {
-                _dc._measureBuilder.Clear();
-                if (_dc._measureBuilder.Capacity < text.Length) _dc._measureBuilder.Capacity = text.Length;
-                _dc._measureBuilder.Append(text);
-                return _dc._surface.MeasureStringInPixels(_dc._measureBuilder, Name, PxToScale(sizePx));
+                var mb = _dc._measureBuilder;
+                var t = _dc.Transform;
+                if (mb.Capacity < text.Length) mb.Capacity = text.Length;
+                mb.Clear().Append(text.Text, text.Start, text.Length);
+                return _dc._surface.MeasureStringInPixels(mb, Name, PxToScale(sizePx * t.Scale)) / t.Scale;
             }
         }
 
@@ -338,36 +329,21 @@ namespace IngameScript
         class StateHandle : IDisposable
         {
             readonly SurfaceDc _dc;
-
-            public StateHandle(SurfaceDc dc)
-            {
-                _dc = dc;
-            }
-
+            public StateHandle(SurfaceDc dc) { _dc = dc; }
             public void Dispose() => _dc.Pop();
         }
 
         class DrawHandle : IDisposable
         {
             readonly SurfaceDc _dc;
-
-            public DrawHandle(SurfaceDc dc)
-            {
-                _dc = dc;
-            }
-
+            public DrawHandle(SurfaceDc dc) { _dc = dc; }
             public void Dispose() => _dc.EndDraw();
         }
 
         class CaptureHandle : IDisposable
         {
             readonly SurfaceDc _dc;
-
-            public CaptureHandle(SurfaceDc dc)
-            {
-                _dc = dc;
-            }
-
+            public CaptureHandle(SurfaceDc dc) { _dc = dc; }
             public void Dispose() => _dc.EndCapture();
         }
     }

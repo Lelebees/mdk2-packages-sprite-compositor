@@ -109,15 +109,21 @@ Echo($"Available space: {viewport.Width}x{viewport.Height}");
 dc.Rect(paint, new RectangleF(x, y, width, height));
 dc.Sprite("CircleHollow", Color.White, new RectangleF(x, y, 50, 50));
 
-// Lines
+// Lines with customizable cap texture
 dc.Line(paint, from, to, thickness);
-dc.Line(paint, from, to, thickness, capped: true);  // With rounded end caps
+dc.Line(paint, from, to, thickness, capped: true);  // With SemiCircle caps
+dc.Line(paint, from, to, thickness, capped: true, capTexture: "Circle");  // Custom cap
 
 // Text
 var font = dc.GetFont("Debug");  // or "Monospace"
 dc.Text(font, paint, "Hello", new Vector2(x, y), 20f);
 dc.Text(font, paint, "Title", new Vector2(x, y), 24f, TextAlignment.CENTER);
-var size = dc.MeasureText(font, "Hello", 20f);  // Returns virtual pixel size
+
+// Text with measurement (sets sprite.Size for layout calculations)
+dc.Text(font, paint, "Measured", new Vector2(x, y), 20f, TextAlignment.LEFT, measure: true);
+
+// Measure text (returns virtual pixel size)
+var size = font.MeasureText("Hello", 20f);
 ```
 
 ## Transforms
@@ -125,11 +131,11 @@ var size = dc.MeasureText(font, "Hello", 20f);  // Returns virtual pixel size
 ```csharp
 // Translate, scale, rotate
 dc.Transform = Transform.Identity.Translate(new Vector2(100, 50));
-dc.Transform = Transform.Identity.Scale(2f);
-dc.Transform = Transform.Identity.Rotate(MathHelper.PiOver4);
+dc.Transform = Transform.Identity.WithScale(2f);
+dc.Transform = Transform.Identity.WithRotation(MathHelper.PiOver4);
 
 // Chain transforms
-dc.Transform = Transform.Identity.Translate(center).Rotate(angle).Scale(scale);
+dc.Transform = Transform.Identity.Translate(center).WithRotation(angle).WithScale(scale);
 
 // Push/Pop for nested transforms
 using (dc.Push())
@@ -166,6 +172,28 @@ using (dc.BeginDraw())
 }
 ```
 
+### Using DC Without Rendering
+
+You can use the drawing context for measurements and sprite capture without rendering to the surface:
+
+```csharp
+// Capture sprites without rendering to display
+var capturedSprites = new List<MySprite>();
+using (dc.BeginDraw(render: false))
+using (dc.BeginCapture(capturedSprites))
+{
+    dc.Rect(paint, rect);
+    dc.Text(font, paint, "Hidden", pos, 20f, measure: true);
+}
+// Now you can inspect or manipulate capturedSprites
+
+// Or render the captured sprites later
+using (dc.BeginDraw())
+{
+    dc.AddSprites(capturedSprites);
+}
+```
+
 ## Performance Tips
 
 1. **Reuse paints** - Create once in constructor, reuse in Main loop
@@ -177,30 +205,301 @@ using (dc.BeginDraw())
 ## API Reference
 
 ### SurfaceDc
-- `Create(IMyTextSurface)` - Simple context without aspect handling
-- `CreateWithAspect(surface, mode, ref viewport, out physical)` - With aspect handling
-- `BeginDraw()` / `EndDraw()` - Frame lifecycle (use `using` pattern)
-- `Rect(paint, rect)` - Draw filled rectangle
-- `Line(paint, from, to, thickness, capped)` - Draw line
-- `Text(font, paint, text, pos, size, alignment)` - Draw text
-- `Sprite(texture, color, rect, rotation)` - Draw sprite
-- `MeasureText(font, text, size)` - Measure text in virtual pixels
-- `GetFont(name)` - Get font ("Debug" or "Monospace")
-- `Transform` - Current transform applied to all drawing
-- `ClipRect` - Clipping rectangle in physical pixels
-- `Push()` / `Pop()` - Save/restore state
-- `BeginCapture()` / `EndCapture()` - Capture sprites for replay
+
+**Static Factory Methods:**
+- `static SurfaceDc Create(IMyTextSurface surface)`
+  - Creates a simple drawing context without aspect handling
+  - Returns: New SurfaceDc instance
+
+- `static SurfaceDc CreateWithAspect(IMyTextSurface surface, AspectMode mode, ref RectangleF virtualViewport, out RectangleF physicalViewport)`
+  - Creates drawing context with aspect ratio handling and coordinate transformation
+  - Parameters:
+    - `surface` - Text surface to draw on
+    - `mode` - How to handle aspect ratio (see AspectMode)
+    - `virtualViewport` - Desired virtual coordinate system (may be modified by FitAndExpand/FillAndContract)
+    - `physicalViewport` - Output parameter containing physical display viewport
+  - Returns: New SurfaceDc instance with transform applied
+
+**Frame Management:**
+- `IDisposable BeginDraw(bool render = true)`
+  - Starts a drawing context (can be nested)
+  - Parameters:
+    - `render` - If true (default), renders sprites to surface. If false, allows drawing operations and sprite capture without rendering
+  - Returns: IDisposable that calls EndDraw when disposed
+  - Usage: Always use with `using` statement for rendering
+  - Note: Font measurements (MeasureText) do not require BeginDraw
+
+- `void EndDraw()`
+  - Ends drawing context and submits sprites to surface (if render was true)
+  - Automatically called when BeginDraw's IDisposable is disposed
+
+**Drawing Methods:** (All return `IDc` for method chaining)
+- `IDc Rect(IPaint paint, RectangleF rect)`
+  - Draws a filled rectangle
+  - Skips drawing if paint alpha is 0
+
+- `IDc Line(IPaint paint, Vector2 from, Vector2 to, float thickness, bool capped = false, string capTexture = "SemiCircle")`
+  - Draws a line between two points
+  - Parameters:
+    - `capped` - If true, adds rounded end caps
+    - `capTexture` - Sprite to use for caps (default: "SemiCircle", alternative: "Circle")
+  - Skips drawing if paint alpha is 0 or thickness <= 0
+
+- `IDc Text(IFont font, IPaint paint, string text, Vector2 position, float sizePx, TextAlignment alignment = TextAlignment.LEFT, bool measure = false)`
+  - Draws text at specified position
+  - Parameters:
+    - `font` - Font to use (get from GetFont)
+    - `sizePx` - Font size in virtual pixels
+    - `alignment` - LEFT, CENTER, or RIGHT
+    - `measure` - If true, measures text and sets sprite.Size (useful for layout)
+  - Skips drawing if paint alpha is 0 or text is null/empty
+
+- `IDc Sprite(string texture, Color color, RectangleF rect, float rotation = 0f)`
+  - Draws a textured sprite
+  - Parameters:
+    - `texture` - Sprite name (e.g., "Circle", "SquareSimple")
+    - `rotation` - Rotation in radians
+  - Skips drawing if color alpha is 0
+
+**Font Management:**
+- `IFont GetFont(string fontName)`
+  - Retrieves font by name
+  - Common names: "Debug", "Monospace"
+  - Returns: IFont instance or null if not found
+  - Fonts are auto-loaded when SurfaceDc is created
+
+**State Management:**
+- `IDisposable Push()`
+  - Saves current Transform and ClipRect to state stack
+  - Returns: IDisposable that calls Pop when disposed
+  - Usage: Use with `using` statement for automatic restore
+
+- `void Pop()`
+  - Restores Transform and ClipRect from state stack
+  - Automatically called when Push's IDisposable is disposed
+
+**Sprite Capture:**
+- `IDisposable BeginCapture(List<MySprite> targetList)`
+  - Starts capturing sprites to a list
+  - Parameters:
+    - `targetList` - List to capture sprites into (cleared before capture)
+  - Returns: IDisposable that calls EndCapture when disposed
+  - Usage: Use with `using` statement
+  - Note: Captured sprites are ALSO rendered if BeginDraw(render: true) is active
+
+- `void EndCapture()`
+  - Stops capturing sprites
+  - Automatically called when BeginCapture's IDisposable is disposed
+
+**Manual Sprite Control:**
+- `void AddSprite(ref MySprite sprite)`
+  - Manually adds a sprite to the frame and any active captures
+
+- `void AddSprites(List<MySprite> sprites)`
+  - Manually adds multiple sprites to the frame and any active captures
+
+**Properties:**
+- `Transform Transform { get; set; }`
+  - Current coordinate transformation applied to all drawing operations
+  - Default: Transform.Identity
+
+- `RectangleF ClipRect { get; set; }`
+  - Clipping rectangle in physical pixels
+  - Only sprites within this rectangle are rendered
+  - Emits clip sprite command when changed
+
+---
+
+### IFont
+
+**Properties:**
+- `string Name { get; }`
+  - Font name (e.g., "Debug", "Monospace")
+
+**Methods:**
+- `Vector2 MeasureText(string text, float sizePx)`
+  - Measures text dimensions in virtual pixels
+  - Parameters:
+    - `text` - String to measure
+    - `sizePx` - Font size in virtual pixels
+  - Returns: Size in virtual coordinate space
+
+- `Vector2 MeasureText(StringSegment text, float sizePx)`
+  - Measures text substring dimensions in virtual pixels
+  - Parameters:
+    - `text` - String segment to measure
+    - `sizePx` - Font size in virtual pixels
+  - Returns: Size in virtual coordinate space
+
+- `float ScaleToPx(float scale)`
+  - Converts font scale value to pixel size
+  - Returns: Pixel size
+
+- `float PxToScale(float px)`
+  - Converts pixel size to font scale value
+  - Returns: Font scale
+
+---
 
 ### Transform
-- `Identity` - No transformation
-- `Translate(offset)`, `Scale(scale)`, `Rotate(radians)` - Build transforms
-- `operator *` - Combine transforms
-- `TransformPoint(point)` - Apply to point
-- `TransformVector(vector)` - Apply to direction (no translation)
-- `TransformRectCenter(rect)` - Transform rectangle by center
-- `InverseTransformPoint(point)` - Reverse transform
+
+**Struct Properties:**
+- `Vector2 Translation` - Translation offset (readonly)
+- `float Rotation` - Rotation in radians (readonly)
+- `float Scale` - Uniform scale factor (readonly)
+
+**Static Fields:**
+- `static readonly Transform Identity`
+  - Identity transform (zero translation, zero rotation, scale 1)
+
+**Builder Methods:**
+- `Transform Translate(Vector2 offset)`
+  - Returns new transform with added translation offset
+
+- `Transform WithTranslation(Vector2 translation)`
+  - Returns new transform with absolute translation
+
+- `Transform WithRotation(float rotation)`
+  - Returns new transform with absolute rotation in radians
+
+- `Transform WithScale(float scale)`
+  - Returns new transform with absolute scale
+
+- `Transform WithoutTranslation()`
+  - Returns new transform with translation set to zero
+
+- `Transform WithoutRotation()`
+  - Returns new transform with rotation set to zero
+
+- `Transform WithoutScale()`
+  - Returns new transform with scale set to 1
+
+**Transform Operations:**
+- `Vector2 TransformPoint(Vector2 p)`
+  - Applies transform to a point (scale, rotate, translate)
+  - Returns: Transformed point
+
+- `Vector2 TransformVector(Vector2 v)`
+  - Applies transform to a direction vector (scale and rotate, no translation)
+  - Returns: Transformed vector
+
+- `RectangleF TransformRectCenter(RectangleF r)`
+  - Transforms rectangle by its center point (used for sprite positioning)
+  - Returns: Transformed rectangle
+
+- `RectangleF TransformAabb(RectangleF r)`
+  - Transforms all four corners and returns axis-aligned bounding box
+  - Returns: AABB containing transformed rectangle
+
+- `Vector2 InverseTransformPoint(Vector2 p)`
+  - Applies inverse transform to a point (physical to virtual)
+  - Throws: InvalidOperationException if Scale is 0
+  - Returns: Inverse-transformed point
+
+- `Transform Inverse()`
+  - Returns the inverse of this transform
+  - Throws: InvalidOperationException if Scale is 0
+  - Returns: Inverse transform
+
+**Operators:**
+- `static Transform operator *(Transform parent, Transform child)`
+  - Combines two transforms: applies child transform, then parent
+  - Example: `parentTransform * childTransform`
+  - Returns: Combined transform
+
+---
 
 ### Drawing
-- `Draw(dc, force, drawAction)` - Draw cached or regenerate
-- `Invalidate()` - Mark for regeneration
+
+**Properties:**
+- `IReadOnlyList<MySprite> Sprites { get; }`
+  - Read-only access to cached sprite list
+
+**Methods:**
+- `void Draw(IDc dc, bool force, Action<IDc> drawAction)`
+  - Draws cached sprites, or regenerates if dirty or forced
+  - Parameters:
+    - `dc` - Drawing context to draw to
+    - `force` - If true, regenerates cache even if not dirty
+    - `drawAction` - Action that performs drawing operations
+  - Behavior: Captures sprites on first draw or when dirty, replays on subsequent draws
+
+- `void Invalidate()`
+  - Marks cache as dirty, will regenerate on next Draw call
+
+---
+
+### Paint Classes
+
+**Static Paints:**
+
+- `Paint(Color color)`
+  - Fixed color paint
+  - Constructor parameter: `color` - Color to use
+
+- `BackgroundPaint(IMyTextSurface surface)`
+  - Uses surface's ScriptBackgroundColor
+  - Constructor parameter: `surface` - Text surface to read color from
+
+- `ForegroundPaint(IMyTextSurface surface)`
+  - Uses surface's ScriptForegroundColor
+  - Constructor parameter: `surface` - Text surface to read color from
+
+**Procedural Paints:** (Colors computed dynamically from base paint)
+
+- `AccentPaint(IPaint basePaint)`
+  - Complementary accent color (opposite hue)
+  - Constructor parameter: `basePaint` - Base paint to derive color from
+
+- `BackdropPaint(IPaint basePaint)`
+  - Muted, desaturated background color
+  - Constructor parameter: `basePaint` - Base paint to derive color from
+
+- `SemanticPaint(IPaint basePaint, Color semanticColor)`
+  - Error/warning/info colors that adapt to base paint
+  - Constructor parameters:
+    - `basePaint` - Base paint for context
+    - `semanticColor` - Semantic color (use static constants)
+  - Static constants:
+    - `SemanticPaint.Error` - Red error color
+    - `SemanticPaint.Warning` - Yellow warning color
+    - `SemanticPaint.Info` - Blue info color
+
+- `ContrastStepPaint(IPaint basePaint, float amount)`
+  - Automatically lightens or darkens for contrast
+  - Constructor parameters:
+    - `basePaint` - Base paint to adjust
+    - `amount` - Adjustment amount (positive lightens, negative darkens)
+
+**All Paint Classes Implement:**
+- `Color Color { get; }` - Current color value
+- `string Texture { get; }` - Texture name (typically "SquareSimple")
+
+---
+
+### AspectMode (Enum)
+
+- `Native`
+  - 1:1 pixel mapping, no scaling
+  - Virtual viewport dimensions unchanged
+
+- `Fit`
+  - Scales uniformly to fit within display
+  - Maintains aspect ratio with letterboxing/pillarboxing if needed
+  - Virtual viewport dimensions unchanged
+
+- `Fill`
+  - Scales uniformly to fill entire display
+  - Maintains aspect ratio, may crop edges
+  - Virtual viewport dimensions unchanged
+
+- `FitAndExpand`
+  - Scales to fit, then expands virtual viewport to use all available space
+  - No letterboxing - viewport dimensions modified to match display aspect
+  - Virtual viewport parameter is modified
+
+- `FillAndContract`
+  - Scales to fill, then contracts virtual viewport to visible area only
+  - No cropping - viewport dimensions modified to show only visible area
+  - Virtual viewport parameter is modified
 

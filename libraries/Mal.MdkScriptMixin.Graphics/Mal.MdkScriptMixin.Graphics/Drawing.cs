@@ -8,9 +8,8 @@ namespace IngameScript
     {
         readonly List<MySprite> _cachedSprites = new List<MySprite>();
         bool _isDirty = true;
-
+        public IReadOnlyList<MySprite> Sprites => _cachedSprites;
         public void Invalidate() => _isDirty = true;
-
         public void Draw(IDc dc, bool force, Action<IDc> drawAction)
         {
             if (force || _isDirty)

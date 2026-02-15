@@ -15,9 +15,7 @@ namespace IngameScript
         IDc Sprite(string texture, Color color, RectangleF rect, float rotation = 0f);
         IDc Rect(IPaint paint, RectangleF rect);
         IDc Line(IPaint paint, Vector2 from, Vector2 to, float thickness, bool capped = false, string capTexture = "SemiCircle");
-        IDc Text(IFont font, IPaint paint, string text, Vector2 position, float sizePx, TextAlignment alignment = TextAlignment.LEFT);
-        Vector2 MeasureText(IFont font, string text, float sizePx);
-        Vector2 MeasureText(IFont font, StringSegment text, float sizePx);
+        IDc Text(IFont font, IPaint paint, string text, Vector2 position, float sizePx, TextAlignment alignment = TextAlignment.LEFT, bool measure = false);
         void AddSprite(ref MySprite sprite);
         void AddSprites(List<MySprite> sprites);
         IDisposable BeginCapture(List<MySprite> targetList);
