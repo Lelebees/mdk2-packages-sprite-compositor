@@ -53,4 +53,4 @@ All methods return `this` for chaining.
 
 ---
 
-*Documentation auto-generated from package metadata. Last updated: 2026-02-11*
+*Documentation auto-generated from package metadata. Last updated: 2026-02-15*
