@@ -17,7 +17,7 @@ namespace IngameScript
         IDc Line(IPaint paint, Vector2 from, Vector2 to, float thickness, bool capped = false, string capTexture = "SemiCircle");
         IDc Text(IFont font, IPaint paint, string text, Vector2 position, float sizePx, TextAlignment alignment = TextAlignment.LEFT, bool measure = false);
         void AddSprite(ref MySprite sprite);
-        void AddSprites(List<MySprite> sprites);
+        void AddSprites(IReadOnlyList<MySprite> sprites);
         IDisposable BeginCapture(List<MySprite> targetList);
         void EndCapture();
         IFont GetFont(string fontName);

@@ -185,7 +185,7 @@ namespace IngameScript
             Record(ref sprite);
         }
 
-        public void AddSprites(List<MySprite> sprites)
+        public void AddSprites(IReadOnlyList<MySprite> sprites)
         {
             FlushClip();
             foreach (var s in sprites)
