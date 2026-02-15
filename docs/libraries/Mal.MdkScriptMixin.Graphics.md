@@ -1,7 +1,7 @@
 # Mal.MdkScriptMixin.Graphics
 
 > [!NOTE]
-> **Version:** 1.0.0  
+> **Version:** 1.0.1  
 > **Authors:** Malware  
 > **Package:** `Mal.MdkScriptMixin.Graphics`
 > 
@@ -53,21 +53,14 @@ using (dc.BeginDraw())
 
 ## Core Concepts
 
-### Device Context (SurfaceDc)
-
-Manages sprite frames, coordinate transforms, fonts, and clipping:
-
-```csharp
-// Always use CreateWithAspect for production code
-var viewport = new RectangleF(0, 0, 512, 512);
-var dc = SurfaceDc.CreateWithAspect(surface, AspectMode.Fit, ref viewport, out _);
-```
-
 ### Virtual Coordinates
 
-Draw using your virtual viewport coordinates - the library handles scaling:
+Draw using a consistent virtual coordinate system - the library handles scaling to physical displays:
 
 ```csharp
+var viewport = new RectangleF(0, 0, 512, 512);
+var dc = SurfaceDc.CreateWithAspect(surface, AspectMode.Fit, ref viewport, out _);
+
 dc.Rect(paint, new RectangleF(50, 50, 100, 50));  // Always at same relative position
 dc.Text(font, paint, "Title", new Vector2(50, 120), 20f);
 ```
@@ -87,19 +80,15 @@ dc.Rect(_whitePaint, rect);
 dc.Text(font, _fgPaint, "Text", pos, size);
 ```
 
-**Static Paints:**
-- `Paint(Color)` - Fixed color
-- `BackgroundPaint(surface)` - Surface's background color
-- `ForegroundPaint(surface)` - Surface's foreground color
+**Paint Types:**
+- **Static:** `Paint(Color)`, `BackgroundPaint(surface)`, `ForegroundPaint(surface)`
+- **Procedural:** Adapt to user's theme colors
+  - `AccentPaint(basePaint)` - Complementary accent color
+  - `BackdropPaint(basePaint)` - Muted background
+  - `SemanticPaint(basePaint, semanticColor)` - Error/warning/info (use `SemanticPaint.Error`, `.Warning`, `.Info`)
+  - `ContrastStepPaint(basePaint, amount)` - Auto-contrast adjustment
 
-**Procedural Paints** (adapt to theme):
-- `AccentPaint(basePaint)` - Complementary accent color
-- `BackdropPaint(basePaint)` - Muted background
-- `SemanticPaint(basePaint, semanticColor)` - Error/warning/info colors
-  - `SemanticPaint.Error`, `SemanticPaint.Warning`, `SemanticPaint.Info`
-- `ContrastStepPaint(basePaint, amount)` - Auto-contrast adjustment
-
-### BeginDraw/EndDraw Pattern
+### BeginDraw Pattern
 
 ```csharp
 using (dc.BeginDraw())
@@ -113,86 +102,45 @@ using (dc.BeginDraw())
 
 Controls how virtual viewport maps to physical display. **All modes maintain aspect ratio** - coordinates are never distorted.
 
-**AspectMode.Fit** - Scales uniformly to fit, adds letterboxing if needed
-```csharp
-var viewport = new RectangleF(0, 0, 512, 512);
-var dc = SurfaceDc.CreateWithAspect(surface, AspectMode.Fit, ref viewport, out _);
-// Your 512x512 stays 512x512. Adds black bars if display aspect differs.
-```
+- **Fit** - Scales to fit, adds letterboxing if needed (viewport stays 512x512)
+- **Fill** - Scales to fill, crops edges if needed (viewport stays 512x512)
+- **Native** - No scaling, 1:1 pixel mapping (viewport stays 512x512)
+- **FitAndExpand** - Scales to fit, expands viewport to available space (modifies viewport to e.g., 512x384)
+- **FillAndContract** - Scales to fill, contracts viewport to visible area (modifies viewport to e.g., 384x512)
 
-**AspectMode.Fill** - Scales uniformly to fill, crops edges if needed
-```csharp
-var viewport = new RectangleF(0, 0, 512, 512);
-var dc = SurfaceDc.CreateWithAspect(surface, AspectMode.Fill, ref viewport, out _);
-// Your 512x512 stays 512x512. Some content may be off-screen if display aspect differs.
-```
-
-**AspectMode.Native** - No scaling, 1:1 pixel mapping
-```csharp
-var viewport = new RectangleF(0, 0, 512, 512);
-var dc = SurfaceDc.CreateWithAspect(surface, AspectMode.Native, ref viewport, out _);
-// Pixel-perfect, but UI won't adapt to different display sizes
-```
-
-**AspectMode.FitAndExpand** - Scales to fit, expands viewport to use available space
 ```csharp
 var viewport = new RectangleF(0, 0, 512, 512);
 var dc = SurfaceDc.CreateWithAspect(surface, AspectMode.FitAndExpand, ref viewport, out _);
-// viewport dimensions modified to match display's aspect (e.g., 512x384 or 682x512)
-// No letterboxing - you get more coordinate space to use
 Echo($"Available space: {viewport.Width}x{viewport.Height}");
-```
-
-**AspectMode.FillAndContract** - Scales to fill, contracts viewport to visible area
-```csharp
-var viewport = new RectangleF(0, 0, 512, 512);
-var dc = SurfaceDc.CreateWithAspect(surface, AspectMode.FillAndContract, ref viewport, out _);
-// viewport dimensions modified to show only visible area (e.g., 384x512 or 512x682)
-// No cropping - viewport shows exactly what's on screen
-Echo($"Visible area: {viewport.Width}x{viewport.Height}");
 ```
 
 ## Drawing Operations
 
-### Rectangles
 ```csharp
+// Rectangles and sprites
 dc.Rect(paint, new RectangleF(x, y, width, height));
 dc.Sprite("CircleHollow", Color.White, new RectangleF(x, y, 50, 50));
-```
 
-### Lines
-```csharp
+// Lines
 dc.Line(paint, from, to, thickness);
-dc.Line(paint, from, to, thickness, capped: true);  // With end caps
-```
+dc.Line(paint, from, to, thickness, capped: true);  // With rounded end caps
 
-### Text
-```csharp
+// Text
 var font = dc.GetFont("Debug");  // or "Monospace"
 dc.Text(font, paint, "Hello", new Vector2(x, y), 20f);
 dc.Text(font, paint, "Title", new Vector2(x, y), 24f, TextAlignment.CENTER);
-dc.Text(font, paint, "Right", new Vector2(x, y), 18f, TextAlignment.RIGHT);
-```
-
-### Measuring Text
-```csharp
-var size = dc.MeasureText(font, "Hello", 20f);  // Returns physical pixel size
+var size = dc.MeasureText(font, "Hello", 20f);  // Returns virtual pixel size
 ```
 
 ## Transforms
 
 ```csharp
-// Translate
+// Translate, scale, rotate
 dc.Transform = Transform.Identity.Translate(new Vector2(100, 50));
-dc.Rect(paint, new RectangleF(0, 0, 50, 50)); // Draws at (100, 50)
-
-// Scale
 dc.Transform = Transform.Identity.Scale(2f);
-
-// Rotate (radians)
 dc.Transform = Transform.Identity.Rotate(MathHelper.PiOver4);
 
-// Chain
+// Chain transforms
 dc.Transform = Transform.Identity.Translate(center).Rotate(angle).Scale(scale);
 
 // Push/Pop for nested transforms
@@ -200,25 +148,19 @@ using (dc.Push())
 {
     dc.Transform = dc.Transform.Translate(new Vector2(100, 100));
     DrawWidget();
-} // Transform restored
+} // Transform and clip automatically restored
 ```
 
 ## Clipping
 
 ```csharp
-dc.ClipRect = new RectangleF(50, 50, 400, 400);
+dc.ClipRect = new RectangleF(50, 50, 400, 400);  // In physical pixels
 dc.Rect(paint, new RectangleF(0, 0, 500, 500));  // Only visible portion renders
-
-// Clipping also saved with Push/Pop
-using (dc.Push())
-{
-    dc.ClipRect = new RectangleF(100, 100, 200, 200);
-}
 ```
 
 ## Sprite Caching
 
-For static graphics that don't change every frame:
+Cache static graphics that don't change every frame:
 
 ```csharp
 Drawing _logo = new Drawing();
@@ -230,7 +172,6 @@ void DrawLogo(IDc dc)
     dc.Text(font, paint3, "LOGO", pos, 24f);
 }
 
-// In Main loop
 using (dc.BeginDraw())
 {
     _logo.Draw(dc, false, DrawLogo);  // Cached after first draw
@@ -239,46 +180,42 @@ using (dc.BeginDraw())
 
 ## Performance Tips
 
-1. **Reuse paints** - Create once, reuse in Main loop
-2. **Reuse fonts** - Get once and store
+1. **Reuse paints** - Create once in constructor, reuse in Main loop
+2. **Reuse fonts** - Get once and store as field
 3. **Use Drawing class** - Cache static graphics
 4. **One BeginDraw per frame** - Batch all drawing
-5. **Use Update10** - Usually sufficient for UI
+5. **Use Update10** - Usually sufficient for UI updates
 
 ## API Reference
 
 ### SurfaceDc
-- `Create(IMyTextSurface)` - Simple context
+- `Create(IMyTextSurface)` - Simple context without aspect handling
 - `CreateWithAspect(surface, mode, ref viewport, out physical)` - With aspect handling
-- `BeginDraw()` - Start frame
-- `Rect(IPaint, RectangleF)` - Draw rectangle
-- `Line(IPaint, Vector2, Vector2, float)` - Draw line
-- `Text(IFont, IPaint, string, Vector2, float, TextAlignment)` - Draw text
-- `Sprite(string, Color, RectangleF, float)` - Draw sprite
-- `MeasureText(IFont, string, float)` - Measure text
-- `GetFont(string)` - Get font by name
-- `Transform { get; set; }` - Current transform
-- `ClipRect { get; set; }` - Clipping rectangle
-- `Push()` - Save state
-- `Pop()` - Restore state
-
-### Paint Classes
-**Static:** `Paint(Color)`, `BackgroundPaint(surface)`, `ForegroundPaint(surface)`
-
-**Procedural:** `AccentPaint(base)`, `BackdropPaint(base)`, `SemanticPaint(base, color)`, `ContrastStepPaint(base, amount)`
-
-### Drawing
-- `Draw(IDc, bool force, Action<IDc>)` - Draw cached or regenerate
-- `Invalidate()` - Mark for regeneration
+- `BeginDraw()` / `EndDraw()` - Frame lifecycle (use `using` pattern)
+- `Rect(paint, rect)` - Draw filled rectangle
+- `Line(paint, from, to, thickness, capped)` - Draw line
+- `Text(font, paint, text, pos, size, alignment)` - Draw text
+- `Sprite(texture, color, rect, rotation)` - Draw sprite
+- `MeasureText(font, text, size)` - Measure text in virtual pixels
+- `GetFont(name)` - Get font ("Debug" or "Monospace")
+- `Transform` - Current transform applied to all drawing
+- `ClipRect` - Clipping rectangle in physical pixels
+- `Push()` / `Pop()` - Save/restore state
+- `BeginCapture()` / `EndCapture()` - Capture sprites for replay
 
 ### Transform
-- `Identity` - Identity transform
-- `Translate(Vector2)`, `Scale(float)`, `Rotate(float)` - Add transforms
-- `operator *(Transform, Transform)` - Combine
-- `TransformPoint(Vector2)`, `TransformRectCenter(RectangleF)` - Apply
+- `Identity` - No transformation
+- `Translate(offset)`, `Scale(scale)`, `Rotate(radians)` - Build transforms
+- `operator *` - Combine transforms
+- `TransformPoint(point)` - Apply to point
+- `TransformVector(vector)` - Apply to direction (no translation)
+- `TransformRectCenter(rect)` - Transform rectangle by center
+- `InverseTransformPoint(point)` - Reverse transform
 
-### AspectMode
-`Native`, `Fit`, `Fill`, `FitAndExpand`, `FillAndContract`
+### Drawing
+- `Draw(dc, force, drawAction)` - Draw cached or regenerate
+- `Invalidate()` - Mark for regeneration
+
 
 ---
 

@@ -50,7 +50,7 @@ dotnet add package Mal.MdkScriptMixin.Graphics
 Add this to your `.csproj` file:
 
 ```xml
-<PackageReference Include="Mal.MdkScriptMixin.Graphics" Version="1.0.0" />
+<PackageReference Include="Mal.MdkScriptMixin.Graphics" Version="1.0.1" />
 ```
 
 ---
