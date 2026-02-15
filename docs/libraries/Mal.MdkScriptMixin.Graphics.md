@@ -1,7 +1,7 @@
 # Mal.MdkScriptMixin.Graphics
 
 > [!NOTE]
-> **Version:** 2.0.0  
+> **Version:** 2.0.1  
 > **Authors:** Malware  
 > **Package:** `Mal.MdkScriptMixin.Graphics`
 > 

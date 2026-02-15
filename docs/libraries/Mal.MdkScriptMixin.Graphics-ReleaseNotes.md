@@ -1,6 +1,9 @@
 # Release Notes - Mal.MdkScriptMixin.Graphics
 
 ````````text
+2.0.1
+- Fixed AddSprites taking a list instead of an IReadOnlyList
+
 2.0.0
 - BREAKING CHANGES: MeasureText moved from IDc to IFont interface (call font.MeasureText() instead of dc.MeasureText())
 - Added BeginDraw(bool render) parameter to control whether sprites are rendered to surface
