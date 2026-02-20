@@ -1,6 +1,9 @@
 # Release Notes - Mal.MdkScriptMixin.Graphics
 
 ````````text
+2.0.2
+- Added AlphaPaint for altering the alpha value of an existing paint
+
 2.0.1
 - Fixed AddSprites taking a list instead of an IReadOnlyList
 
@@ -24,4 +27,4 @@
 
 ---
 
-*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-02-15*
+*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-02-20*

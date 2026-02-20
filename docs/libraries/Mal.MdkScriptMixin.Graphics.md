@@ -1,7 +1,7 @@
 # Mal.MdkScriptMixin.Graphics
 
 > [!NOTE]
-> **Version:** 2.0.1  
+> **Version:** 2.0.2  
 > **Authors:** Malware  
 > **Package:** `Mal.MdkScriptMixin.Graphics`
 > 
@@ -518,4 +518,4 @@ using (dc.BeginDraw())
 
 ---
 
-*Documentation auto-generated from package metadata. Last updated: 2026-02-15*
+*Documentation auto-generated from package metadata. Last updated: 2026-02-20*
