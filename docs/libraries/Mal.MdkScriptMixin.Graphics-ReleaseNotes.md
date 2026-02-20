@@ -1,6 +1,9 @@
 # Release Notes - Mal.MdkScriptMixin.Graphics
 
 ````````text
+2.0.3
+- Fixed AlphaPaint using the wrong data type for alpha value
+
 2.0.2
 - Added AlphaPaint for altering the alpha value of an existing paint
 
