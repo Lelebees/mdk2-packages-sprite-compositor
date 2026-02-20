@@ -1,3 +1,6 @@
+2.0.2
+- Added AlphaPaint for altering the alpha value of an existing paint
+
 2.0.1
 - Fixed AddSprites taking a list instead of an IReadOnlyList
 
