@@ -14,6 +14,13 @@
     <Content Include="$(MSBuildThisFileDirectory)_version" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)src\sprite\" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\anchor\Anchor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\anchor\PointAnchor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\angle\Angle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\angle\AngleType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Sprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteLeaf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\TextureSprite.cs" />
   </ItemGroup>
 </Project>
