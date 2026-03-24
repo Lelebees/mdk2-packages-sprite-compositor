@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -44,5 +45,19 @@ namespace IngameScript
         public abstract void Scale(float amount);
 
         public abstract void Rotate(Angle angle, Anchor anchor = null);
+        public abstract Sprite Clone();
+        public List<MySprite> ToDrawableList(RectangleF viewport)
+        {
+            var copy = new MySprite(
+                Sprite.Type,
+                Sprite.Data,
+                Sprite.Position + viewport.Center,
+                Sprite.Size,
+                Sprite.Color,
+                Sprite.FontId,
+                Sprite.Alignment,
+                Sprite.RotationOrScale);
+            return new List<MySprite> { copy };
+        }
     }
 }

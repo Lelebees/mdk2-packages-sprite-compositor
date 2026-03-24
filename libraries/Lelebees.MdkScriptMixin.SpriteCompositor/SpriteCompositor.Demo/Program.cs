@@ -22,51 +22,53 @@ namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
-        // This file contains your actual script.
-        //
-        // You can either keep all your code here, or you can create separate
-        // code files to make your program easier to navigate while coding.
-        //
-        // Go to:
-        // https://github.com/malware-dev/MDK-SE/wiki/Quick-Introduction-to-Space-Engineers-Ingame-Scripts
-        //
-        // to learn more about ingame scripts.
+        private readonly IMyTextSurface surface;
+        private Sprite sunSprite;
+        private RectangleF _viewport;
 
         public Program()
         {
-            // The constructor, called only once every session and
-            // always before any other method is called. Use it to
-            // initialize your script. 
-            //     
-            // The constructor is optional and can be removed if not
-            // needed.
-            // 
-            // It's recommended to set Runtime.UpdateFrequency 
-            // here, which will allow your script to run itself without a 
-            // timer block.
+            surface = Me.GetSurface(0);
+            surface.ContentType = ContentType.SCRIPT;
+            surface.Script = "";
+            _viewport = new RectangleF(
+                (surface.TextureSize - surface.SurfaceSize) / 2f,
+                surface.SurfaceSize
+            );
+
+            Runtime.UpdateFrequency = UpdateFrequency.Update100;
+
+            var sunRayMiddle = new TextureSprite("SquareSimple");
+            sunRayMiddle.SetSize(new Vector2(20, 5));
+            var sunRayCapRight = new TextureSprite("SemiCircle");
+            sunRayCapRight.SetSize(new Vector2(5, 20));
+            var sunRayCapLeft = sunRayCapRight.Clone();
+            sunRayCapRight.Rotate(new Angle(90, AngleUnit.Degrees));
+            sunRayCapRight.Translate(new Vector2(10, 0));
+            sunRayCapLeft.Rotate(new Angle(-90, AngleUnit.Degrees));
+            sunRayCapLeft.Translate(new Vector2(-10, 0));
+
+            var sunRay = new SpriteGroup(new List<Sprite> { sunRayCapLeft, sunRayMiddle, sunRayCapRight });
+            sunRay.Translate(new Vector2(50, 0));
+
+            var sunBody = new TextureSprite("Circle");
+            sunBody.SetSize(new Vector2(50, 50));
+            
+            var allRays = Sprites.RepeatRotated(sunRay, 4, sunBody, new Angle(90, AngleUnit.Degrees));
+            allRays.Add(sunBody);
+            sunSprite = new SpriteGroup(allRays);
+            sunSprite.SetColor(Color.Yellow);
         }
 
         public void Save()
         {
-            // Called when the program needs to save its state. Use
-            // this method to save your state to the Storage field
-            // or some other means. 
-            // 
-            // This method is optional and can be removed if not
-            // needed.
         }
 
         public void Main(string argument, UpdateType updateSource)
         {
-            // The main entry point of the script, invoked every time
-            // one of the programmable block's Run actions are invoked,
-            // or the script updates itself. The updateSource argument
-            // describes where the update came from. Be aware that the
-            // updateSource is a  bitfield  and might contain more than 
-            // one update type.
-            // 
-            // The method itself is required, but the arguments above
-            // can be removed if not needed.
+            var frame = surface.DrawFrame();
+            frame.AddRange(sunSprite.ToDrawableList(_viewport));
+            frame.Dispose();
         }
     }
 }

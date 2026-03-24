@@ -4,21 +4,15 @@ using VRageMath;
 
 namespace IngameScript
 {
-    public class TextureSprite : SpriteLeaf
+    public class ClippingSprite : SpriteLeaf
     {
-        public TextureSprite(string texturePath = null) : base(new MySprite(type: SpriteType.TEXTURE,
-            position: Vector2.Zero, rotation: 0, data: texturePath))
+        private ClippingSprite(MySprite sprite) : base(sprite)
         {
         }
 
-        private TextureSprite(MySprite sprite) : base(sprite)
+        public ClippingSprite() : base(new MySprite(type: SpriteType.CLIP_RECT))
         {
             
-        }
-
-        public void SetTexture(string texturePath)
-        {
-            Sprite.Data = texturePath;
         }
 
         public override void Scale(float amount)
@@ -51,17 +45,12 @@ namespace IngameScript
             position.X = (float)(cos * (position.X - anchorX) + (position.Y + anchorY) * sin + anchorX);
             position.Y = (float)(-1 * sin * (position.X - anchorX) + cos * (position.Y - anchorY) + anchorY);
             Sprite.Position = position;
-            Sprite.RotationOrScale += (float)angle.AsRadians();
+            Sprite.RotationOrScale = (float)angle.AsRadians();
         }
 
         public override Sprite Clone()
         {
-            return new TextureSprite(Sprite);
-        }
-
-        public void SetSize(Vector2 size)
-        {
-            Sprite.Size = size;
+            return new ClippingSprite(Sprite);
         }
     }
 }

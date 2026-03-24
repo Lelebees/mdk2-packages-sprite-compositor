@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -15,7 +16,6 @@ namespace IngameScript
 
         public Vector2 GetPosition()
         {
-            
             //TODO: implement this
             return new Vector2(0, 0);
         }
@@ -45,6 +45,16 @@ namespace IngameScript
         {
             if (anchor == null) anchor = this;
             children.ForEach(sprite => sprite.Rotate(angle, anchor));
+        }
+
+        public Sprite Clone()
+        {
+            return new SpriteGroup(children.Select(sprite => sprite.Clone()).ToList());
+        }
+
+        public List<MySprite> ToDrawableList(RectangleF viewport)
+        {
+            return children.SelectMany(child => child.ToDrawableList(viewport)).ToList();
         }
     }
 }

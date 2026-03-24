@@ -17,10 +17,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\anchor\Anchor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\anchor\PointAnchor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\angle\Angle.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\angle\AngleType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\angle\AngleUnit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\ClippingSprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Sprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteGroup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteLeaf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\TextSprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\TextureSprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\util\Sprites.cs" />
   </ItemGroup>
 </Project>
