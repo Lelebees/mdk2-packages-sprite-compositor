@@ -13,7 +13,6 @@ namespace IngameScript
 
         private TextureSprite(MySprite sprite) : base(sprite)
         {
-            
         }
 
         public void SetTexture(string texturePath)
@@ -41,16 +40,16 @@ namespace IngameScript
                 anchor = this;
             }
 
-            var cos = Math.Cos(angle.AsRadians());
-            var sin = Math.Sin(angle.AsRadians());
+            var cos = Math.Cos(-1 * angle.AsRadians());
+            var sin = Math.Sin(-1 * angle.AsRadians());
 
             var anchorX = anchor.GetPosition().X;
             var anchorY = anchor.GetPosition().Y;
 
             var position = Sprite.Position ?? Vector2.Zero;
-            position.X = (float)(cos * (position.X - anchorX) + (position.Y + anchorY) * sin + anchorX);
-            position.Y = (float)(-1 * sin * (position.X - anchorX) + cos * (position.Y - anchorY) + anchorY);
-            Sprite.Position = position;
+            var posX = (float)(cos * (position.X - anchorX) + (position.Y - anchorY) * sin + anchorX);
+            var posY = (float)(-1 * sin * (position.X - anchorX) + cos * (position.Y - anchorY) + anchorY);
+            Sprite.Position = new Vector2(posX, posY);
             Sprite.RotationOrScale += (float)angle.AsRadians();
         }
 

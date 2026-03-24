@@ -23,20 +23,20 @@ namespace IngameScript
     public partial class Program : MyGridProgram
     {
         private readonly IMyTextSurface surface;
-        private Sprite sunSprite;
-        private RectangleF _viewport;
+        private readonly Sprite sunSprite;
+        private readonly RectangleF viewport;
 
         public Program()
         {
             surface = Me.GetSurface(0);
             surface.ContentType = ContentType.SCRIPT;
             surface.Script = "";
-            _viewport = new RectangleF(
+            viewport = new RectangleF(
                 (surface.TextureSize - surface.SurfaceSize) / 2f,
                 surface.SurfaceSize
             );
 
-            Runtime.UpdateFrequency = UpdateFrequency.Update100;
+            Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
             var sunRayMiddle = new TextureSprite("SquareSimple");
             sunRayMiddle.SetSize(new Vector2(20, 5));
@@ -53,8 +53,7 @@ namespace IngameScript
 
             var sunBody = new TextureSprite("Circle");
             sunBody.SetSize(new Vector2(50, 50));
-            
-            var allRays = Sprites.RepeatRotated(sunRay, 4, sunBody, new Angle(90, AngleUnit.Degrees));
+            var allRays = Sprites.RepeatRotated(sunRay, 12, sunBody);
             allRays.Add(sunBody);
             sunSprite = new SpriteGroup(allRays);
             sunSprite.SetColor(Color.Yellow);
@@ -67,7 +66,7 @@ namespace IngameScript
         public void Main(string argument, UpdateType updateSource)
         {
             var frame = surface.DrawFrame();
-            frame.AddRange(sunSprite.ToDrawableList(_viewport));
+            frame.AddRange(sunSprite.ToDrawableList(viewport));
             frame.Dispose();
         }
     }
