@@ -42,11 +42,10 @@ namespace IngameScript
             sunRayMiddle.SetSize(new Vector2(20, 5));
             var sunRayCapRight = new TextureSprite("SemiCircle");
             sunRayCapRight.SetSize(new Vector2(5, 20));
-            var sunRayCapLeft = sunRayCapRight.Clone();
             sunRayCapRight.Rotate(new Angle(90, AngleUnit.Degrees));
-            sunRayCapRight.Translate(new Vector2(10, 0));
-            sunRayCapLeft.Rotate(new Angle(-90, AngleUnit.Degrees));
-            sunRayCapLeft.Translate(new Vector2(-10, 0));
+            sunRayCapRight.Translate(new Vector2(9, 0));
+            var sunRayCapLeft = sunRayCapRight.Clone();
+            sunRayCapLeft.Rotate(new Angle(180, AngleUnit.Degrees), sunRayMiddle);
 
             var sunRay = new SpriteGroup(new List<Sprite> { sunRayCapLeft, sunRayMiddle, sunRayCapRight });
             sunRay.Translate(new Vector2(50, 0));
@@ -59,14 +58,10 @@ namespace IngameScript
             sunSprite.SetColor(Color.Yellow);
         }
 
-        public void Save()
-        {
-        }
-
         public void Main(string argument, UpdateType updateSource)
         {
             var frame = surface.DrawFrame();
-            frame.AddRange(sunSprite.ToDrawableList(viewport));
+            frame.AddRange(sunSprite.AsDrawableCollection(viewport));
             frame.Dispose();
         }
     }

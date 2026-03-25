@@ -16,8 +16,7 @@ namespace IngameScript
 
         public Vector2 GetPosition()
         {
-            //TODO: implement this
-            return new Vector2(0, 0);
+            return children.Aggregate(Vector2.Zero, (current, child) => current + child.GetPosition()) / children.Count;
         }
 
         public void Translate(Vector2 vector)
@@ -52,9 +51,9 @@ namespace IngameScript
             return new SpriteGroup(children.Select(sprite => sprite.Clone()).ToList());
         }
 
-        public List<MySprite> ToDrawableList(RectangleF viewport)
+        public MySprite[] AsDrawableCollection(RectangleF viewport)
         {
-            return children.SelectMany(child => child.ToDrawableList(viewport)).ToList();
+            return children.SelectMany(child => child.AsDrawableCollection(viewport)).ToArray();
         }
     }
 }

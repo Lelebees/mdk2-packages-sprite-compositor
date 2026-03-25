@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -27,6 +26,11 @@ namespace IngameScript
         /// <returns>A new instance of the sprite</returns>
         Sprite Clone();
 
-        List<MySprite> ToDrawableList(RectangleF viewport);
+        /// <summary>
+        /// Converts the sprite to a collection of sprites that Space Engineers can actually draw.
+        /// </summary>
+        /// <param name="viewport">The size of the screen the sprite(s) are to be drawn to. Moves the sprites so that 0,0 is the center of the screen.</param>
+        /// <returns>A collection of MySprite objects that can be drawn on a screen the size of viewport.</returns>
+        MySprite[] AsDrawableCollection(RectangleF viewport);
     }
 }
