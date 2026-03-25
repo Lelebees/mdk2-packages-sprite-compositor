@@ -56,6 +56,7 @@ namespace IngameScript
             allRays.Add(sunBody);
             sunSprite = new SpriteGroup(allRays);
             sunSprite.SetColor(Color.Yellow);
+            sunSprite.Scale(2);
         }
 
         public void Main(string argument, UpdateType updateSource)

@@ -15,7 +15,7 @@ namespace IngameScript
             
         }
 
-        public override void Scale(float amount)
+        public override void Scale(float amount, Anchor anchor = null)
         {
             if (Sprite.Size == null)
             {
@@ -26,6 +26,15 @@ namespace IngameScript
             size.X *= amount;
             size.Y *= amount;
             Sprite.Size = size;
+            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition())
+            {
+                return;
+            }
+
+            var anchorPos = anchor.GetPosition();
+            var distanceFromAnchor = this.GetPosition() - anchorPos;
+            distanceFromAnchor *= amount;
+            Sprite.Position =  anchorPos + distanceFromAnchor;
         }
 
         public override void Rotate(Angle angle, Anchor anchor = null)

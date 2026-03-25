@@ -26,9 +26,18 @@ namespace IngameScript
             Sprite.FontId = fontId;
         }
 
-        public override void Scale(float amount)
+        public override void Scale(float amount, Anchor anchor = null)
         {
             Sprite.RotationOrScale = amount;
+            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition())
+            {
+                return;
+            }
+
+            var anchorPos = anchor.GetPosition();
+            var distanceFromAnchor = this.GetPosition() - anchorPos;
+            distanceFromAnchor *= amount;
+            Sprite.Position =  anchorPos + distanceFromAnchor;
         }
 
         public override void Rotate(Angle angle, Anchor anchor = null)

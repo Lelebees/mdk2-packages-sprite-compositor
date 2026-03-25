@@ -34,10 +34,13 @@ namespace IngameScript
             children.ForEach(sprite => sprite.SetAlignment(alignment));
         }
 
-        public void Scale(float amount)
+        public void Scale(float amount, Anchor anchor = null)
         {
-            //TODO: Provide better implementation
-            children.ForEach(sprite => sprite.Scale(amount));
+            if (anchor == null)
+            {
+                anchor = this;
+            }
+            children.ForEach(sprite => sprite.Scale(amount, anchor));
         }
 
         public void Rotate(Angle angle, Anchor anchor = null)
