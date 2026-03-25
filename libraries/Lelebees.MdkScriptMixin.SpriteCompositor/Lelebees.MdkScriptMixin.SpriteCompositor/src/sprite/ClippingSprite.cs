@@ -12,7 +12,6 @@ namespace IngameScript
 
         public ClippingSprite() : base(new MySprite(type: SpriteType.CLIP_RECT))
         {
-            
         }
 
         public override void Scale(float scalar, Anchor anchor = null)
@@ -39,7 +38,7 @@ namespace IngameScript
             var anchorPos = anchor.GetPosition();
             var distanceFromAnchor = this.GetPosition() - anchorPos;
             distanceFromAnchor *= scalar;
-            Sprite.Position =  anchorPos + distanceFromAnchor;
+            Sprite.Position = anchorPos + distanceFromAnchor;
         }
 
         public override void Rotate(Angle angle, Anchor anchor = null)
@@ -49,8 +48,8 @@ namespace IngameScript
                 anchor = this;
             }
 
-            var cos = Math.Cos(angle.AsRadians());
-            var sin = Math.Sin(angle.AsRadians());
+            var cos = Math.Cos(-angle.AsRadians());
+            var sin = Math.Sin(-angle.AsRadians());
 
             var anchorX = anchor.GetPosition().X;
             var anchorY = anchor.GetPosition().Y;
