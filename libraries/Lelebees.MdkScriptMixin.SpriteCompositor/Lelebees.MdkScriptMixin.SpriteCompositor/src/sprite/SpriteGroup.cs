@@ -38,7 +38,7 @@ namespace IngameScript
         {
             if (anchor == null)
             {
-                anchor = this;
+                anchor = new PointAnchor(GetPosition());
             }
             children.ForEach(sprite => sprite.Scale(amount, anchor));
         }
