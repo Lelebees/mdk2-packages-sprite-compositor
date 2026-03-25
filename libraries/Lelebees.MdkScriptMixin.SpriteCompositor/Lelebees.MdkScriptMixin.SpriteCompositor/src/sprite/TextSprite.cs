@@ -73,5 +73,61 @@ namespace IngameScript
         {
             return new TextSprite(Sprite);
         }
+        
+        public class Builder
+        {
+            private MySprite sprite = new MySprite(type: SpriteType.TEXT);
+
+            public Builder Text(string text)
+            {
+                sprite.Data = text;
+                return this;
+            }
+
+            public Builder FontId(string fontId)
+            {
+                sprite.FontId = fontId;
+                return this;
+            }
+
+            public Builder Position(float x, float y)
+            {
+                return Position(new Vector2(x, y));
+            }
+            
+            public Builder Position(Vector2 position)
+            {
+                sprite.Position = position;
+                return this;
+            }
+
+            public Builder Scale(float scale)
+            {
+                sprite.RotationOrScale = scale;
+                return this;
+            }
+
+            public Builder Color(Color color)
+            {
+                sprite.Color = color;
+                return this;
+            }
+
+            public Builder Alignment(TextAlignment alignment)
+            {
+                sprite.Alignment = alignment;
+                return this;
+            }
+
+            public TextSprite Build()
+            {
+                return new TextSprite(sprite);
+            }
+        }
+
+        public static Builder GetBuilder()
+        {
+            return new Builder();
+        }
     }
 }

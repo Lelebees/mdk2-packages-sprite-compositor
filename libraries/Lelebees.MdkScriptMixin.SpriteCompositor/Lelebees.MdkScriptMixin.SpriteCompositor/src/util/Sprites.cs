@@ -14,8 +14,7 @@ namespace IngameScript
         /// <returns>The resulting list of sprites, which includes the original sprite (though no operation has been applied to that sprite)</returns>
         public static List<Sprite> RepeatRotated(Sprite spriteToRepeat, int timesToRepeat, Anchor rotationAnchor)
         {
-            double anglePerItem = 2 * Math.PI / timesToRepeat;
-            Angle stepSize = new Angle(anglePerItem, AngleUnit.Radians);
+            Angle stepSize = Angle.FromRadians(2 * Math.PI / timesToRepeat);
             return RepeatRotated(spriteToRepeat, timesToRepeat, rotationAnchor, stepSize);
         }
 
@@ -30,10 +29,10 @@ namespace IngameScript
         public static List<Sprite> RepeatRotated(Sprite spriteToRepeat, int timesToRepeat, Anchor rotationAnchor,
             Angle stepSize)
         {
-            List<Sprite> resultingSprites = new List<Sprite> { spriteToRepeat };
+            List<Sprite> resultingSprites = new List<Sprite> (timesToRepeat) { spriteToRepeat };
             for (var i = 1; i < timesToRepeat; i++)
             {
-                var newAngle = new Angle(stepSize.AsRadians() * i, AngleUnit.Radians);
+                var newAngle = Angle.FromRadians(stepSize.AsRadians() * i);
                 var newSprite = spriteToRepeat.Clone();
                 newSprite.Rotate(newAngle, rotationAnchor);
                 resultingSprites.Add(newSprite);

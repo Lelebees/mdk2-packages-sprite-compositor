@@ -7,28 +7,20 @@ namespace IngameScript
     /// </summary>
     public struct Angle
     {
+        public static Angle Right = FromRadians(0.5 * Math.PI);
+        public static Angle Straight = FromRadians(Math.PI);
+        public static Angle Full = FromRadians(2 * Math.PI);
+        
         private readonly double radians;
 
-        public Angle(double angle, AngleUnit unit)
+        private Angle(double radians)
         {
-            if (unit == AngleUnit.Degrees)
+            // Normalize the angle to be within a single rotation
+            if (radians >= 2 * Math.PI || radians <= -2 * Math.PI)
             {
-                angle = angle * Math.PI / 180;
+                radians %= 2 * Math.PI;
             }
-
-            while (angle > 2 * Math.PI || angle < -2 * Math.PI)
-            {
-                if (angle > 0)
-                {
-                    angle -= 2 * Math.PI;
-                }
-
-                if (angle < 0)
-                {
-                    angle += 2 * Math.PI;
-                }
-            }
-            radians = angle;
+            this.radians = radians;
         }
 
         public double AsRadians()
@@ -41,9 +33,19 @@ namespace IngameScript
             return radians * 180 / Math.PI;
         }
 
+        public static Angle FromDegrees(double degrees)
+        {
+            return new Angle(degrees * Math.PI / 180);
+        }
+
+        public static Angle FromRadians(double radians)
+        {
+            return new Angle(radians);
+        }
+        
         public static Angle Add(Angle a, Angle b)
         {
-            return new Angle(a.AsRadians() + b.AsRadians(), AngleUnit.Radians);
+            return FromRadians(a.AsRadians() + b.AsRadians());
         }
     }
 }

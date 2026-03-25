@@ -17,7 +17,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\anchor\Anchor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\anchor\PointAnchor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\angle\Angle.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\angle\AngleUnit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\ClippingSprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Sprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteGroup.cs" />

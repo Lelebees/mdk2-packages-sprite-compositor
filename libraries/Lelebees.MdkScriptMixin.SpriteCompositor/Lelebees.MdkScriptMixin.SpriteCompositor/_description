@@ -1,1 +1,1 @@
-Advanced Sprite Compositor for the Sprite API in Space Engineers
+A more advanced API for interacting with the SE's native sprite api. Core functionality is composing a new sprite by grouping a collection of sprites, allowing you to treat them as if they were one sprite.

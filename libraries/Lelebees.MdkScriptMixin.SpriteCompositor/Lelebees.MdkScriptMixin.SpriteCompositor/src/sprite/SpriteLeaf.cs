@@ -31,6 +31,11 @@ namespace IngameScript
             Sprite.Position = position;
         }
 
+        public void Translate(float x, float y)
+        {
+            Translate(new Vector2(x,y));
+        }
+
         public void SetColor(Color color)
         {
             Sprite.Color = color;
@@ -52,6 +57,20 @@ namespace IngameScript
                 Sprite.Type,
                 Sprite.Data,
                 Sprite.Position + viewport.Center,
+                Sprite.Size,
+                Sprite.Color,
+                Sprite.FontId,
+                Sprite.Alignment,
+                Sprite.RotationOrScale);
+            return new[] { copy };
+        }
+
+        public MySprite[] AsDrawableCollection()
+        {
+            var copy = new MySprite(
+                Sprite.Type,
+                Sprite.Data,
+                Sprite.Position,
                 Sprite.Size,
                 Sprite.Color,
                 Sprite.FontId,

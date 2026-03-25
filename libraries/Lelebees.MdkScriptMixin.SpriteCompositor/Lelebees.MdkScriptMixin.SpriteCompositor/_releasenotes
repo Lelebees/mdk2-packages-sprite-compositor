@@ -1,2 +1,6 @@
 - 1.0.0
-    Added everything
+    Support Text and Image sprites.
+    Support translating sprites.
+    Support rotating sprites around an arbitrary point or another sprite.
+    Support scaling sprite groups as if they were one sprite, in multiple dimensions.
+    Support recoloring groups of sprites

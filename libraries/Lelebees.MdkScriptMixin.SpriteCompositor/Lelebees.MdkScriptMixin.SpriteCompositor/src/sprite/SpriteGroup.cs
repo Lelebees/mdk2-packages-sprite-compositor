@@ -24,6 +24,11 @@ namespace IngameScript
             children.ForEach(sprite => sprite.Translate(vector));
         }
 
+        public void Translate(float x, float y)
+        {
+            Translate(new Vector2(x, y));
+        }
+
         public void SetColor(Color color)
         {
             children.ForEach(sprite => sprite.SetColor(color));
@@ -41,16 +46,33 @@ namespace IngameScript
 
         public void Scale(Vector2 scalar, Anchor anchor = null)
         {
+            // See the rotate function for why we're doing this.
             if (anchor == null)
             {
                 anchor = new PointAnchor(GetPosition());
             }
+            else if (anchor is SpriteGroup)
+            {
+                anchor = new PointAnchor(anchor.GetPosition());
+            }
+
             children.ForEach(sprite => sprite.Scale(scalar, anchor));
         }
 
         public void Rotate(Angle angle, Anchor anchor = null)
         {
-            if (anchor == null) anchor = this;
+            // it is VITALLY important to create a PointAnchor here. If we don't,
+            // the process of rotating sprites will adjust this groups center, and therefore it's position
+            // this causes sprites to spiral away from the center of rotation.
+            if (anchor == null)
+            {
+                anchor = new PointAnchor(GetPosition());
+            }
+            // Safeguard if someone passes this group or a subgroup of this group as an anchor.
+            else if (anchor is SpriteGroup)
+            {
+                anchor = new PointAnchor(anchor.GetPosition());
+            }
             children.ForEach(sprite => sprite.Rotate(angle, anchor));
         }
 
@@ -62,6 +84,11 @@ namespace IngameScript
         public MySprite[] AsDrawableCollection(RectangleF viewport)
         {
             return children.SelectMany(child => child.AsDrawableCollection(viewport)).ToArray();
+        }
+
+        public MySprite[] AsDrawableCollection()
+        {
+            return children.SelectMany(child => child.AsDrawableCollection()).ToArray();
         }
     }
 }

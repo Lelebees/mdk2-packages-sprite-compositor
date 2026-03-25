@@ -44,27 +44,24 @@ namespace IngameScript
             var anchorPos = anchor.GetPosition();
             var distanceFromAnchor = this.GetPosition() - anchorPos;
             distanceFromAnchor *= scalar;
-            Sprite.Position =  anchorPos + distanceFromAnchor;
+            Sprite.Position = anchorPos + distanceFromAnchor;
         }
 
         public override void Rotate(Angle angle, Anchor anchor = null)
         {
-            if (anchor == null)
-            {
-                anchor = this;
-            }
+            Sprite.RotationOrScale += (float)angle.AsRadians();
+            
+            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition()) return;
 
-            var cos = Math.Cos(-1 * angle.AsRadians());
-            var sin = Math.Sin(-1 * angle.AsRadians());
+            var cos = Math.Cos(-angle.AsRadians());
+            var sin = Math.Sin(-angle.AsRadians());
 
-            var anchorX = anchor.GetPosition().X;
-            var anchorY = anchor.GetPosition().Y;
+            var anchorPos = anchor.GetPosition();
 
             var position = Sprite.Position ?? Vector2.Zero;
-            var posX = (float)(cos * (position.X - anchorX) + (position.Y - anchorY) * sin + anchorX);
-            var posY = (float)(-1 * sin * (position.X - anchorX) + cos * (position.Y - anchorY) + anchorY);
+            var posX = (float)(cos * (position.X - anchorPos.X) + (position.Y - anchorPos.Y) * sin + anchorPos.X);
+            var posY = (float)(-1 * sin * (position.X - anchorPos.X) + cos * (position.Y - anchorPos.Y) + anchorPos.Y);
             Sprite.Position = new Vector2(posX, posY);
-            Sprite.RotationOrScale += (float)angle.AsRadians();
         }
 
         public override Sprite Clone()
@@ -75,6 +72,67 @@ namespace IngameScript
         public void SetSize(Vector2 size)
         {
             Sprite.Size = size;
+        }
+
+        public static Builder GetBuilder()
+        {
+            return new Builder();
+        }
+
+        public class Builder
+        {
+            private MySprite sprite = new MySprite(type: SpriteType.TEXTURE);
+
+            public Builder Texture(string path)
+            {
+                sprite.Data = path;
+                return this;
+            }
+
+            public Builder Position(float x, float y)
+            {
+                return Position(new Vector2(x, y));
+            }
+            
+            public Builder Position(Vector2 position)
+            {
+                sprite.Position = position;
+                return this;
+            }
+
+            public Builder Rotation(Angle rotation)
+            {
+                sprite.RotationOrScale = (float) rotation.AsRadians();
+                return this;
+            }
+
+            public Builder Size(float width, float height)
+            {
+                return Size(new Vector2(width, height));
+            }
+
+            public Builder Size(Vector2 size)
+            {
+                sprite.Size = size;
+                return this;
+            }
+
+            public Builder Color(Color color)
+            {
+                sprite.Color = color;
+                return this;
+            }
+
+            public Builder Alignment(TextAlignment alignment)
+            {
+                sprite.Alignment = alignment;
+                return this;
+            }
+
+            public TextureSprite Build()
+            {
+                return new TextureSprite(sprite);
+            }
         }
     }
 }
