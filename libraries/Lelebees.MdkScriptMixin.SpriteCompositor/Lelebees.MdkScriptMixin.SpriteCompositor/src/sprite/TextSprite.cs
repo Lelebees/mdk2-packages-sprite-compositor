@@ -12,7 +12,6 @@ namespace IngameScript
 
         private TextSprite(MySprite sprite) : base(sprite)
         {
-            
         }
 
 
@@ -26,9 +25,20 @@ namespace IngameScript
             Sprite.FontId = fontId;
         }
 
-        public override void Scale(float amount, Anchor anchor = null)
+        public void SetScale(float scale)
         {
-            Sprite.RotationOrScale = amount;
+            Sprite.RotationOrScale = scale;
+        }
+
+        public override void Scale(float scalar, Anchor anchor = null)
+        {
+            Scale(new Vector2(scalar, scalar), anchor);
+        }
+
+        public override void Scale(Vector2 scalar, Anchor anchor = null)
+        {
+            // Text sprites don't really scale in 2 dimensions, so instead we'll take the average scale
+            Sprite.RotationOrScale = (scalar.X + scalar.Y) / 2;
             if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition())
             {
                 return;
@@ -36,8 +46,8 @@ namespace IngameScript
 
             var anchorPos = anchor.GetPosition();
             var distanceFromAnchor = this.GetPosition() - anchorPos;
-            distanceFromAnchor *= amount;
-            Sprite.Position =  anchorPos + distanceFromAnchor;
+            distanceFromAnchor *= scalar;
+            Sprite.Position = anchorPos + distanceFromAnchor;
         }
 
         public override void Rotate(Angle angle, Anchor anchor = null)
@@ -47,8 +57,8 @@ namespace IngameScript
                 return;
             }
 
-            var cos = Math.Cos(angle.AsRadians());
-            var sin = Math.Sin(angle.AsRadians());
+            var cos = Math.Cos(-angle.AsRadians());
+            var sin = Math.Sin(-angle.AsRadians());
 
             var anchorX = anchor.GetPosition().X;
             var anchorY = anchor.GetPosition().Y;

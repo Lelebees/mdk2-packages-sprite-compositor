@@ -12,7 +12,8 @@ namespace IngameScript
         void Translate(Vector2 vector);
         void SetColor(Color color);
         void SetAlignment(TextAlignment alignment);
-        void Scale(float amount, Anchor anchor = null);
+        void Scale(float scalar, Anchor anchor = null);
+        void Scale(Vector2 scalar, Anchor anchor = null);
         /// <summary>
         /// Rotates a sprite in clockwise direction around the given anchor
         /// </summary>

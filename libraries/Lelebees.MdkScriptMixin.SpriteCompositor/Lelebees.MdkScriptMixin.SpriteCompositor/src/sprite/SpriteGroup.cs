@@ -34,13 +34,18 @@ namespace IngameScript
             children.ForEach(sprite => sprite.SetAlignment(alignment));
         }
 
-        public void Scale(float amount, Anchor anchor = null)
+        public void Scale(float scalar, Anchor anchor = null)
+        {
+            Scale(new Vector2(scalar, scalar), anchor);
+        }
+
+        public void Scale(Vector2 scalar, Anchor anchor = null)
         {
             if (anchor == null)
             {
                 anchor = new PointAnchor(GetPosition());
             }
-            children.ForEach(sprite => sprite.Scale(amount, anchor));
+            children.ForEach(sprite => sprite.Scale(scalar, anchor));
         }
 
         public void Rotate(Angle angle, Anchor anchor = null)

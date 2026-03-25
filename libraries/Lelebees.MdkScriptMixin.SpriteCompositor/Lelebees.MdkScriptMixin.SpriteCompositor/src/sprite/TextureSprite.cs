@@ -20,7 +20,12 @@ namespace IngameScript
             Sprite.Data = texturePath;
         }
 
-        public override void Scale(float amount, Anchor anchor = null)
+        public override void Scale(float scalar, Anchor anchor = null)
+        {
+            Scale(new Vector2(scalar, scalar), anchor);
+        }
+
+        public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
             if (Sprite.Size == null)
             {
@@ -28,8 +33,8 @@ namespace IngameScript
             }
 
             var size = Sprite.Size.Value;
-            size.X *= amount;
-            size.Y *= amount;
+            size.X *= scalar.X;
+            size.Y *= scalar.Y;
             Sprite.Size = size;
             if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition())
             {
@@ -38,7 +43,7 @@ namespace IngameScript
 
             var anchorPos = anchor.GetPosition();
             var distanceFromAnchor = this.GetPosition() - anchorPos;
-            distanceFromAnchor *= amount;
+            distanceFromAnchor *= scalar;
             Sprite.Position =  anchorPos + distanceFromAnchor;
         }
 

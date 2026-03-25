@@ -41,7 +41,8 @@ namespace IngameScript
             Sprite.Alignment = alignment;
         }
 
-        public abstract void Scale(float amount, Anchor anchor = null);
+        public abstract void Scale(float scalar, Anchor anchor = null);
+        public abstract void Scale(Vector2 scalar, Anchor anchor = null);
 
         public abstract void Rotate(Angle angle, Anchor anchor = null);
         public abstract Sprite Clone();
