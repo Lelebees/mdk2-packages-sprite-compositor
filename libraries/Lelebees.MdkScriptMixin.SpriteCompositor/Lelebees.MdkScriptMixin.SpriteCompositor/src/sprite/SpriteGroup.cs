@@ -14,6 +14,11 @@ namespace IngameScript
             this.children = children;
         }
 
+        public SpriteGroup(params Sprite[] children)
+        {
+            this.children = children.ToList();
+        }
+
         public Vector2 GetPosition()
         {
             return children.Aggregate(Vector2.Zero, (current, child) => current + child.GetPosition()) / children.Count;

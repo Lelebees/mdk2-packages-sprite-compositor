@@ -10,7 +10,7 @@ namespace IngameScript
         public static Angle Right = FromRadians(0.5 * Math.PI);
         public static Angle Straight = FromRadians(Math.PI);
         public static Angle Full = FromRadians(2 * Math.PI);
-        
+
         private readonly double radians;
 
         private Angle(double radians)
@@ -20,6 +20,7 @@ namespace IngameScript
             {
                 radians %= 2 * Math.PI;
             }
+
             this.radians = radians;
         }
 
@@ -42,10 +43,21 @@ namespace IngameScript
         {
             return new Angle(radians);
         }
+
+        public static Angle operator +(Angle left, Angle right) => new Angle(left.radians + right.radians);
+
+        public static Angle operator +(Angle angle) => angle;
+
+        public static Angle operator -(Angle left, Angle right) => new Angle(left.radians - right.radians);
         
-        public static Angle Add(Angle a, Angle b)
-        {
-            return FromRadians(a.AsRadians() + b.AsRadians());
-        }
+        public static Angle operator -(Angle angle) => new Angle(-angle.radians);
+
+        public static Angle operator /(Angle nominator, double divisor) => new Angle(nominator.radians / divisor);
+
+        public static Angle operator *(Angle left, double right) => new Angle(left.radians * right);
+
+        public static bool operator <(Angle left, Angle right) => left.radians < right.radians;
+
+        public static bool operator >(Angle left, Angle right) => left.radians > right.radians;
     }
 }

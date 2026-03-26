@@ -41,11 +41,11 @@ namespace IngameScript
             Sprite.Position = anchorPos + distanceFromAnchor;
         }
 
-        public override void Rotate(Angle angle, Anchor anchor = null)
+        public override void Rotate(Angle angle, Anchor anchor)
         {
-            if (anchor == null)
+            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition())
             {
-                anchor = this;
+                return;
             }
 
             var cos = Math.Cos(-angle.AsRadians());
@@ -58,7 +58,6 @@ namespace IngameScript
             position.X = (float)(cos * (position.X - anchorX) + (position.Y + anchorY) * sin + anchorX);
             position.Y = (float)(-1 * sin * (position.X - anchorX) + cos * (position.Y - anchorY) + anchorY);
             Sprite.Position = position;
-            Sprite.RotationOrScale = (float)angle.AsRadians();
         }
 
         public override Sprite Clone()

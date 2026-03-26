@@ -74,46 +74,46 @@ namespace IngameScript
             return new TextSprite(Sprite);
         }
         
-        public class Builder
+        public class TextSpriteBuilder
         {
             private MySprite sprite = new MySprite(type: SpriteType.TEXT);
 
-            public Builder Text(string text)
+            public TextSpriteBuilder Text(string text)
             {
                 sprite.Data = text;
                 return this;
             }
 
-            public Builder FontId(string fontId)
+            public TextSpriteBuilder FontId(string fontId)
             {
                 sprite.FontId = fontId;
                 return this;
             }
 
-            public Builder Position(float x, float y)
+            public TextSpriteBuilder Position(float x, float y)
             {
                 return Position(new Vector2(x, y));
             }
             
-            public Builder Position(Vector2 position)
+            public TextSpriteBuilder Position(Vector2 position)
             {
                 sprite.Position = position;
                 return this;
             }
 
-            public Builder Scale(float scale)
+            public TextSpriteBuilder Scale(float scale)
             {
                 sprite.RotationOrScale = scale;
                 return this;
             }
 
-            public Builder Color(Color color)
+            public TextSpriteBuilder Color(Color color)
             {
                 sprite.Color = color;
                 return this;
             }
 
-            public Builder Alignment(TextAlignment alignment)
+            public TextSpriteBuilder Alignment(TextAlignment alignment)
             {
                 sprite.Alignment = alignment;
                 return this;
@@ -125,9 +125,9 @@ namespace IngameScript
             }
         }
 
-        public static Builder GetBuilder()
+        public static TextSpriteBuilder Builder()
         {
-            return new Builder();
+            return new TextSpriteBuilder();
         }
     }
 }

@@ -59,8 +59,8 @@ namespace IngameScript
             var anchorPos = anchor.GetPosition();
 
             var position = Sprite.Position ?? Vector2.Zero;
-            var posX = (float)(cos * (position.X - anchorPos.X) + (position.Y - anchorPos.Y) * sin + anchorPos.X);
-            var posY = (float)(-1 * sin * (position.X - anchorPos.X) + cos * (position.Y - anchorPos.Y) + anchorPos.Y);
+            var posX = (float)( cos * (position.X - anchorPos.X) + sin * (position.Y - anchorPos.Y) + anchorPos.X);
+            var posY = (float)(-sin * (position.X - anchorPos.X) + cos * (position.Y - anchorPos.Y) + anchorPos.Y);
             Sprite.Position = new Vector2(posX, posY);
         }
 
@@ -74,56 +74,56 @@ namespace IngameScript
             Sprite.Size = size;
         }
 
-        public static Builder GetBuilder()
+        public static TextureSpriteBuilder Builder()
         {
-            return new Builder();
+            return new TextureSpriteBuilder();
         }
 
-        public class Builder
+        public class TextureSpriteBuilder
         {
             private MySprite sprite = new MySprite(type: SpriteType.TEXTURE);
 
-            public Builder Texture(string path)
+            public TextureSpriteBuilder Texture(string path)
             {
                 sprite.Data = path;
                 return this;
             }
 
-            public Builder Position(float x, float y)
+            public TextureSpriteBuilder Position(float x, float y)
             {
                 return Position(new Vector2(x, y));
             }
             
-            public Builder Position(Vector2 position)
+            public TextureSpriteBuilder Position(Vector2 position)
             {
                 sprite.Position = position;
                 return this;
             }
 
-            public Builder Rotation(Angle rotation)
+            public TextureSpriteBuilder Rotation(Angle rotation)
             {
                 sprite.RotationOrScale = (float) rotation.AsRadians();
                 return this;
             }
 
-            public Builder Size(float width, float height)
+            public TextureSpriteBuilder Size(float width, float height)
             {
                 return Size(new Vector2(width, height));
             }
 
-            public Builder Size(Vector2 size)
+            public TextureSpriteBuilder Size(Vector2 size)
             {
                 sprite.Size = size;
                 return this;
             }
 
-            public Builder Color(Color color)
+            public TextureSpriteBuilder Color(Color color)
             {
                 sprite.Color = color;
                 return this;
             }
 
-            public Builder Alignment(TextAlignment alignment)
+            public TextureSpriteBuilder Alignment(TextAlignment alignment)
             {
                 sprite.Alignment = alignment;
                 return this;
