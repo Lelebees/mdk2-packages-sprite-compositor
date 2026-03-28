@@ -4,6 +4,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lelebees.MdkScriptMixin.Spr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriteCompositor.Demo", "SpriteCompositor.Demo\SpriteCompositor.Demo.csproj", "{86DF49B2-74C3-4A4B-8F5D-4F2FBEB0866C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriteCompositor.Test", "SpriteCompositor.Test\SpriteCompositor.Test.csproj", "{2A7DDEA6-FB3C-47A5-B856-BD0A37FC573C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -18,5 +20,9 @@ Global
 		{86DF49B2-74C3-4A4B-8F5D-4F2FBEB0866C}.Debug|x64.Build.0 = Debug|x64
 		{86DF49B2-74C3-4A4B-8F5D-4F2FBEB0866C}.Release|x64.ActiveCfg = Release|x64
 		{86DF49B2-74C3-4A4B-8F5D-4F2FBEB0866C}.Release|x64.Build.0 = Release|x64
+		{2A7DDEA6-FB3C-47A5-B856-BD0A37FC573C}.Debug|x64.ActiveCfg = Debug|x64
+		{2A7DDEA6-FB3C-47A5-B856-BD0A37FC573C}.Debug|x64.Build.0 = Debug|x64
+		{2A7DDEA6-FB3C-47A5-B856-BD0A37FC573C}.Release|x64.ActiveCfg = Release|x64
+		{2A7DDEA6-FB3C-47A5-B856-BD0A37FC573C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal

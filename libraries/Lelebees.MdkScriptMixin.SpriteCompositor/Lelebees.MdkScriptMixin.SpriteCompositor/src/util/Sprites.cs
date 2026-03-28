@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using VRageMath;
 
 namespace IngameScript
 {
@@ -29,7 +30,7 @@ namespace IngameScript
         public static List<Sprite> RepeatRotated(Sprite spriteToRepeat, int timesToRepeat, Anchor rotationAnchor,
             Angle stepSize)
         {
-            List<Sprite> resultingSprites = new List<Sprite> (timesToRepeat) { spriteToRepeat };
+            List<Sprite> resultingSprites = new List<Sprite>(timesToRepeat) { spriteToRepeat };
             for (var i = 1; i < timesToRepeat; i++)
             {
                 var newAngle = Angle.FromRadians(stepSize.AsRadians() * i);
@@ -39,6 +40,42 @@ namespace IngameScript
             }
 
             return resultingSprites;
+        }
+
+        public static TextureSprite Mirror(TextureSprite sprite)
+        {
+            sprite.Scale(new Vector2(-1, -1));
+            return sprite;
+        }
+
+        public static SpriteGroup Mirror(SpriteGroup spriteGroup)
+        {
+            spriteGroup.Scale(new Vector2(-1, -1));
+            return spriteGroup;
+        }
+
+        private static TextureSprite MirrorHorizontal(TextureSprite sprite)
+        {
+            sprite.Scale(new Vector2(-1, 1));
+            return sprite;
+        }
+
+        private static SpriteGroup MirrorHorizontal(SpriteGroup spriteGroup)
+        {
+            spriteGroup.Scale(new Vector2(-1, 1));
+            return spriteGroup;
+        }
+
+        private static TextureSprite MirrorVertical(TextureSprite sprite)
+        {
+            sprite.Scale(new Vector2(1, -1));
+            return sprite;
+        }
+
+        private static SpriteGroup MirrorVertical(SpriteGroup spriteGroup)
+        {
+            spriteGroup.Scale(new Vector2(1, -1));
+            return spriteGroup;
         }
     }
 }
