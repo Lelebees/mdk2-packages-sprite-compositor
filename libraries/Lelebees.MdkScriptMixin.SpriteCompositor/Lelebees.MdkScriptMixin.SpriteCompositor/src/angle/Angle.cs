@@ -7,16 +7,16 @@ namespace IngameScript
     /// </summary>
     public struct Angle
     {
-        public static Angle Right = FromRadians(0.5 * Math.PI);
-        public static Angle Straight = FromRadians(Math.PI);
-        public static Angle Full = FromRadians(2 * Math.PI);
+        public static readonly Angle Right = new Angle(0.5 * Math.PI);
+        public static readonly Angle Straight = new Angle(Math.PI);
+        public static readonly Angle Full = new Angle(2 * Math.PI);
 
         private readonly double radians;
 
         private Angle(double radians)
         {
             // Normalize the angle to be within a single rotation
-            if (radians >= 2 * Math.PI || radians <= -2 * Math.PI)
+            if (radians > 2 * Math.PI || radians < -2 * Math.PI)
             {
                 radians %= 2 * Math.PI;
             }
@@ -49,7 +49,7 @@ namespace IngameScript
         public static Angle operator +(Angle angle) => angle;
 
         public static Angle operator -(Angle left, Angle right) => new Angle(left.radians - right.radians);
-        
+
         public static Angle operator -(Angle angle) => new Angle(-angle.radians);
 
         public static Angle operator /(Angle nominator, double divisor) => new Angle(nominator.radians / divisor);
@@ -57,7 +57,9 @@ namespace IngameScript
         public static Angle operator *(Angle left, double right) => new Angle(left.radians * right);
 
         public static bool operator <(Angle left, Angle right) => left.radians < right.radians;
+        public static bool operator <=(Angle left, Angle right) => left.radians <= right.radians;
 
         public static bool operator >(Angle left, Angle right) => left.radians > right.radians;
+        public static bool operator >=(Angle left, Angle right) => left.radians >= right.radians;
     }
 }

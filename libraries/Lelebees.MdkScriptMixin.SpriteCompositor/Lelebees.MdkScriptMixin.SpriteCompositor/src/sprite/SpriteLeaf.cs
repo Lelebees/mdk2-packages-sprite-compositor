@@ -1,3 +1,4 @@
+using System;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -49,7 +50,20 @@ namespace IngameScript
         public abstract void Scale(float scalar, Anchor anchor = null);
         public abstract void Scale(Vector2 scalar, Anchor anchor = null);
 
-        public abstract void Rotate(Angle angle, Anchor anchor = null);
+        public virtual void Rotate(Angle angle, Anchor positionAnchor = null)
+        {
+            if (positionAnchor == null || positionAnchor == this || positionAnchor.GetPosition() == GetPosition()) return;
+
+            var cos = Math.Cos(-angle.AsRadians());
+            var sin = Math.Sin(-angle.AsRadians());
+
+            var anchor = positionAnchor.GetPosition();
+
+            var position = Sprite.Position ?? Vector2.Zero;
+            var posX = (float)( cos * (position.X - anchor.X) + sin * (position.Y - anchor.Y) + anchor.X);
+            var posY = (float)(-sin * (position.X - anchor.X) + cos * (position.Y - anchor.Y) + anchor.Y);
+            Sprite.Position = new Vector2(posX, posY);
+        }
         public abstract Sprite Clone();
         public MySprite[] AsDrawableCollection(RectangleF viewport)
         {

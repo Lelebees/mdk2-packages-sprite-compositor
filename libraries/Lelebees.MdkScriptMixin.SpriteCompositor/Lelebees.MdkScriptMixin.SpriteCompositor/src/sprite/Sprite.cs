@@ -34,8 +34,8 @@ namespace IngameScript
         /// Rotates a sprite in clockwise direction around the given anchor
         /// </summary>
         /// <param name="angle">The angle of rotation</param>
-        /// <param name="anchor">The point in space to rotate around, if no anchor is given, the center of this sprite is used</param>
-        void Rotate(Angle angle, Anchor anchor = null);
+        /// <param name="positionAnchor">The point in space to rotate around, if no anchor is given, the center of this sprite is used</param>
+        void Rotate(Angle angle, Anchor positionAnchor = null);
         
         /// <summary>
         /// Creates a copy of the sprite that can be modified separately.

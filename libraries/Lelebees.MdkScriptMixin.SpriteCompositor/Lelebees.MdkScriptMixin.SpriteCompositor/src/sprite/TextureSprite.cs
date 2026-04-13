@@ -1,4 +1,3 @@
-using System;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -47,21 +46,10 @@ namespace IngameScript
             Sprite.Position = anchorPos + distanceFromAnchor;
         }
 
-        public override void Rotate(Angle angle, Anchor anchor = null)
+        public override void Rotate(Angle angle, Anchor positionAnchor = null)
         {
             Sprite.RotationOrScale += (float)angle.AsRadians();
-            
-            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition()) return;
-
-            var cos = Math.Cos(-angle.AsRadians());
-            var sin = Math.Sin(-angle.AsRadians());
-
-            var anchorPos = anchor.GetPosition();
-
-            var position = Sprite.Position ?? Vector2.Zero;
-            var posX = (float)( cos * (position.X - anchorPos.X) + sin * (position.Y - anchorPos.Y) + anchorPos.X);
-            var posY = (float)(-sin * (position.X - anchorPos.X) + cos * (position.Y - anchorPos.Y) + anchorPos.Y);
-            Sprite.Position = new Vector2(posX, posY);
+            base.Rotate(angle, positionAnchor);
         }
 
         public override Sprite Clone()
