@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
 namespace IngameScript
@@ -12,8 +13,8 @@ namespace IngameScript
         /// <param name="repetitions">Number of instances of the sprite there need to be</param>
         /// <param name="rotationAnchor">The center of rotation</param>
         /// <returns>The resulting list of sprites, which includes the original sprite (though no operation has been applied to that sprite)</returns>
-        public static List<Sprite> RepeatRotated(Sprite spriteToRepeat, int repetitions, Anchor rotationAnchor) =>
-            RepeatRotated(spriteToRepeat, repetitions, rotationAnchor, Angle.Full / repetitions);
+        public static List<Sprite> RepeatRotated(Sprite spriteToRepeat, uint repetitions, Anchor rotationAnchor = null) =>
+            RepeatRotated(spriteToRepeat, repetitions, Angle.Full / repetitions, rotationAnchor);
 
         /// <summary>
         /// Clones a sprite a given number of times, rotating each clone with the given angle compared to the previous clone.
@@ -23,13 +24,14 @@ namespace IngameScript
         /// <param name="rotationAnchor">The center of rotation</param>
         /// <param name="stepSize">The angle to rotate each clone compared to the previous one</param>
         /// <returns>The resulting list of sprites, which includes the original sprite (though no operation has been applied to that sprite)</returns>
-        public static List<Sprite> RepeatRotated(Sprite spriteToRepeat, int repetitions, Anchor rotationAnchor, Angle stepSize)
+        public static List<Sprite> RepeatRotated(Sprite spriteToRepeat, uint repetitions, Angle stepSize, Anchor rotationAnchor = null)
         {
-            List<Sprite> resultingSprites = new List<Sprite>(repetitions) { spriteToRepeat };
-            for (var i = 1; i < repetitions; i++)
+            if (repetitions == 0) return new List<Sprite>();
+            List<Sprite> resultingSprites = new List<Sprite>((int) repetitions) { spriteToRepeat };
+            for (var steps = 1; steps < repetitions; steps++)
             {
                 var newSprite = spriteToRepeat.Clone();
-                newSprite.Rotate(Angle.FromRadians(stepSize.AsRadians() * i), rotationAnchor);
+                newSprite.Rotate(stepSize * steps, rotationAnchor);
                 resultingSprites.Add(newSprite);
             }
 
@@ -70,6 +72,20 @@ namespace IngameScript
         {
             spriteGroup.Scale(new Vector2(1, -1));
             return spriteGroup;
+        }
+        public static TextureSprite.TextureSpriteBuilder WithTexture(string texture)
+        {
+            return new TextureSprite.TextureSpriteBuilder().Texture(texture);
+        }
+
+        public static TextSprite.TextSpriteBuilder WithText(string text)
+        {
+            return new TextSprite.TextSpriteBuilder().Text(text);
+        }
+
+        public static ClippingSprite.ClippingSpriteBuilder ClipRectangle()
+        {
+            return new ClippingSprite.ClippingSpriteBuilder();
         }
     }
 }

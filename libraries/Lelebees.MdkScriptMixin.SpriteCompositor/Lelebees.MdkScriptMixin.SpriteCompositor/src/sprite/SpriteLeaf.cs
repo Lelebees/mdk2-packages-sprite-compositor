@@ -6,7 +6,6 @@ namespace IngameScript
 {
     public abstract class SpriteLeaf : Sprite
     {
-
         protected MySprite Sprite;
 
         protected SpriteLeaf(MySprite sprite)
@@ -34,7 +33,7 @@ namespace IngameScript
 
         public void Translate(float x, float y)
         {
-            Translate(new Vector2(x,y));
+            Translate(new Vector2(x, y));
         }
 
         public void SetColor(Color color)
@@ -48,11 +47,21 @@ namespace IngameScript
         }
 
         public abstract void Scale(float scalar, Anchor anchor = null);
-        public abstract void Scale(Vector2 scalar, Anchor anchor = null);
+
+        public virtual void Scale(Vector2 scalar, Anchor anchor = null)
+        {
+            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition()) return;
+
+            var anchorPos = anchor.GetPosition();
+            var distanceFromAnchor = this.GetPosition() - anchorPos;
+            distanceFromAnchor *= scalar;
+            Sprite.Position = anchorPos + distanceFromAnchor;
+        }
 
         public virtual void Rotate(Angle angle, Anchor positionAnchor = null)
         {
-            if (positionAnchor == null || positionAnchor == this || positionAnchor.GetPosition() == GetPosition()) return;
+            if (positionAnchor == null || positionAnchor == this ||
+                positionAnchor.GetPosition() == GetPosition()) return;
 
             var cos = Math.Cos(-angle.AsRadians());
             var sin = Math.Sin(-angle.AsRadians());
@@ -60,37 +69,32 @@ namespace IngameScript
             var anchor = positionAnchor.GetPosition();
 
             var position = Sprite.Position ?? Vector2.Zero;
-            var posX = (float)( cos * (position.X - anchor.X) + sin * (position.Y - anchor.Y) + anchor.X);
+            var posX = (float)(cos * (position.X - anchor.X) + sin * (position.Y - anchor.Y) + anchor.X);
             var posY = (float)(-sin * (position.X - anchor.X) + cos * (position.Y - anchor.Y) + anchor.Y);
             Sprite.Position = new Vector2(posX, posY);
         }
+
         public abstract Sprite Clone();
+
         public MySprite[] AsDrawableCollection(RectangleF viewport)
         {
-            var copy = new MySprite(
-                Sprite.Type,
-                Sprite.Data,
-                Sprite.Position + viewport.Center,
-                Sprite.Size,
-                Sprite.Color,
-                Sprite.FontId,
-                Sprite.Alignment,
-                Sprite.RotationOrScale);
-            return new[] { copy };
+            return new[]
+            {
+                new MySprite(
+                    Sprite.Type,
+                    Sprite.Data,
+                    Sprite.Position + viewport.Center,
+                    Sprite.Size,
+                    Sprite.Color,
+                    Sprite.FontId,
+                    Sprite.Alignment,
+                    Sprite.RotationOrScale)
+            };
         }
 
         public MySprite[] AsDrawableCollection()
         {
-            var copy = new MySprite(
-                Sprite.Type,
-                Sprite.Data,
-                Sprite.Position,
-                Sprite.Size,
-                Sprite.Color,
-                Sprite.FontId,
-                Sprite.Alignment,
-                Sprite.RotationOrScale);
-            return new[] { copy };
+            return new[] { Sprite };
         }
     }
 }

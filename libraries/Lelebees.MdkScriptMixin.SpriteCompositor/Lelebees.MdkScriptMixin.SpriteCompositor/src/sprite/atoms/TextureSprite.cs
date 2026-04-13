@@ -35,15 +35,7 @@ namespace IngameScript
             size.X *= scalar.X;
             size.Y *= scalar.Y;
             Sprite.Size = size;
-            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition())
-            {
-                return;
-            }
-
-            var anchorPos = anchor.GetPosition();
-            var distanceFromAnchor = this.GetPosition() - anchorPos;
-            distanceFromAnchor *= scalar;
-            Sprite.Position = anchorPos + distanceFromAnchor;
+            base.Scale(scalar, anchor);
         }
 
         public override void Rotate(Angle angle, Anchor positionAnchor = null)
@@ -60,11 +52,6 @@ namespace IngameScript
         public void SetSize(Vector2 size)
         {
             Sprite.Size = size;
-        }
-
-        public static TextureSpriteBuilder Builder()
-        {
-            return new TextureSpriteBuilder();
         }
 
         public class TextureSpriteBuilder

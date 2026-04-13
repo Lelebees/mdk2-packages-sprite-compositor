@@ -2,7 +2,7 @@ using System;
 using IngameScript;
 using NUnit.Framework;
 
-namespace SpriteCompositor.Test.Tests
+namespace SpriteCompositor.Test.angle
 {
     [TestFixture]
     public class AngleTest

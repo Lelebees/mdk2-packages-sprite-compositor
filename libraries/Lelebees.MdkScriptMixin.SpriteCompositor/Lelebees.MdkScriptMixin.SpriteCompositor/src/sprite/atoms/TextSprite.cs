@@ -38,16 +38,8 @@ namespace IngameScript
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
             // Text sprites don't really scale in 2 dimensions, so instead we'll take the average scale
-            Sprite.RotationOrScale = (scalar.X + scalar.Y) / 2;
-            if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition())
-            {
-                return;
-            }
-
-            var anchorPos = anchor.GetPosition();
-            var distanceFromAnchor = this.GetPosition() - anchorPos;
-            distanceFromAnchor *= scalar;
-            Sprite.Position = anchorPos + distanceFromAnchor;
+            Sprite.RotationOrScale *= (scalar.X + scalar.Y) / 2;
+            base.Scale(scalar, anchor);
         }
 
         public override Sprite Clone()
@@ -104,11 +96,6 @@ namespace IngameScript
             {
                 return new TextSprite(sprite);
             }
-        }
-
-        public static TextSpriteBuilder Builder()
-        {
-            return new TextSpriteBuilder();
         }
     }
 }

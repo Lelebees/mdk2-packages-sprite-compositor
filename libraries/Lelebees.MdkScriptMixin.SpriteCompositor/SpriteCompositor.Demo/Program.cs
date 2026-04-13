@@ -38,18 +38,16 @@ namespace IngameScript
                 surface.SurfaceSize
             );
             
-            // Strictly speaking this should be an Update100, but for testing and/or animation purposes it's nice to use Update10.
+            // Strictly speaking we should be using Update100, but for testing and/or animation purposes it's nicer to use Update10.
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
-
-            var sunRayMiddle = TextureSprite.Builder()
-                .Texture("SquareSimple")
+            // You can create basic sprites using the Sprites class. The Textures class contains texture name constants for basic shapes, for your writing convenience.
+            var sunRayMiddle = Sprites.WithTexture(Textures.SquareSimple)
                 .Size(20, 5)
                 .Build();
-            var sunRayCapRight = TextureSprite.Builder()
-                .Texture("SemiCircle")
+            var sunRayCapRight = Sprites.WithTexture(Textures.SemiCircle)
                 .Size(5, 20)
                 // Rotations are performed using the Angle struct. Here we're using a predefined right angle (90 degrees, or 0.5 * PI)
-                // You'll see how to create any arbitrary angle a little later in this demo.
+                // You'll see how to create an arbitrary angle a little later in this demo.
                 .Rotation(Angle.Right)
                 .Position(9, 0)
                 .Build();
@@ -58,26 +56,26 @@ namespace IngameScript
             // We're using the middle part of the sun ray as an anchor point for the rotation,
             // this allows us to flip the copied end to the left of the ray, without having to calculate how far it needs to go!
             sunRayCapLeft.Rotate(Angle.Straight, sunRayMiddle);
+            // Alternatively, if we don't want to rotate, we can also scale the sprite by (-1,1) relative to the same anchor point.
+            // You'll see a Sprite.Scale() invocation later in this demo.
             
             // It's possible to group sprites and treat them as if they were one.
             var sunRay = new SpriteGroup(sunRayCapLeft, sunRayMiddle, sunRayCapRight);
             sunRay.Translate(50, 0);
 
-            var sunBody = TextureSprite.Builder()
-                .Texture("Circle")
+            TextureSprite sunBody = Sprites.WithTexture(Textures.Circle)
                 .Size(50, 50)
                 .Build(); 
             
-            // Since we don't feel like repeating the above steps for every sun ray, you can easily clone sprites in a circle! 
+            // Since I don't feel like repeating the above steps for every sun ray, you can easily clone sprites in a circle! 
             var allRays = Sprites.RepeatRotated(sunRay, 12, sunBody);
             
             // You can create, adjust and add sprites after a group has been made by inserting a list of the group's sprites and adding to it later
-            allRays.Add(sunBody);
             sunSprite = new SpriteGroup(allRays);
+            allRays.Add(sunBody);
             sunSprite.SetColor(Color.Yellow);
             
-            var praiseText = TextSprite.Builder()
-                .Text("Praise")
+            var praiseText = Sprites.WithText("Praise")
                 .FontId("White")
                 .Position(0, -150)
                 .Scale(2f)
@@ -85,8 +83,7 @@ namespace IngameScript
             // Text can also be rotated around an anchor point, but beware! SE does not support rotating the text itself. This will therefore not create slanted text!
             praiseText.Rotate(Angle.FromDegrees(-35), sunSprite);
             
-            var theSunText = TextSprite.Builder()
-                .Text("the sun")
+            var theSunText = Sprites.WithText("the sun")
                 .FontId("White")
                 .Position(0, 125)
                 .Build(); 
@@ -105,7 +102,7 @@ namespace IngameScript
         {
             textGroup.SetColor(surface.ScriptForegroundColor);
             var frame = surface.DrawFrame();
-            // To simplify use, the Sprite(s) move so that 0,0 is the center of the viewport. 
+            // To simplify use, you can move the Sprite(s) so that 0,0 is the center of the viewport. 
             frame.AddRange(sunSprite.AsDrawableCollection(viewport));
             frame.AddRange(textGroup.AsDrawableCollection(viewport));
             frame.Dispose();
