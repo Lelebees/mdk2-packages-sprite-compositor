@@ -5,18 +5,32 @@ namespace IngameScript
 {
     public class TextureSprite : SpriteLeaf
     {
-        public TextureSprite(string texturePath = null) : base(new MySprite(type: SpriteType.TEXTURE,
-            position: Vector2.Zero, rotation: 0, data: texturePath))
+        public float Rotation
         {
+            get { return Sprite.RotationOrScale; }
+            set { Sprite.RotationOrScale = value; }
         }
+
+        public Vector2? Size
+        {
+            get { return Sprite.Size; }
+            set { Sprite.Size = value; }
+        }
+
+        public string Texture
+        {
+            get { return Sprite.Data; }
+            set { Sprite.Data = value; }
+        }
+
+
+        // public TextureSprite(string texturePath = null) : base(new MySprite(type: SpriteType.TEXTURE,
+        //     position: Vector2.Zero, rotation: 0, data: texturePath))
+        // {
+        // }
 
         private TextureSprite(MySprite sprite) : base(sprite)
         {
-        }
-
-        public void SetTexture(string texturePath)
-        {
-            Sprite.Data = texturePath;
         }
 
         public override void Scale(float scalar, Anchor anchor = null)
@@ -49,11 +63,6 @@ namespace IngameScript
             return new TextureSprite(Sprite);
         }
 
-        public void SetSize(Vector2 size)
-        {
-            Sprite.Size = size;
-        }
-
         public class TextureSpriteBuilder
         {
             private MySprite sprite = new MySprite(type: SpriteType.TEXTURE);
@@ -68,7 +77,7 @@ namespace IngameScript
             {
                 return Position(new Vector2(x, y));
             }
-            
+
             public TextureSpriteBuilder Position(Vector2 position)
             {
                 sprite.Position = position;
@@ -77,7 +86,7 @@ namespace IngameScript
 
             public TextureSpriteBuilder Rotation(Angle rotation)
             {
-                sprite.RotationOrScale = (float) rotation.AsRadians();
+                sprite.RotationOrScale = (float)rotation.AsRadians();
                 return this;
             }
 

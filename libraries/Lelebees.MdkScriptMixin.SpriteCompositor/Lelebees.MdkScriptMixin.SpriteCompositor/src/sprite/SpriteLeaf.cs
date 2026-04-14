@@ -8,6 +8,12 @@ namespace IngameScript
     {
         protected MySprite Sprite;
 
+        public Vector2? Position
+        {
+            get { return Sprite.Position; }
+            set { Sprite.Position = value; }
+        }
+
         protected SpriteLeaf(MySprite sprite)
         {
             Sprite = sprite;
