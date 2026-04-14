@@ -38,7 +38,7 @@ namespace IngameScript
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
             // Text sprites don't really scale in 2 dimensions, so instead we'll take the average scale
-            Sprite.RotationOrScale *= (scalar.X + scalar.Y) / 2;
+            Sprite.RotationOrScale = (scalar.X + scalar.Y) / 2;
             base.Scale(scalar, anchor);
         }
 

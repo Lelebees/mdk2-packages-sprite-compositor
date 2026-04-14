@@ -53,7 +53,7 @@ namespace IngameScript
             if (anchor == null || anchor == this || anchor.GetPosition() == GetPosition()) return;
 
             var anchorPos = anchor.GetPosition();
-            var distanceFromAnchor = this.GetPosition() - anchorPos;
+            var distanceFromAnchor = GetPosition() - anchorPos;
             distanceFromAnchor *= scalar;
             Sprite.Position = anchorPos + distanceFromAnchor;
         }
