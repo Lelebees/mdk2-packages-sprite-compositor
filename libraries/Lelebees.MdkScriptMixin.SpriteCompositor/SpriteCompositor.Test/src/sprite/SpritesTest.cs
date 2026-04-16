@@ -11,7 +11,7 @@ namespace SpriteCompositor.Test.util
         [TestCase((uint) 0)]
         public void SpritesRepeatCorrectAmountOfTimes(uint repetitions)
         {
-            Assert.That(Sprites.RepeatRotated(Sprites.WithTexture("SquareSimple").Build(), repetitions).Count, Is.EqualTo((int) repetitions));
+            Assert.That(Sprites.RepeatRotated(Sprites.WithTexture("SquareSimple").Build(), repetitions).Length, Is.EqualTo((int) repetitions));
         }
         
         [TestCase((uint) 10)]
@@ -19,7 +19,7 @@ namespace SpriteCompositor.Test.util
         [TestCase((uint) 0)]
         public void SpritesWithRotationRepeatCorrectAmountOfTimes(uint repetitions)
         {
-            Assert.That(Sprites.RepeatRotated(Sprites.WithTexture("SquareSimple").Build(), repetitions, Angle.Right).Count, Is.EqualTo((int) repetitions));
+            Assert.That(Sprites.RepeatRotated(Sprites.WithTexture("SquareSimple").Build(), repetitions, Angle.Right).Length, Is.EqualTo((int) repetitions));
         }
     }
 }

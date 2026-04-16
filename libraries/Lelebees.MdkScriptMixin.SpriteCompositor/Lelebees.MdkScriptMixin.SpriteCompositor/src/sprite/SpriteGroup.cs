@@ -5,28 +5,16 @@ using VRageMath;
 
 namespace IngameScript
 {
-    public class SpriteGroup : Sprite
+    public abstract class SpriteGroup : Sprite
     {
-        private readonly List<Sprite> children;
-
-        public SpriteGroup(List<Sprite> children)
-        {
-            this.children = children;
-        }
-
-        public SpriteGroup(params Sprite[] children)
-        {
-            this.children = children.ToList();
-        }
-
         public Vector2 GetPosition()
         {
-            return children.Aggregate(Vector2.Zero, (current, child) => current + child.GetPosition()) / children.Count;
+            return GetChildren().Aggregate(Vector2.Zero, (current, child) => current + child.GetPosition()) / GetChildren().Count;
         }
 
         public void Translate(Vector2 vector)
         {
-            children.ForEach(sprite => sprite.Translate(vector));
+            GetChildren().ForEach(sprite => sprite.Translate(vector));
         }
 
         public void Translate(float x, float y)
@@ -36,12 +24,12 @@ namespace IngameScript
 
         public void SetColor(Color color)
         {
-            children.ForEach(sprite => sprite.SetColor(color));
+            GetChildren().ForEach(sprite => sprite.SetColor(color));
         }
 
         public void SetAlignment(TextAlignment alignment)
         {
-            children.ForEach(sprite => sprite.SetAlignment(alignment));
+            GetChildren().ForEach(sprite => sprite.SetAlignment(alignment));
         }
 
         public void Scale(float scalar, Anchor anchor = null)
@@ -61,7 +49,7 @@ namespace IngameScript
                 anchor = new PointAnchor(anchor.GetPosition());
             }
 
-            children.ForEach(sprite => sprite.Scale(scalar, anchor));
+            GetChildren().ForEach(sprite => sprite.Scale(scalar, anchor));
         }
 
         public void Rotate(Angle angle, Anchor positionAnchor = null)
@@ -78,22 +66,21 @@ namespace IngameScript
             {
                 positionAnchor = new PointAnchor(positionAnchor.GetPosition());
             }
-            children.ForEach(sprite => sprite.Rotate(angle, positionAnchor));
+            GetChildren().ForEach(sprite => sprite.Rotate(angle, positionAnchor));
         }
 
-        public Sprite Clone()
-        {
-            return new SpriteGroup(children.Select(sprite => sprite.Clone()).ToList());
-        }
+        public abstract Sprite Clone();
 
         public MySprite[] AsDrawableCollection(RectangleF viewport)
         {
-            return children.SelectMany(child => child.AsDrawableCollection(viewport)).ToArray();
+            return GetChildren().SelectMany(child => child.AsDrawableCollection(viewport)).ToArray();
         }
 
         public MySprite[] AsDrawableCollection()
         {
-            return children.SelectMany(child => child.AsDrawableCollection()).ToArray();
+            return GetChildren().SelectMany(child => child.AsDrawableCollection()).ToArray();
         }
+
+        protected abstract List<Sprite> GetChildren();
     }
 }

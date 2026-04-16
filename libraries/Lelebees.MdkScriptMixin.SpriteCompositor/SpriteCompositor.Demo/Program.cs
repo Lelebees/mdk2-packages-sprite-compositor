@@ -60,7 +60,7 @@ namespace IngameScript
             // You'll see a Sprite.Scale() invocation later in this demo.
             
             // It's possible to group sprites and treat them as if they were one.
-            var sunRay = new SpriteGroup(sunRayCapLeft, sunRayMiddle, sunRayCapRight);
+            var sunRay = Sprites.Group(sunRayCapLeft, sunRayMiddle, sunRayCapRight);
             sunRay.Translate(50, 0);
 
             TextureSprite sunBody = Sprites.WithTexture(Textures.Circle)
@@ -68,31 +68,34 @@ namespace IngameScript
                 .Build(); 
             
             // Since I don't feel like repeating the above steps for every sun ray, you can easily clone sprites in a circle! 
-            var allRays = Sprites.RepeatRotated(sunRay, 12, sunBody);
-            
-            // You can create, adjust and add sprites after a group has been made by inserting a list of the group's sprites and adding to it later
-            sunSprite = new SpriteGroup(allRays);
+            var allRays = Sprites.RepeatRotated(sunRay, 12, sunBody).ToList();
+            // You can create, adjust and add sprites after a group has been made by keeping a reference to a list of the group's sprites
+            sunSprite = new SimpleSpriteGroup(allRays);
+            // If this simple sprite group doesn't fulfill your needs, you can create your own implementation by extending
+            // the SpriteGroup abstract class. If you do, you must implement two methods: Clone() and GetChildren().
+            // The first method is expected to create a deep copy of the group.
+            // The second method expects to get a list of all sprites that make up the group. (not copies)
+            // This allows the parent class to apply operations such as rotations or translations without needing to know how the sprites are managed by you.
             allRays.Add(sunBody);
             sunSprite.SetColor(Color.Yellow);
             
             var praiseText = Sprites.WithText("Praise")
                 .FontId("White")
                 .Position(0, -150)
-                .Scale(2f)
                 .Build(); 
             // Text can also be rotated around an anchor point, but beware! SE does not support rotating the text itself. This will therefore not create slanted text!
-            praiseText.Rotate(Angle.FromDegrees(-35), sunSprite);
+            praiseText.Rotate(Angle.FromDegrees(-45), sunSprite);
             
             var theSunText = Sprites.WithText("the sun")
                 .FontId("White")
                 .Position(0, 125)
                 .Build(); 
             // Though we don't do it here, you can also use an arbitrary point in space as the anchor by creating a new PointAnchor.
-            theSunText.Rotate(Angle.FromDegrees(-40), sunSprite);
-            textGroup = new SpriteGroup(praiseText, theSunText);
+            theSunText.Rotate(Angle.FromDegrees(-50), sunSprite);
+            textGroup = Sprites.Group(praiseText, theSunText);
             // You can also set an initial scale for text using the builder.
             // However, here we want to scale the distance the text has to the sun, so we supply the sun as the anchor for the scale operation.
-            textGroup.Scale(2f, sunSprite);
+            textGroup.Scale(1.5f, sunSprite);
             // Any new operations will be applied to the newly grouped sprites as well, but previous operations will not be applied.
             sunSprite.Scale(2f);
             // It's also possible to scale X and Y separately. You can even mirror sprites by applying a scale of -1 in one or both directions!

@@ -6,39 +6,43 @@ namespace IngameScript
 {
     public class TextSprite : SpriteLeaf
     {
-        public TextSprite(string text) : base(new MySprite(type: SpriteType.TEXT, data: text))
+        public string Text
         {
+            get { return Sprite.Data;}
+            set { Sprite.Data = value; }
+        }
+        public string FontId
+        {
+            get { return Sprite.FontId; }
+            set { Sprite.FontId = value; }
+        }
+
+        public float TextScale
+        {
+            get { return Sprite.RotationOrScale; }
+            set { Sprite.RotationOrScale = value; }
+        }
+
+        public TextAlignment Alignment
+        {
+            get { return Sprite.Alignment; }
+            set { Sprite.Alignment = value; }
         }
 
         private TextSprite(MySprite sprite) : base(sprite)
         {
         }
 
-
-        public void SetText(string text)
-        {
-            Sprite.Data = text;
-        }
-
-        public void SetFontId(string fontId)
-        {
-            Sprite.FontId = fontId;
-        }
-
-        public void SetScale(float scale)
-        {
-            Sprite.RotationOrScale = scale;
-        }
-
         public override void Scale(float scalar, Anchor anchor = null)
         {
-            Scale(new Vector2(scalar, scalar), anchor);
+            Sprite.RotationOrScale *= scalar;
+            base.Scale(new Vector2(scalar, scalar), anchor);
         }
 
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
             // Text sprites don't really scale in 2 dimensions, so instead we'll take the average scale
-            Sprite.RotationOrScale = (scalar.X + scalar.Y) / 2;
+            Sprite.RotationOrScale *= (scalar.X + scalar.Y) / 2;
             base.Scale(scalar, anchor);
         }
 
@@ -49,7 +53,7 @@ namespace IngameScript
         
         public class TextSpriteBuilder
         {
-            private MySprite sprite = new MySprite(type: SpriteType.TEXT);
+            private MySprite sprite = new MySprite(type: SpriteType.TEXT, rotation: 1f);
 
             public TextSpriteBuilder Text(string text)
             {
