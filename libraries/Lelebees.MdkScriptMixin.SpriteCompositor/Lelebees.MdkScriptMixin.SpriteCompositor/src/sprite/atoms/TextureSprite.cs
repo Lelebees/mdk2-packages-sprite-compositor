@@ -54,7 +54,7 @@ namespace IngameScript
 
         public override void Rotate(Angle angle, Anchor positionAnchor = null)
         {
-            Sprite.RotationOrScale += (float)angle.AsRadians();
+            Sprite.RotationOrScale += (float)angle.Radians();
             base.Rotate(angle, positionAnchor);
         }
 
@@ -86,7 +86,7 @@ namespace IngameScript
 
             public TextureSpriteBuilder Rotation(Angle rotation)
             {
-                sprite.RotationOrScale = (float)rotation.AsRadians();
+                sprite.RotationOrScale = (float)rotation.Radians();
                 return this;
             }
 

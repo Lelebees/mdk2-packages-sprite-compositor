@@ -24,12 +24,12 @@ namespace IngameScript
             this.radians = radians;
         }
 
-        public double AsRadians()
+        public double Radians()
         {
             return radians;
         }
 
-        public double AsDegrees()
+        public double Degrees()
         {
             return radians * 180 / Math.PI;
         }
@@ -54,7 +54,7 @@ namespace IngameScript
 
         public static Angle operator /(Angle nominator, double divisor) => new Angle(nominator.radians / divisor);
 
-        public static Angle operator *(Angle left, double right) => new Angle(left.radians * right);
+        public static Angle operator *(Angle angle, double multiplier) => new Angle(angle.radians * multiplier);
 
         public static bool operator <(Angle left, Angle right) => left.radians < right.radians;
         public static bool operator <=(Angle left, Angle right) => left.radians <= right.radians;

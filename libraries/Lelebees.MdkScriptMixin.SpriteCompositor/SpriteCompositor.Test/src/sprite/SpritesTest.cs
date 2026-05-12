@@ -1,7 +1,7 @@
 using IngameScript;
 using NUnit.Framework;
 
-namespace SpriteCompositor.Test.util
+namespace SpriteCompositor.Test.sprite
 {
     [TestFixture]
     public class SpritesTest

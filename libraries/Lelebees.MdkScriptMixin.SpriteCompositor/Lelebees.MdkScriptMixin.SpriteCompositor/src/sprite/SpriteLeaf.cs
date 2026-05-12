@@ -69,8 +69,8 @@ namespace IngameScript
             if (positionAnchor == null || positionAnchor == this ||
                 positionAnchor.GetPosition() == GetPosition()) return;
 
-            var cos = Math.Cos(-angle.AsRadians());
-            var sin = Math.Sin(-angle.AsRadians());
+            var cos = Math.Cos(-angle.Radians());
+            var sin = Math.Sin(-angle.Radians());
 
             var anchor = positionAnchor.GetPosition();
 

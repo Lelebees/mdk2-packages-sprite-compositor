@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using IngameScript;
 using NUnit.Framework;
+using VRageMath;
 
 namespace SpriteCompositor.Test.sprite.atoms
 {
@@ -35,8 +36,21 @@ namespace SpriteCompositor.Test.sprite.atoms
             }
             // Note here (and this is not obvious) that unlike the angle struct, a sprite's rotation value can grow indefinitely
             // This means that values above and below 2 * Math.PI are possible. The test keeps this in mind.
-            var totalAngle = angles.Sum(angle => angle.AsRadians());
+            var totalAngle = angles.Sum(angle => angle.Radians());
             Assert.That(sprite.Rotation, Is.InRange( totalAngle - Precision, totalAngle + Precision));
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(0,0)]
+        [TestCase(-1, 1)]
+        [TestCase(1, -1)]
+        [TestCase(-1,-1)]
+        public void CanTranslate(float x, float y)
+        {
+            Vector2 translation = new Vector2(x, y);
+            TextureSprite sprite = Sprites.WithTexture(Textures.SquareSimple).Build();
+            sprite.Translate(translation);
+            Assert.That(sprite.GetPosition(), Is.EqualTo(translation));
         }
     }
 }

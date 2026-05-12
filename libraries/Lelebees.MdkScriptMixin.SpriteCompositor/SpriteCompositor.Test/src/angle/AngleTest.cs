@@ -17,7 +17,7 @@ namespace SpriteCompositor.Test.angle
         [TestCase(0, 0)]
         public void DegreesConvertProperly(double degrees, double radians)
         {
-            Assert.That(Angle.FromDegrees(degrees).AsRadians(), Is.InRange(radians - Precision, radians + Precision));
+            Assert.That(Angle.FromDegrees(degrees).Radians(), Is.InRange(radians - Precision, radians + Precision));
         }
     }
 }

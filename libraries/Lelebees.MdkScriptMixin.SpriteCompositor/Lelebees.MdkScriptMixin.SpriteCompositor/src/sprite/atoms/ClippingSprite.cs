@@ -52,7 +52,7 @@ namespace IngameScript
 
             public ClippingSpriteBuilder Rotation(Angle rotation)
             {
-                sprite.RotationOrScale = (float) rotation.AsRadians();
+                sprite.RotationOrScale = (float) rotation.Radians();
                 return this;
             }
 
