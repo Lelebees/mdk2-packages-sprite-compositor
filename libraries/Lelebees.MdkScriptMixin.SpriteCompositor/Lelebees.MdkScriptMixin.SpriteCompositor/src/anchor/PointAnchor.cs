@@ -11,6 +11,8 @@ namespace IngameScript
             this.position = position;
         }
 
+        public PointAnchor(float x, float y) : this(new Vector2(x, y)) {}
+
         public Vector2 GetPosition()
         {
             return position;

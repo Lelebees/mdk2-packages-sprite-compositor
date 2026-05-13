@@ -21,17 +21,12 @@ namespace IngameScript
 
         public Vector2 GetPosition()
         {
-            return Sprite.Position ?? new Vector2(0, 0);
+            return Sprite.Position ?? Vector2.Zero;
         }
 
         public void Translate(Vector2 vector)
         {
-            if (Sprite.Position == null)
-            {
-                Sprite.Position = new Vector2(0, 0);
-            }
-
-            var position = Sprite.Position.Value;
+            var position = GetPosition();
             position.X += vector.X;
             position.Y += vector.Y;
             Sprite.Position = position;
