@@ -10,7 +10,6 @@ namespace SpriteCompositor.Test.sprite.atoms
     [TestFixture]
     public class TextureSpriteTest
     {
-        // KSH uses floats for the angles, which is why the precision is so low.
         private const double Precision = 0.001;
 
         [TestCase(0.5 * Math.PI)]
