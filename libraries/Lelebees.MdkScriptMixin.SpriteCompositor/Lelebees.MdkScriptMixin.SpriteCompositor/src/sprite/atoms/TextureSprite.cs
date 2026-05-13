@@ -23,12 +23,6 @@ namespace IngameScript
             set { Sprite.Data = value; }
         }
 
-
-        // public TextureSprite(string texturePath = null) : base(new MySprite(type: SpriteType.TEXTURE,
-        //     position: Vector2.Zero, rotation: 0, data: texturePath))
-        // {
-        // }
-
         private TextureSprite(MySprite sprite) : base(sprite)
         {
         }
