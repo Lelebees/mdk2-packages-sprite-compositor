@@ -12,14 +12,8 @@ namespace IngameScript
             this.children = children;
         }
         
-        public override Sprite Clone()
-        {
-            return new SimpleSpriteGroup(children.Select(sprite => sprite.Clone()).ToList());
-        }
+        public override Sprite Clone() => new SimpleSpriteGroup(children.Select(sprite => sprite.Clone()).ToList());
 
-        protected override List<Sprite> GetChildren()
-        {
-            return children;
-        }
+        protected override List<Sprite> GetChildren() => children;
     }
 }

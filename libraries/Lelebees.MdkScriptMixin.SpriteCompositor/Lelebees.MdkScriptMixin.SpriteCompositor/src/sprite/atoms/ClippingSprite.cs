@@ -14,10 +14,7 @@ namespace IngameScript
         {
         }
 
-        public override void Scale(float scalar, Anchor anchor = null)
-        {
-            Scale(new Vector2(scalar, scalar), anchor);
-        }
+        public override void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
 
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
@@ -30,10 +27,7 @@ namespace IngameScript
             base.Scale(scalar, anchor);
         }
 
-        public override Sprite Clone()
-        {
-            return new ClippingSprite(Sprite);
-        }
+        public override Sprite Clone() => new ClippingSprite(Sprite);
         
         public class ClippingSpriteBuilder
         {

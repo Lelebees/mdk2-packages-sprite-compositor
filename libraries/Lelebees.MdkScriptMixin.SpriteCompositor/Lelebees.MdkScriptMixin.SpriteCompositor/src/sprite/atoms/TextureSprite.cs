@@ -27,10 +27,7 @@ namespace IngameScript
         {
         }
 
-        public override void Scale(float scalar, Anchor anchor = null)
-        {
-            Scale(new Vector2(scalar, scalar), anchor);
-        }
+        public override void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
 
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
@@ -52,10 +49,8 @@ namespace IngameScript
             base.Rotate(angle, positionAnchor);
         }
 
-        public override Sprite Clone()
-        {
-            return new TextureSprite(Sprite);
-        }
+        public override Sprite Clone() => new TextureSprite(Sprite);
+        
 
         public class TextureSpriteBuilder
         {

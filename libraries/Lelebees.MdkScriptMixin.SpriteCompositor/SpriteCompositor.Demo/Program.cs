@@ -53,8 +53,8 @@ namespace IngameScript
                 .Build();
             // You can copy a sprite you made earlier and apply different operations to it
             var sunRayCapLeft = sunRayCapRight.Clone();
-            // We're using the middle part of the sun ray as an anchor point for the rotation,
-            // this allows us to flip the copied end to the left of the ray, without having to calculate how far it needs to go!
+            // We're using the middle part of the sun ray as an anchor point for the rotation.
+            // This allows us to flip the copied end to the left of the ray, without having to calculate how far it needs to go!
             sunRayCapLeft.Rotate(Angle.Straight, sunRayMiddle);
             // Alternatively, if we don't want to rotate, we can also scale the sprite by (-1,1) relative to the same anchor point.
             // You'll see a Sprite.Scale() invocation later in this demo.
@@ -71,11 +71,12 @@ namespace IngameScript
             var allRays = Sprites.RepeatRotated(sunRay, 12, sunBody).ToList();
             // You can create, adjust and add sprites after a group has been made by keeping a reference to a list of the group's sprites
             sunSprite = new SimpleSpriteGroup(allRays);
-            // If this simple sprite group doesn't fulfill your needs, you can create your own implementation by extending
-            // the SpriteGroup abstract class. If you do, you must implement two methods: Clone() and GetChildren().
-            // The first method is expected to create a deep copy of the group.
-            // The second method expects to get a list of all sprites that make up the group. (not copies)
-            // This allows the parent class to apply operations such as rotations or translations without needing to know how the sprites are managed by you.
+            /* If this simple sprite group doesn't fulfill your needs,
+             you can create your own implementation by extending the SpriteGroup abstract class. 
+               If you do, you must implement two methods: Clone() and GetChildren().
+             The first method is expected to create a deep copy of the group.
+             The second method expects to get a list of all sprites that make up the group. (not copies)
+             This allows the parent class to apply operations such as rotations or translations without needing to know how the sprites are managed by you. */
             allRays.Add(sunBody);
             sunSprite.SetColor(Color.Yellow);
             

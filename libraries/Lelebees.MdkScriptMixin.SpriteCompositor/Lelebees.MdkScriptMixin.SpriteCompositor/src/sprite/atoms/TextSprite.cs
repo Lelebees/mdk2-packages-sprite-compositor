@@ -46,10 +46,7 @@ namespace IngameScript
             base.Scale(scalar, anchor);
         }
 
-        public override Sprite Clone()
-        {
-            return new TextSprite(Sprite);
-        }
+        public override Sprite Clone() => new TextSprite(Sprite);
         
         public class TextSpriteBuilder
         {
