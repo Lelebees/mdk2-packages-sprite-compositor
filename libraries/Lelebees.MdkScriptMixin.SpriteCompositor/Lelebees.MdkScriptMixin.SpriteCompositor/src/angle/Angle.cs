@@ -20,8 +20,6 @@ namespace IngameScript
         /// </summary>
         public static readonly Angle Full = new Angle(2 * Math.PI);
 
-        private readonly double radians;
-
         private Angle(double radians)
         {
             // Normalize the angle to be within a single rotation
@@ -30,40 +28,40 @@ namespace IngameScript
                 radians %= 2 * Math.PI;
             }
 
-            this.radians = radians;
+            Radians = radians;
         }
         /// <summary>
         /// This angle expressed in radians, positive or negative, limited to one full rotation (0 to 2 * PI)
         /// </summary>
         /// <returns>the angle in radians</returns>
-        public double Radians() => radians;
+        public double Radians { get; }
 
         /// <summary>
         /// This angle expressed in degrees, positive or negative, limited to one full rotation (0 to 360)
         /// </summary>
         /// <returns>the angle in degrees</returns>
-        public double Degrees() => radians * 180 / Math.PI;
+        public double Degrees => Radians * 180 / Math.PI;
 
         public static Angle FromDegrees(double degrees) => new Angle(degrees * Math.PI / 180);
 
         public static Angle FromRadians(double radians) => new Angle(radians);
 
-        public static Angle operator +(Angle left, Angle right) => new Angle(left.radians + right.radians);
+        public static Angle operator +(Angle left, Angle right) => new Angle(left.Radians + right.Radians);
 
         public static Angle operator +(Angle angle) => angle;
 
-        public static Angle operator -(Angle left, Angle right) => new Angle(left.radians - right.radians);
+        public static Angle operator -(Angle left, Angle right) => new Angle(left.Radians - right.Radians);
 
-        public static Angle operator -(Angle angle) => new Angle(-angle.radians);
+        public static Angle operator -(Angle angle) => new Angle(-angle.Radians);
 
-        public static Angle operator /(Angle nominator, double divisor) => new Angle(nominator.radians / divisor);
+        public static Angle operator /(Angle nominator, double divisor) => new Angle(nominator.Radians / divisor);
 
-        public static Angle operator *(Angle angle, double multiplier) => new Angle(angle.radians * multiplier);
+        public static Angle operator *(Angle angle, double multiplier) => new Angle(angle.Radians * multiplier);
 
-        public static bool operator <(Angle left, Angle right) => left.radians < right.radians;
-        public static bool operator <=(Angle left, Angle right) => left.radians <= right.radians;
+        public static bool operator <(Angle left, Angle right) => left.Radians < right.Radians;
+        public static bool operator <=(Angle left, Angle right) => left.Radians <= right.Radians;
 
-        public static bool operator >(Angle left, Angle right) => left.radians > right.radians;
-        public static bool operator >=(Angle left, Angle right) => left.radians >= right.radians;
+        public static bool operator >(Angle left, Angle right) => left.Radians > right.Radians;
+        public static bool operator >=(Angle left, Angle right) => left.Radians >= right.Radians;
     }
 }

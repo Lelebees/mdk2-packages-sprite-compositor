@@ -64,10 +64,8 @@ namespace IngameScript
                 return this;
             }
 
-            public TextSpriteBuilder Position(float x, float y)
-            {
-                return Position(new Vector2(x, y));
-            }
+            public TextSpriteBuilder Position(float x, float y) => Position(new Vector2(x, y));
+            
             
             public TextSpriteBuilder Position(Vector2 position)
             {
@@ -93,10 +91,7 @@ namespace IngameScript
                 return this;
             }
 
-            public TextSprite Build()
-            {
-                return new TextSprite(sprite);
-            }
+            public TextSprite Build() => new TextSprite(sprite);
         }
     }
 }

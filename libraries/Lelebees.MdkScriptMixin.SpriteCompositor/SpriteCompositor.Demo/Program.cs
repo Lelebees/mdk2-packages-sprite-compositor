@@ -38,7 +38,6 @@ namespace IngameScript
                 surface.SurfaceSize
             );
             
-            // Strictly speaking we should be using Update100, but for testing and/or animation purposes it's nicer to use Update10.
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
             // You can create basic sprites using the Sprites class. The Textures class contains texture name constants for basic shapes, for your writing convenience.
             var sunRayMiddle = Sprites.WithTexture(Textures.SquareSimple)
@@ -52,12 +51,12 @@ namespace IngameScript
                 .Position(9, 0)
                 .Build();
             // You can copy a sprite you made earlier and apply different operations to it
-            var sunRayCapLeft = sunRayCapRight.Clone();
-            // We're using the middle part of the sun ray as an anchor point for the rotation.
-            // This allows us to flip the copied end to the left of the ray, without having to calculate how far it needs to go!
-            sunRayCapLeft.Rotate(Angle.Straight, sunRayMiddle);
-            // Alternatively, if we don't want to rotate, we can also scale the sprite by (-1,1) relative to the same anchor point.
-            // You'll see a Sprite.Scale() invocation later in this demo.
+            TextureSprite sunRayCapLeft = (TextureSprite) sunRayCapRight.Clone();
+            // You can mirror texture sprites by calling the Mirror(), MirrorHorizontal() or MirrorVertical() functions on them.
+            // By passing an anchor, the sprite will also move to the other side of that anchor.
+            sunRayCapLeft.Mirror(sunRayMiddle);
+            // Mirroring is functionally equivalent to calling the Scale() function with -1 for the x, y or both axes.
+            // You'll see a Scale() invocation later in this demo
             
             // It's possible to group sprites and treat them as if they were one.
             var sunRay = Sprites.Group(sunRayCapLeft, sunRayMiddle, sunRayCapRight);
@@ -76,7 +75,9 @@ namespace IngameScript
                If you do, you must implement two methods: Clone() and GetChildren().
              The first method is expected to create a deep copy of the group.
              The second method expects to get a list of all sprites that make up the group. (not copies)
-             This allows the parent class to apply operations such as rotations or translations without needing to know how the sprites are managed by you. */
+             This allows the parent class to apply operations such as rotations or translations without needing to know how the sprites are managed by you. 
+               If you need even more control over the group, you should create your own class that implements the Sprite interface.
+             Which allows you to override the existing transformation functions, and will likely be more performant than extending the existing SpriteGroup class. */
             allRays.Add(sunBody);
             sunSprite.SetColor(Color.Yellow);
             
@@ -84,14 +85,17 @@ namespace IngameScript
                 .FontId("White")
                 .Position(0, -150)
                 .Build(); 
-            // Text can also be rotated around an anchor point, but beware! SE does not support rotating the text itself. This will therefore not create slanted text!
+            /* Any sprite can be rotated using the following syntax.
+               Specifying an anchor point will rotate the sprite around that point, in addition to rotating the sprite itself.
+                 Text can also be rotated around an anchor point, but beware! SE does not support rotating the text itself.
+               This will therefore not create slanted text! */
             praiseText.Rotate(Angle.FromDegrees(-45), sunSprite);
             
             var theSunText = Sprites.WithText("the sun")
                 .FontId("White")
                 .Position(0, 125)
                 .Build(); 
-            // Though we don't do it here, you can also use an arbitrary point in space as the anchor by creating a new PointAnchor.
+            // Though we don't do it here, you can also use an arbitrary point in space as the anchor by creating a new PointAnchor().
             theSunText.Rotate(Angle.FromDegrees(-50), sunSprite);
             textGroup = Sprites.Group(praiseText, theSunText);
             // You can also set an initial scale for text using the builder.
@@ -99,7 +103,7 @@ namespace IngameScript
             textGroup.Scale(1.5f, sunSprite);
             // Any new operations will be applied to the newly grouped sprites as well, but previous operations will not be applied.
             sunSprite.Scale(2f);
-            // It's also possible to scale X and Y separately. You can even mirror sprites by applying a scale of -1 in one or both directions!
+            // It's also possible to scale X and Y separately.
         }
 
         public void Main(string argument, UpdateType updateSource)

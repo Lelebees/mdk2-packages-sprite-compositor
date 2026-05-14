@@ -33,10 +33,7 @@ namespace IngameScript
         {
             private MySprite sprite = new MySprite(type: SpriteType.CLIP_RECT);
 
-            public ClippingSpriteBuilder Position(float x, float y)
-            {
-                return Position(new Vector2(x, y));
-            }
+            public ClippingSpriteBuilder Position(float x, float y) => Position(new Vector2(x, y));
             
             public ClippingSpriteBuilder Position(Vector2 position)
             {
@@ -46,14 +43,11 @@ namespace IngameScript
 
             public ClippingSpriteBuilder Rotation(Angle rotation)
             {
-                sprite.RotationOrScale = (float) rotation.Radians();
+                sprite.RotationOrScale = (float) rotation.Radians;
                 return this;
             }
 
-            public ClippingSpriteBuilder Size(float width, float height)
-            {
-                return Size(new Vector2(width, height));
-            }
+            public ClippingSpriteBuilder Size(float width, float height) => Size(new Vector2(width, height));
 
             public ClippingSpriteBuilder Size(Vector2 size)
             {
@@ -67,10 +61,7 @@ namespace IngameScript
                 return this;
             }
 
-            public ClippingSprite Build()
-            {
-                return new ClippingSprite(sprite);
-            }
+            public ClippingSprite Build() => new ClippingSprite(sprite);
         }
     }
 }

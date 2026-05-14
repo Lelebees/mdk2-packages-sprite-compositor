@@ -43,60 +43,12 @@ namespace IngameScript
             return resultingSprites;
         }
 
-        public static TextureSprite Mirror(TextureSprite sprite)
-        {
-            sprite.Scale(new Vector2(-1, -1));
-            return sprite;
-        }
+        public static TextureSprite.TextureSpriteBuilder WithTexture(string texture) => new TextureSprite.TextureSpriteBuilder().Texture(texture);
 
-        public static SpriteGroup Mirror(SpriteGroup spriteGroup)
-        {
-            spriteGroup.Scale(new Vector2(-1, -1));
-            return spriteGroup;
-        }
+        public static TextSprite.TextSpriteBuilder WithText(string text) => new TextSprite.TextSpriteBuilder().Text(text);
 
-        private static TextureSprite MirrorHorizontal(TextureSprite sprite)
-        {
-            sprite.Scale(new Vector2(-1, 1));
-            return sprite;
-        }
+        public static ClippingSprite.ClippingSpriteBuilder ClipRectangle() => new ClippingSprite.ClippingSpriteBuilder();
 
-        private static SpriteGroup MirrorHorizontal(SpriteGroup spriteGroup)
-        {
-            spriteGroup.Scale(new Vector2(-1, 1));
-            return spriteGroup;
-        }
-
-        private static TextureSprite MirrorVertical(TextureSprite sprite)
-        {
-            sprite.Scale(new Vector2(1, -1));
-            return sprite;
-        }
-
-        private static SpriteGroup MirrorVertical(SpriteGroup spriteGroup)
-        {
-            spriteGroup.Scale(new Vector2(1, -1));
-            return spriteGroup;
-        }
-
-        public static TextureSprite.TextureSpriteBuilder WithTexture(string texture)
-        {
-            return new TextureSprite.TextureSpriteBuilder().Texture(texture);
-        }
-
-        public static TextSprite.TextSpriteBuilder WithText(string text)
-        {
-            return new TextSprite.TextSpriteBuilder().Text(text);
-        }
-
-        public static ClippingSprite.ClippingSpriteBuilder ClipRectangle()
-        {
-            return new ClippingSprite.ClippingSpriteBuilder();
-        }
-
-        public static SpriteGroup Group(params Sprite[] sprites)
-        {
-            return new SimpleSpriteGroup(sprites.ToList());
-        }
+        public static SpriteGroup Group(params Sprite[] sprites) => new SimpleSpriteGroup(sprites.ToList());
     }
 }

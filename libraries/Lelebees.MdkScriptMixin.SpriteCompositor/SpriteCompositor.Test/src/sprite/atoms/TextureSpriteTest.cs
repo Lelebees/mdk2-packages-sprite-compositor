@@ -37,7 +37,7 @@ namespace SpriteCompositor.Test.sprite.atoms
 
             // Note here (and this is not obvious) that unlike the angle struct, a sprite's rotation value can grow indefinitely
             // This means that values above and below 2 * Math.PI are possible. The test keeps this in mind.
-            var totalAngle = angles.Sum(angle => angle.Radians());
+            var totalAngle = angles.Sum(angle => angle.Radians);
             Assert.That(sprite.Rotation, Is.EqualTo(totalAngle).Within(Precision));
         }
 

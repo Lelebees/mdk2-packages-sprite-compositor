@@ -47,7 +47,7 @@ namespace IngameScript
             Sprite.Alignment = alignment;
         }
 
-        public abstract void Scale(float scalar, Anchor anchor = null);
+        public virtual void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
 
         public virtual void Scale(Vector2 scalar, Anchor anchor = null)
         {
@@ -63,9 +63,9 @@ namespace IngameScript
         {
             if (positionAnchor == null || positionAnchor == this ||
                 positionAnchor.GetPosition() == GetPosition()) return;
-
-            var cos = Math.Cos(-angle.Radians());
-            var sin = Math.Sin(-angle.Radians());
+            
+            var cos = Math.Cos(-angle.Radians);
+            var sin = Math.Sin(-angle.Radians);
 
             var anchor = positionAnchor.GetPosition();
 

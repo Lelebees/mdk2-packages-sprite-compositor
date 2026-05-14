@@ -31,21 +31,22 @@ namespace IngameScript
 
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
-            if (Sprite.Size == null)
-            {
-                Sprite.Size = Vector2.One;
-            }
-
-            var size = Sprite.Size.Value;
+            var size = Sprite.Size ?? Vector2.One;
             size.X *= scalar.X;
             size.Y *= scalar.Y;
             Sprite.Size = size;
             base.Scale(scalar, anchor);
         }
+        
+        public void Mirror(Anchor anchor = null) => Scale(new Vector2(-1, -1), anchor);
+
+        public void MirrorVertical(Anchor anchor = null) => Scale(new Vector2(1, -1), anchor);
+
+        public void MirrorHorizontal(Anchor anchor = null) => Scale(new Vector2(-1, 1), anchor);
 
         public override void Rotate(Angle angle, Anchor positionAnchor = null)
         {
-            Sprite.RotationOrScale += (float)angle.Radians();
+            Sprite.RotationOrScale += (float)angle.Radians;
             base.Rotate(angle, positionAnchor);
         }
 
@@ -62,10 +63,7 @@ namespace IngameScript
                 return this;
             }
 
-            public TextureSpriteBuilder Position(float x, float y)
-            {
-                return Position(new Vector2(x, y));
-            }
+            public TextureSpriteBuilder Position(float x, float y) => Position(new Vector2(x, y));
 
             public TextureSpriteBuilder Position(Vector2 position)
             {
@@ -75,14 +73,11 @@ namespace IngameScript
 
             public TextureSpriteBuilder Rotation(Angle rotation)
             {
-                sprite.RotationOrScale = (float)rotation.Radians();
+                sprite.RotationOrScale = (float)rotation.Radians;
                 return this;
             }
 
-            public TextureSpriteBuilder Size(float width, float height)
-            {
-                return Size(new Vector2(width, height));
-            }
+            public TextureSpriteBuilder Size(float width, float height) => Size(new Vector2(width, height));
 
             public TextureSpriteBuilder Size(Vector2 size)
             {
@@ -102,10 +97,7 @@ namespace IngameScript
                 return this;
             }
 
-            public TextureSprite Build()
-            {
-                return new TextureSprite(sprite);
-            }
+            public TextureSprite Build() => new TextureSprite(sprite);
         }
     }
 }
