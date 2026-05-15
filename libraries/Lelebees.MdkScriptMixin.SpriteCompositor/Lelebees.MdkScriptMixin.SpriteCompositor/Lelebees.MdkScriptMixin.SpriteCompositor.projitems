@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>8a3cdcc5-4b55-4d87-a415-698a0e1ff06f</SharedGUID>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)COPYING" />
+    <Content Include="$(MSBuildThisFileDirectory)COPYING.LESSER" />
+    <Content Include="$(MSBuildThisFileDirectory)documentation\class-diagram.md" />
+    <Content Include="$(MSBuildThisFileDirectory)readme.md" />
+    <Content Include="$(MSBuildThisFileDirectory)_authors" />
+    <Content Include="$(MSBuildThisFileDirectory)_description" />
+    <Content Include="$(MSBuildThisFileDirectory)_releasenotes" />
+    <Content Include="$(MSBuildThisFileDirectory)_version" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)src\anchor\Anchor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\anchor\PointAnchor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\angle\Angle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\atoms\TextureSprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\atoms\TextSprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\atoms\ClippingSprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\molecules\SimpleSpriteGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Sprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteLeaf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Sprites.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Textures.cs" />
+  </ItemGroup>
+</Project>
