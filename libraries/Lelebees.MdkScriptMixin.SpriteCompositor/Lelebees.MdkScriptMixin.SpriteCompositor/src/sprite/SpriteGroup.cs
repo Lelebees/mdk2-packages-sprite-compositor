@@ -63,11 +63,15 @@ namespace IngameScript
             // it is VITALLY important to create a PointAnchor here. If we don't,
             // the process of rotating sprites could adjust this (or another) groups center, and therefore its position
             // this causes sprites to spiral away from the center of rotation.
+            if (positionAnchor == null)
+            {
+                positionAnchor = new PointAnchor(GetPosition());
+            }
             if (positionAnchor is SpriteGroup)
             {
                 positionAnchor = new PointAnchor(positionAnchor.GetPosition());
             }
-            GetChildren().ForEach(sprite => sprite.Rotate(angle, positionAnchor ?? new PointAnchor(GetPosition())));
+            GetChildren().ForEach(sprite => sprite.Rotate(angle, positionAnchor));
         }
 
         public abstract Sprite Clone();
