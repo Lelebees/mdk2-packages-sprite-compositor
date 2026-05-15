@@ -6,6 +6,8 @@
     <SharedGUID>8a3cdcc5-4b55-4d87-a415-698a0e1ff06f</SharedGUID>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)COPYING" />
+    <Content Include="$(MSBuildThisFileDirectory)COPYING.LESSER" />
     <Content Include="$(MSBuildThisFileDirectory)documentation\class-diagram.md" />
     <Content Include="$(MSBuildThisFileDirectory)readme.md" />
     <Content Include="$(MSBuildThisFileDirectory)_authors" />

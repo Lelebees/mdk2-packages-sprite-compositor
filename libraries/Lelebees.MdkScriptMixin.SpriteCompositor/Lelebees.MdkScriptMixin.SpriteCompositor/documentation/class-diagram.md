@@ -1,35 +1,29 @@
 ```mermaid
 classDiagram
-    class Display {
-        -bool cacheInvalidationEnabled
-        -bool emptySpriteRendered
-        -IMyTextSurface surface
-        +Draw(Sprite sprite) void
-        
-    }
-
+    note "Implemented interface methods\n have been left out for brevity."
     class Sprite {
         <<interface>>
-        +Translate(float amount, Direction direction) Sprite
-        +Translate(Vector2 vector) Sprite
+        +Translate(float x, float y) Sprite
+        +Translate(Vector2 vector) void
         +SetColor(Color color) void
         +SetAlignment(TextAlignment alignment) void
         +GetPosition() Vector2
-        +Scale(float amount) Sprite
-        +Rotate(Angle angle, Anchor anchor)
+        +Scale(float amount) void
+        +Rotate(Angle angle, Anchor anchor) void
+        +Clone() Sprite
     }
 
     Anchor <|-- Sprite
     Sprite <|-- SpriteLeaf
     Sprite <|--o SpriteGroup
     Sprite ..> Angle
-    Angle .. > AngleType
     
     class SpriteLeaf {
         <<abstract>>
         #MySprite sprite
-        +Scale(float amount)*
-        +Rotate(Angle angle, Anchor anchor)*
+        +Scale(float amount)* void
+        +Rotate(Angle angle, Anchor anchor)* void
+        +Clone()* Sprite
     }
     
     SpriteLeaf <|-- TextSprite
@@ -37,14 +31,22 @@ classDiagram
     SpriteLeaf <|-- ClippingSprite
     
     class TextureSprite {
+        +float Rotation
+        +Vector2? Size
+        +string Texture
         +SetTexture(string texture) void
         +Scale(float amount) void
         +Rotate(Angle angle, Anchor anchor) void
+        +Mirror() void
+        +MirrorHorizontal() void
+        +MirrorVertical() void
     }
     
     class TextSprite {
-        +SetText(string text) void
-        +SetFont(string fontId) void
+        +string Text
+        +string FontId
+        +float TextScale
+        +TextAlignment alignment
         +Scale(float amount) void
         +Rotate(Angle angle, Anchor anchor) void
     }
@@ -56,19 +58,18 @@ classDiagram
     
     class SpriteGroup {
         -List~Sprite~ sprites
+        +Mirror() void
+        +MirrorHorizontal() void
+        +MirrorVertical() void
     }
     
     class Angle {
         -float radians
-        +AsRadians() float
-        +AsDegrees() float
+        +float Radians
+        +float Degrees
     }
     
-    class AngleType {
-        <<enumeration>>
-        DEGREES
-        RADIANS
-    }
+    note for Angle "Basic arithmetic and\n comparison available"
     
     class Anchor {
         <<interface>>

@@ -1,5 +1,2 @@
-﻿R e a d m e
------------
-
-In this file you can include any instructions or other comments you want to have injected onto the 
-top of your final script. You can safely delete this file if you do not want any such comments.
+This program uses SpriteComposer, which is licensed under the GNU LGPL 3.0 or later. You can find the source code and a copy of the license at <https://github.com/Lelebees/mdk2-packages-sprite-compositor/tree/main/libraries/Lelebees.MdkScriptMixin.SpriteCompositor/Lelebees.MdkScriptMixin.SpriteCompositor/>
+Copies of the license are also available at <https://www.gnu.org/licenses/> 

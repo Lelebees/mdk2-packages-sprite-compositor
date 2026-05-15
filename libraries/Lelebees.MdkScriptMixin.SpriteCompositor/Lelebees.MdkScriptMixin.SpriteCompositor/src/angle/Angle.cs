@@ -1,3 +1,16 @@
+/* Copyright (c) 2026 Lelebees
+   This file is part of Sprite Composer.
+
+   Sprite Composer is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation,
+   either version 3 of the License, or (at your option) any later version.
+
+   Sprite Composer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+   without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License along with Sprite Composer.
+   If not, see <https://www.gnu.org/licenses/>. */
+
 using System;
 
 namespace IngameScript
@@ -8,15 +21,15 @@ namespace IngameScript
     public struct Angle
     {
         /// <summary>
-        /// A right angle, equal to 90 degrees or 1/2 * PI
+        /// A right angle, equal to 90 degrees or 1/2 * PI.
         /// </summary>
         public static readonly Angle Right = new Angle(0.5 * Math.PI);
         /// <summary>
-        /// A straight angle, equal to 180 degrees or 1 * PI
+        /// A straight angle, equal to 180 degrees or 1 * PI.
         /// </summary>
         public static readonly Angle Straight = new Angle(Math.PI);
         /// <summary>
-        /// A full angle, equal to 360 degrees or 2 * PI
+        /// A full angle, equal to 360 degrees or 2 * PI.
         /// </summary>
         public static readonly Angle Full = new Angle(2 * Math.PI);
 
@@ -33,13 +46,11 @@ namespace IngameScript
         /// <summary>
         /// This angle expressed in radians, positive or negative, limited to one full rotation (0 to 2 * PI)
         /// </summary>
-        /// <returns>the angle in radians</returns>
         public double Radians { get; }
 
         /// <summary>
         /// This angle expressed in degrees, positive or negative, limited to one full rotation (0 to 360)
         /// </summary>
-        /// <returns>the angle in degrees</returns>
         public double Degrees => Radians * 180 / Math.PI;
 
         public static Angle FromDegrees(double degrees) => new Angle(degrees * Math.PI / 180);
