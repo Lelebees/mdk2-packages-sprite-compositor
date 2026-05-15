@@ -1,4 +1,4 @@
-# Installing Mal.MdkScriptMixin.Stopwatch
+# Installing Lelebees.MdkScriptMixin.SpriteCompositor
 
 **Quick Links:** [Visual Studio](#visual-studio) | [JetBrains Rider](#jetbrains-rider) | [Command Line](#command-line--manual)
 
@@ -13,7 +13,7 @@
    - Name: `Malforge`
    - Source: `https://nuget.pkg.github.com/malforge/index.json`
 5. Click **OK** to save
-6. Search for `Mal.MdkScriptMixin.Stopwatch`
+6. Search for `Lelebees.MdkScriptMixin.SpriteCompositor`
 7. Click **Install**
 
 ---
@@ -26,7 +26,7 @@
    - URL: `https://nuget.pkg.github.com/malforge/index.json`
 3. Click **OK** to save
 4. Open the **NuGet** tool window
-5. Search for `Mal.MdkScriptMixin.Stopwatch`
+5. Search for `Lelebees.MdkScriptMixin.SpriteCompositor`
 6. Click **Install**
 
 ---
@@ -42,7 +42,7 @@ dotnet nuget add source https://nuget.pkg.github.com/malforge/index.json --name 
 ### Install the Package
 
 ```bash
-dotnet add package Mal.MdkScriptMixin.Stopwatch
+dotnet add package Lelebees.MdkScriptMixin.SpriteCompositor
 ```
 
 ### Or Edit .csproj Directly
@@ -50,7 +50,7 @@ dotnet add package Mal.MdkScriptMixin.Stopwatch
 Add this to your `.csproj` file:
 
 ```xml
-<PackageReference Include="Mal.MdkScriptMixin.Stopwatch" Version="1.0.0" />
+<PackageReference Include="Lelebees.MdkScriptMixin.SpriteCompositor" Version="1.0.0" />
 ```
 
 ---
