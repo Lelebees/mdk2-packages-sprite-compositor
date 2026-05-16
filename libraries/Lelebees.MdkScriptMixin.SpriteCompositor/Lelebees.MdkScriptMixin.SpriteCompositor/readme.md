@@ -2,9 +2,9 @@
 
 An API wrapper that supports composing new sprites from multiple existing ones.
 
-- [Source Code](./src)
-- [Demo Project](../SpriteCompositor.Demo/Program.cs)
-- [Tests](../SpriteCompositor.Test)
+- [Source Code](https://github.com/malforge/mdk2-packages/tree/main/libraries/Lelebees.MdkScriptMixin.SpriteCompositor/Lelebees.MdkScriptMixin.SpriteCompositor/src)
+- [Demo Project](https://github.com/malforge/mdk2-packages/blob/main/libraries/Lelebees.MdkScriptMixin.SpriteCompositor/SpriteCompositor.Demo/Program.cs)
+- [Tests](https://github.com/malforge/mdk2-packages/tree/main/libraries/Lelebees.MdkScriptMixin.SpriteCompositor/SpriteCompositor.Test)
 
 ## Usage
 
@@ -16,7 +16,7 @@ All sprites and sprite groups implement the `Sprite` interface, which you can us
 `Scale()` a sprite after instantiation, among other things. Individual Sprite types may have additional properties and
 methods available, like `TextureSprite`'s `Mirror()` functions.
 
-See the [demo project](../SpriteCompositor.Demo/Program.cs) for a detailed example.
+See the [demo project](https://github.com/malforge/mdk2-packages/blob/main/libraries/Lelebees.MdkScriptMixin.SpriteCompositor/SpriteCompositor.Demo/Program.cs) for a detailed example.
 
 ### Grouping Sprites
 
@@ -84,7 +84,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ### License
-You can find a copy of the [GNU General Public License](./COPYING) and [GNU Lesser General Public License](./COPYING.LESSER) next to this source code in COPYING and COPYING.LESSER respectively.
+You can find a copy of the [GNU General Public License](https://github.com/malforge/mdk2-packages/blob/main/libraries/Lelebees.MdkScriptMixin.SpriteCompositor/Lelebees.MdkScriptMixin.SpriteCompositor/COPYING) and [GNU Lesser General Public License](https://github.com/malforge/mdk2-packages/blob/main/libraries/Lelebees.MdkScriptMixin.SpriteCompositor/Lelebees.MdkScriptMixin.SpriteCompositor/COPYING.LESSER) next to this source code in COPYING and COPYING.LESSER respectively.
 
 ### Reaching out
 You can reach me as @lelebees on Discord, or through the project's [Github Repository](https://github.com/Lelebees/mdk2-packages-sprite-compositor). Please note while reaching out on Discord that I generally do not accept random friend requests. @Mention me in the [programmable block channel](https://discord.com/channels/125011928711036928/216219467959500800) of the Keen Software House Discord Server to get a hold of me.
