@@ -58,10 +58,7 @@ namespace IngameScript
                 anchor = new PointAnchor(anchor.GetPosition());
             }
 
-            foreach (var sprite in GetChildren())
-            {
-                sprite.Scale(scalar, anchor);
-            }
+            foreach (var sprite in GetChildren()) sprite.Scale(scalar, anchor);
         }
 
         public void Mirror(Anchor anchor = null) => Scale(new Vector2(-1, -1), anchor);

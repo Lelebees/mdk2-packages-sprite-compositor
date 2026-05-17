@@ -34,10 +34,7 @@ namespace IngameScript
             drawable = new[] { Sprite };
         }
 
-        public Vector2 GetPosition()
-        {
-            return Sprite.Position ?? Vector2.Zero;
-        }
+        public Vector2 GetPosition() => Sprite.Position ?? Vector2.Zero;
 
         public void Translate(Vector2 vector)
         {
@@ -47,20 +44,11 @@ namespace IngameScript
             Sprite.Position = position;
         }
 
-        public void Translate(float x, float y)
-        {
-            Translate(new Vector2(x, y));
-        }
+        public void Translate(float x, float y) => Translate(new Vector2(x, y));
 
-        public void SetColor(Color color)
-        {
-            Sprite.Color = color;
-        }
+        public void SetColor(Color color) => Sprite.Color = color;
 
-        public void SetAlignment(TextAlignment alignment)
-        {
-            Sprite.Alignment = alignment;
-        }
+        public void SetAlignment(TextAlignment alignment) => Sprite.Alignment = alignment;
 
         public virtual void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
 
