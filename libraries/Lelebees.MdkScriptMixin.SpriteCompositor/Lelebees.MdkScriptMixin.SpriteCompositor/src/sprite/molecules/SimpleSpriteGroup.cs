@@ -12,7 +12,6 @@
    If not, see <https://www.gnu.org/licenses/>. */
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace IngameScript
 {
@@ -25,7 +24,13 @@ namespace IngameScript
             this.children = children;
         }
         
-        public override Sprite Clone() => new SimpleSpriteGroup(children.Select(sprite => sprite.Clone()).ToList());
+        public override Sprite Clone()
+        {
+            List<Sprite> list = new List<Sprite>();
+            foreach (var sprite in children) list.Add(sprite.Clone());
+
+            return new SimpleSpriteGroup(list);
+        }
 
         protected override List<Sprite> GetChildren() => children;
     }
