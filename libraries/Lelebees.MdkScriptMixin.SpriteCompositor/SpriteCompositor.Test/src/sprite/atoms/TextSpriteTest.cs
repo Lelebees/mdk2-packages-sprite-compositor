@@ -3,6 +3,7 @@ using IngameScript;
 using NUnit.Framework;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
+
 namespace SpriteCompositor.Test.sprite.atoms
 {
     [TestFixture]
@@ -88,6 +89,24 @@ namespace SpriteCompositor.Test.sprite.atoms
             mySprite.RotationOrScale = 99f;
             var newDrawable = sprite.AsDrawableCollection()[0];
             Assert.That(newDrawable, Is.Not.EqualTo(mySprite));
+        }
+
+        [Test]
+        public void RenderableWithViewportDoesNotChangeSprite()
+        {
+            var sprite = Sprites.WithText("uau").Build();
+            var nonProblematicDrawable = sprite.AsDrawableCollection()[0];
+            sprite.AsDrawableCollection(new RectangleF(10, 10, 20, 20));
+            var potentialProblem = sprite.AsDrawableCollection()[0];
+            Assert.That(nonProblematicDrawable, Is.EqualTo(potentialProblem));
+        }
+
+        [Test]
+        public void TransformsApplyToRenderable()
+        {
+            var sprite = Sprites.WithText("uau").Build();
+            sprite.Translate(5,5);
+            Assert.That(sprite.AsDrawableCollection()[0].Position, Is.EqualTo(sprite.Position));
         }
     }
 }

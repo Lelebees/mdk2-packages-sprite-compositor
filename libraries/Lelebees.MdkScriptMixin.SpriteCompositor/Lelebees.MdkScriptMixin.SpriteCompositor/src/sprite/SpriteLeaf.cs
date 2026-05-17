@@ -20,6 +20,7 @@ namespace IngameScript
     public abstract class SpriteLeaf : Sprite
     {
         protected MySprite Sprite;
+        private readonly MySprite[] drawable;
 
         public Vector2? Position
         {
@@ -30,6 +31,7 @@ namespace IngameScript
         protected SpriteLeaf(MySprite sprite)
         {
             Sprite = sprite;
+            drawable = new[] { Sprite };
         }
 
         public Vector2 GetPosition()
@@ -92,23 +94,15 @@ namespace IngameScript
 
         public MySprite[] AsDrawableCollection(RectangleF viewport)
         {
-            return new[]
-            {
-                new MySprite(
-                    Sprite.Type,
-                    Sprite.Data,
-                    Sprite.Position + viewport.Center,
-                    Sprite.Size,
-                    Sprite.Color,
-                    Sprite.FontId,
-                    Sprite.Alignment,
-                    Sprite.RotationOrScale)
-            };
+            drawable[0] = Sprite;
+            drawable[0].Position += viewport.Center;
+            return drawable;
         }
 
         public MySprite[] AsDrawableCollection()
         {
-            return new[] { Sprite };
+            drawable[0] = Sprite;
+            return drawable;
         }
     }
 }
