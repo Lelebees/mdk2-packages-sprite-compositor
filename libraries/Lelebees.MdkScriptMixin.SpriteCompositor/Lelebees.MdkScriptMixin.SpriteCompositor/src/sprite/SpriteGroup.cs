@@ -12,7 +12,6 @@
    If not, see <https://www.gnu.org/licenses/>. */
 
 using System.Collections.Generic;
-using System.Linq;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -93,11 +92,23 @@ namespace IngameScript
 
         public abstract Sprite Clone();
 
-        public MySprite[] AsDrawableCollection(RectangleF viewport) =>
-            GetChildren().SelectMany(child => child.AsDrawableCollection(viewport)).ToArray();
+        public MySprite[] AsDrawableCollection(RectangleF viewport)
+        {
+            List<MySprite> list = new List<MySprite>();
+            foreach (Sprite child in GetChildren())
+            foreach (MySprite sprite in child.AsDrawableCollection(viewport))
+                list.Add(sprite);
+            return list.ToArray();
+        }
 
-        public MySprite[] AsDrawableCollection() =>
-            GetChildren().SelectMany(child => child.AsDrawableCollection()).ToArray();
+        public MySprite[] AsDrawableCollection()
+        {
+            List<MySprite> list = new List<MySprite>();
+            foreach (Sprite child in GetChildren())
+            foreach (MySprite sprite in child.AsDrawableCollection())
+                list.Add(sprite);
+            return list.ToArray();
+        }
 
         protected abstract List<Sprite> GetChildren();
     }
