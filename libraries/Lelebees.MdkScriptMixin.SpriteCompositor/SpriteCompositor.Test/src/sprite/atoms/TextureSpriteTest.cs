@@ -120,5 +120,23 @@ namespace SpriteCompositor.Test.sprite.atoms
             var newDrawable = sprite.AsDrawableCollection()[0];
             Assert.That(newDrawable, Is.Not.EqualTo(mySprite));
         }
+        
+        [Test]
+        public void RenderableWithViewportDoesNotChangeSprite()
+        {
+            var sprite = Sprites.WithTexture("SquareSimple").Build();
+            var nonProblematicDrawable = sprite.AsDrawableCollection()[0];
+            sprite.AsDrawableCollection(new RectangleF(10, 10, 20, 20));
+            var potentialProblem = sprite.AsDrawableCollection()[0];
+            Assert.That(nonProblematicDrawable, Is.EqualTo(potentialProblem));
+        }
+
+        [Test]
+        public void TransformsApplyToRenderable()
+        {
+            var sprite = Sprites.WithText("SquareSimple").Build();
+            sprite.Translate(5,5);
+            Assert.That(sprite.AsDrawableCollection()[0].Position, Is.EqualTo(sprite.Position));
+        }
     }
 }

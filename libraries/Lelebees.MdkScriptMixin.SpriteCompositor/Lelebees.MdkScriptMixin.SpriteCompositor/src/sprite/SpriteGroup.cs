@@ -12,7 +12,6 @@
    If not, see <https://www.gnu.org/licenses/>. */
 
 using System.Collections.Generic;
-using System.Linq;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -23,17 +22,27 @@ namespace IngameScript
         public Vector2 GetPosition()
         {
             var children = GetChildren();
-            return children.Aggregate(Vector2.Zero, (current, child) => current + child.GetPosition()) / children.Count;
+            Vector2 result = Vector2.Zero;
+            foreach (var child in children) result += child.GetPosition();
+            return result / children.Count;
         }
 
-        public void Translate(Vector2 vector) => GetChildren().ForEach(sprite => sprite.Translate(vector));
+        public void Translate(Vector2 vector)
+        {
+            foreach (var sprite in GetChildren()) sprite.Translate(vector);
+        }
 
         public void Translate(float x, float y) => Translate(new Vector2(x, y));
 
-        public void SetColor(Color color) => GetChildren().ForEach(sprite => sprite.SetColor(color));
+        public void SetColor(Color color)
+        {
+            foreach (var sprite in GetChildren()) sprite.SetColor(color);
+        }
 
-        public void SetAlignment(TextAlignment alignment) =>
-            GetChildren().ForEach(sprite => sprite.SetAlignment(alignment));
+        public void SetAlignment(TextAlignment alignment)
+        {
+            foreach (var sprite in GetChildren()) sprite.SetAlignment(alignment);
+        }
 
         public void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
 
@@ -49,7 +58,7 @@ namespace IngameScript
                 anchor = new PointAnchor(anchor.GetPosition());
             }
 
-            GetChildren().ForEach(sprite => sprite.Scale(scalar, anchor));
+            foreach (var sprite in GetChildren()) sprite.Scale(scalar, anchor);
         }
 
         public void Mirror(Anchor anchor = null) => Scale(new Vector2(-1, -1), anchor);
@@ -67,20 +76,36 @@ namespace IngameScript
             {
                 positionAnchor = new PointAnchor(GetPosition());
             }
-            if (positionAnchor is SpriteGroup)
+            else if (positionAnchor is SpriteGroup)
             {
                 positionAnchor = new PointAnchor(positionAnchor.GetPosition());
             }
-            GetChildren().ForEach(sprite => sprite.Rotate(angle, positionAnchor));
+
+            foreach (var sprite in GetChildren())
+            {
+                sprite.Rotate(angle, positionAnchor);
+            }
         }
 
         public abstract Sprite Clone();
 
-        public MySprite[] AsDrawableCollection(RectangleF viewport) =>
-            GetChildren().SelectMany(child => child.AsDrawableCollection(viewport)).ToArray();
+        public MySprite[] AsDrawableCollection(RectangleF viewport)
+        {
+            List<MySprite> list = new List<MySprite>();
+            foreach (Sprite child in GetChildren())
+            foreach (MySprite sprite in child.AsDrawableCollection(viewport))
+                list.Add(sprite);
+            return list.ToArray();
+        }
 
-        public MySprite[] AsDrawableCollection() =>
-            GetChildren().SelectMany(child => child.AsDrawableCollection()).ToArray();
+        public MySprite[] AsDrawableCollection()
+        {
+            List<MySprite> list = new List<MySprite>();
+            foreach (Sprite child in GetChildren())
+            foreach (MySprite sprite in child.AsDrawableCollection())
+                list.Add(sprite);
+            return list.ToArray();
+        }
 
         protected abstract List<Sprite> GetChildren();
     }

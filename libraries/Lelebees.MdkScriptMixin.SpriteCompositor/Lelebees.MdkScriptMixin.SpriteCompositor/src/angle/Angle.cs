@@ -51,7 +51,10 @@ namespace IngameScript
         /// <summary>
         /// This angle expressed in degrees, positive or negative, limited to one full rotation (0 to 360)
         /// </summary>
-        public double Degrees => Radians * 180 / Math.PI;
+        public double Degrees
+        {
+            get { return Radians * 180 / Math.PI; }
+        }
 
         public static Angle FromDegrees(double degrees) => new Angle(degrees * Math.PI / 180);
 
