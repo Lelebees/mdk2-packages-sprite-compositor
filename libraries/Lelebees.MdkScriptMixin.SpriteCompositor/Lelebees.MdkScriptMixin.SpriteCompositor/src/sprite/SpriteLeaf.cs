@@ -1,14 +1,14 @@
 /* Copyright (c) 2026 Lelebees
-   This file is part of Sprite Composer.
+   This file is part of Sprite Compositor.
 
-   Sprite Composer is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation,
+   Sprite Compositor is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation,
    either version 3 of the License, or (at your option) any later version.
 
-   Sprite Composer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+   Sprite Compositor is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
    without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    See the GNU Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Lesser General Public License along with Sprite Composer.
+   You should have received a copy of the GNU Lesser General Public License along with Sprite Compositor.
    If not, see <https://www.gnu.org/licenses/>. */
 
 using System;
@@ -20,6 +20,7 @@ namespace IngameScript
     public abstract class SpriteLeaf : Sprite
     {
         protected MySprite Sprite;
+        private readonly MySprite[] drawable;
 
         public Vector2? Position
         {
@@ -30,12 +31,10 @@ namespace IngameScript
         protected SpriteLeaf(MySprite sprite)
         {
             Sprite = sprite;
+            drawable = new[] { Sprite };
         }
 
-        public Vector2 GetPosition()
-        {
-            return Sprite.Position ?? Vector2.Zero;
-        }
+        public Vector2 GetPosition() => Sprite.Position ?? Vector2.Zero;
 
         public void Translate(Vector2 vector)
         {
@@ -45,20 +44,11 @@ namespace IngameScript
             Sprite.Position = position;
         }
 
-        public void Translate(float x, float y)
-        {
-            Translate(new Vector2(x, y));
-        }
+        public void Translate(float x, float y) => Translate(new Vector2(x, y));
 
-        public void SetColor(Color color)
-        {
-            Sprite.Color = color;
-        }
+        public void SetColor(Color color) => Sprite.Color = color;
 
-        public void SetAlignment(TextAlignment alignment)
-        {
-            Sprite.Alignment = alignment;
-        }
+        public void SetAlignment(TextAlignment alignment) => Sprite.Alignment = alignment;
 
         public virtual void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
 
@@ -92,23 +82,15 @@ namespace IngameScript
 
         public MySprite[] AsDrawableCollection(RectangleF viewport)
         {
-            return new[]
-            {
-                new MySprite(
-                    Sprite.Type,
-                    Sprite.Data,
-                    Sprite.Position + viewport.Center,
-                    Sprite.Size,
-                    Sprite.Color,
-                    Sprite.FontId,
-                    Sprite.Alignment,
-                    Sprite.RotationOrScale)
-            };
+            drawable[0] = Sprite;
+            drawable[0].Position += viewport.Center;
+            return drawable;
         }
 
         public MySprite[] AsDrawableCollection()
         {
-            return new[] { Sprite };
+            drawable[0] = Sprite;
+            return drawable;
         }
     }
 }
