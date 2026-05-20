@@ -27,4 +27,4 @@
 
 ---
 
-*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-19*
+*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-20*
