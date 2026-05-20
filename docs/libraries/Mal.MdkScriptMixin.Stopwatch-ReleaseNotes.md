@@ -8,4 +8,4 @@
 
 ---
 
-*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-15*
+*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-19*
