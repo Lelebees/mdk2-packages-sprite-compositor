@@ -26,13 +26,9 @@ namespace IngameScript
         {
         }
 
-        public override void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
-
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
-            if (Sprite.Size == null) Sprite.Size = Vector2.One;
-
-            var size = Sprite.Size.Value;
+            var size = Sprite.Size ?? Vector2.One;
             size.X *= scalar.X;
             size.Y *= scalar.Y;
             Sprite.Size = size;

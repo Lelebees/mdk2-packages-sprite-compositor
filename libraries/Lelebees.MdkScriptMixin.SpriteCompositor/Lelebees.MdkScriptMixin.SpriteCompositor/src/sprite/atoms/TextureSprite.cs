@@ -40,8 +40,6 @@ namespace IngameScript
         {
         }
 
-        public override void Scale(float scalar, Anchor anchor = null) => Scale(new Vector2(scalar, scalar), anchor);
-
         public override void Scale(Vector2 scalar, Anchor anchor = null)
         {
             var size = Sprite.Size ?? Vector2.One;
@@ -50,12 +48,6 @@ namespace IngameScript
             Sprite.Size = size;
             base.Scale(scalar, anchor);
         }
-        
-        public void Mirror(Anchor anchor = null) => Scale(new Vector2(-1, -1), anchor);
-
-        public void MirrorVertical(Anchor anchor = null) => Scale(new Vector2(1, -1), anchor);
-
-        public void MirrorHorizontal(Anchor anchor = null) => Scale(new Vector2(-1, 1), anchor);
 
         public override void Rotate(Angle angle, Anchor positionAnchor = null)
         {

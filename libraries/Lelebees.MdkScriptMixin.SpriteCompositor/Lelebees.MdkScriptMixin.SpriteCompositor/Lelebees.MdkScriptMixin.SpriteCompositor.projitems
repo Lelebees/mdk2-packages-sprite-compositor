@@ -19,13 +19,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\anchor\Anchor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\anchor\PointAnchor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\angle\Angle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\atoms\SpriteLeaf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\atoms\TextureSprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\atoms\TextSprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\atoms\ClippingSprite.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\molecules\SimpleSpriteGroup.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\molecules\CompositeSprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Sprite.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\sprite\SpriteLeaf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Sprites.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\sprite\Textures.cs" />
   </ItemGroup>
