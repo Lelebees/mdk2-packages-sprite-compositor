@@ -36,15 +36,14 @@ namespace IngameScript
 
         public Vector2 GetPosition() => Sprite.Position ?? Vector2.Zero;
 
-        public void Translate(Vector2 vector)
+        public virtual void Translate(Vector2 vector)
         {
-            var position = GetPosition();
-            position.X += vector.X;
-            position.Y += vector.Y;
+            var position = Sprite.Position ?? Vector2.Zero;
+            position += vector;
             Sprite.Position = position;
         }
 
-        public void Translate(float x, float y) => Translate(new Vector2(x, y));
+        public virtual void Translate(float x, float y) => Translate(new Vector2(x, y));
 
         public void SetColor(Color color) => Sprite.Color = color;
 

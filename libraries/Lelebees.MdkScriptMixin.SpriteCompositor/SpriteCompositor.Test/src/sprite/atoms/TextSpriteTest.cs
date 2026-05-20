@@ -36,8 +36,7 @@ namespace SpriteCompositor.Test.sprite.atoms
         [TestCase(-7.5f, 2.25f, Math.PI * 1.5)]
         [TestCase(0.001f, 0.001f, Math.PI / 6)]
         [TestCase(1000, 1000, Math.PI / 3)]
-        // This Case fails. This is okay in my opinion because the size of the screen will probably never exceed 1000 pixels. (The current largest screen is 512x512),
-        // and if so, KSH can start using doubles. 
+        // The following test case fails. This is okay in my opinion because the size of the screen will probably never exceed 1024x512 pixels. 
         // [TestCase(float.MaxValue / 1000, float.MaxValue / 1000, Math.PI / 8)]
         public void RotationAroundAnchorMaintainsCorrectDistance(float x, float y, double radians)
         {
