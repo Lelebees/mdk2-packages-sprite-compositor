@@ -52,7 +52,7 @@ namespace IngameScript
 
         public override void Rotate(Angle angle, Anchor positionAnchor = null)
         {
-            Sprite.RotationOrScale = (float)((Sprite.RotationOrScale + angle.Radians) % 2 * Math.PI);
+            Sprite.RotationOrScale = (float)((Sprite.RotationOrScale + angle.Radians) % (2 * Math.PI));
             base.Rotate(angle, positionAnchor);
         }
 
