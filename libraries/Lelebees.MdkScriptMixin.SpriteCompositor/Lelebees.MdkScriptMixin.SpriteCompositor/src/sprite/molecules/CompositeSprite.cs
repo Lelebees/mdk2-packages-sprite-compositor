@@ -107,7 +107,7 @@ namespace IngameScript
             {
                 if (Children[index].Type != SpriteType.TEXT)
                 {
-                    Children[index].RotationOrScale += (float)angle.Radians;
+                    Children[index].RotationOrScale =(float)((Children[index].RotationOrScale + angle.Radians) % (2 * Math.PI));
                 }
 
                 if (anchor == Children[index].Position) continue;

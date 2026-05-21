@@ -170,5 +170,54 @@ namespace IngameScript
             clone.Scale(new Vector2(-1, 1), anchor);
             return clone;
         }
+        
+        /// <summary>
+        /// Translate a group of sprites with the given vector
+        /// </summary>
+        /// <param name="vector">the offset to translate the sprites by</param>
+        /// <param name="sprites">the sprites to translate</param>
+        public static void Translate(Vector2 vector, params Sprite[] sprites)
+        {
+            foreach (var sprite in sprites) sprite.Translate(vector);
+        }
+
+        /// <summary>
+        /// Translate a group of sprites with the x and y offset
+        /// </summary>
+        /// <param name="x">the x-offset to translate the sprites by</param>
+        /// <param name="y">the y-offset to translate the sprites by</param>
+        /// <param name="sprites">the sprites to translate</param>
+        public static void Translate(float x, float y, params Sprite[] sprites) => Translate(new Vector2(x, y), sprites);
+        
+        /// <summary>
+        /// Rotate a group of sprites with the given angle. Rotates in place unless an anchor is given.
+        /// </summary>
+        /// <param name="angle">The angle to rotate the sprites by</param>
+        /// <param name="anchor">Optional anchor to rotate around</param>
+        /// <param name="sprites">the sprites to rotate</param>
+        public static void Rotate(Angle angle, Anchor anchor = null, params Sprite[] sprites)
+        {
+            foreach (var sprite in sprites) sprite.Rotate(angle, anchor);
+        }
+
+        /// <summary>
+        /// Scale a group of sprites with the given scalars. X and Y can scale separately. Scales in place unless an anchor is given.
+        /// </summary>
+        /// <param name="scalar">The amount to scale x and y by.</param>
+        /// <param name="anchor">If passed, scales a sprite's distance to this point in addition to the sprite itself.</param>
+        /// <param name="sprites">The sprites to scale</param>
+        public static void Scale(Vector2 scalar, Anchor anchor = null, params Sprite[] sprites)
+        {
+            foreach (var sprite in sprites) sprite.Scale(scalar, anchor);
+        }
+        
+        /// <summary>
+        /// Scale a group of sprites with the given scalar. Scales in place unless an anchor is given.
+        /// </summary>
+        /// <param name="scalar">the amount to scale the sprites by</param>
+        /// <param name="anchor">If passed, scales a sprite's distance to this point in addition to the sprite itself.</param>
+        /// <param name="sprites">The sprites to scale</param>
+        public static void Scale(float scalar, Anchor anchor = null, params Sprite[] sprites) =>
+            Scale(new Vector2(scalar, scalar), anchor, sprites);
     }
 }
