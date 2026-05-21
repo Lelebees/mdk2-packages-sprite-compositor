@@ -11,6 +11,7 @@
    You should have received a copy of the GNU Lesser General Public License along with Sprite Compositor.
    If not, see <https://www.gnu.org/licenses/>. */
 
+using System;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -51,12 +52,12 @@ namespace IngameScript
 
         public override void Rotate(Angle angle, Anchor positionAnchor = null)
         {
-            Sprite.RotationOrScale += (float)angle.Radians;
+            Sprite.RotationOrScale = (float)((Sprite.RotationOrScale + angle.Radians) % 2 * Math.PI);
             base.Rotate(angle, positionAnchor);
         }
 
         public override Sprite Clone() => new TextureSprite(Sprite);
-        
+
 
         public class TextureSpriteBuilder
         {
