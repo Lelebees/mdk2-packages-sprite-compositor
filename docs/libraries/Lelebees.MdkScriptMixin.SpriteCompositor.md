@@ -1,7 +1,7 @@
 # Lelebees.MdkScriptMixin.SpriteCompositor
 
 > [!NOTE]
-> **Version:** 1.1.0  
+> **Version:** 2.0.0  
 > **Authors:** Lelebees  
 > **Package:** `Lelebees.MdkScriptMixin.SpriteCompositor`
 > 
@@ -102,4 +102,4 @@ You can find a copy of the [GNU General Public License](https://github.com/malfo
 You can reach me as @lelebees on Discord, or through the project's [Github Repository](https://github.com/Lelebees/mdk2-packages-sprite-compositor). Please note while reaching out on Discord that I generally do not accept random friend requests. @Mention me in the [programmable block channel](https://discord.com/channels/125011928711036928/216219467959500800) of the Keen Software House Discord Server to get a hold of me.
 ---
 
-*Documentation auto-generated from package metadata. Last updated: 2026-05-19*
+*Documentation auto-generated from package metadata. Last updated: 2026-05-20*

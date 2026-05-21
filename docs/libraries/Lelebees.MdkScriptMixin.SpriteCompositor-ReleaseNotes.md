@@ -14,9 +14,14 @@
     Adjusted documentation and legal notices to correctly refer to the project as Sprite Compositor (instead of Composer)
     Fix documentation links leading nowhere in some contexts
     Replaced Angle's inefficient Degrees getter with a more performant syntax
+- 2.0.0
+    Further reduced runtime memory allocation when rendering drawables by replacing Sprite groups with Composite Sprites.  
+    Moved Mirror functionality to the Sprites abstract class.
+    Added Repeat- methods to Sprites class for Scale and Translate respectively.
+    Break previous behaviour where you could edit a Sprite Group after it's instantiation.  
 
 ````````
 
 ---
 
-*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-19*
+*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-20*
