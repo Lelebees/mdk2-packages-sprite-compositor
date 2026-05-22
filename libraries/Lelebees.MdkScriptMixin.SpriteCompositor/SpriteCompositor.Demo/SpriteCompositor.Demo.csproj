@@ -21,6 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="mal.mdk2.sharednugetbuilder" Version="1.0.13" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Instructions.readme" />
