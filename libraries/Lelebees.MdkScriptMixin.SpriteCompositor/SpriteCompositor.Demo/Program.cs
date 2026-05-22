@@ -79,8 +79,7 @@ namespace IngameScript
             // You can also set an initial scale for text using the builder.
             // However, here we want to scale the distance the text has to the sun, so we supply the sun as the anchor for the scale operation.
             textLayer.Scale(1.5f, sunSprite);
-            // Any new operations will be applied to the newly grouped sprites as well, but previous operations will not be applied.
-            sunSprite.Scale(2f);
+            sunSprite.Scale(2);
             // It's also possible to scale X and Y separately.
         }
 
