@@ -50,9 +50,9 @@ dotnet add package Lelebees.MdkScriptMixin.SpriteCompositor
 Add this to your `.csproj` file:
 
 ```xml
-<PackageReference Include="Lelebees.MdkScriptMixin.SpriteCompositor" Version="2.0.0" />
+<PackageReference Include="Lelebees.MdkScriptMixin.SpriteCompositor" Version="2.1.0" />
 ```
 
 ---
 
-*Installation instructions auto-generated. Last updated: 2026-05-20*
+*Installation instructions auto-generated. Last updated: 2026-05-22*

@@ -18,10 +18,14 @@
     Further reduced runtime memory allocation when rendering drawables by replacing Sprite groups with Composite Sprites.  
     Moved Mirror functionality to the Sprites abstract class.
     Added Repeat- methods to Sprites class for Scale and Translate respectively.
-    Break previous behaviour where you could edit a Sprite Group after it's instantiation.  
+    Break previous behaviour where you could edit a Sprite Group after it's instantiation.
+- 2.1.0
+    Added transform functions to Sprites that replace lost Sprite Group functionality
+    Fixed readme being instructions for an older version of the mixin.     
+    Fixed a floating point error accumulation bug when rotating sprites 
 
 ````````
 
 ---
 
-*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-20*
+*Release notes auto-generated from `_releasenotes` file. Last updated: 2026-05-22*
