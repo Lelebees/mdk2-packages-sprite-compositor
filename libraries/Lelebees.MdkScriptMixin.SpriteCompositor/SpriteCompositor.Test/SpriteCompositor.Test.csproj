@@ -4,6 +4,7 @@
         <SpaceEngineersBinCopyLocal>true</SpaceEngineersBinCopyLocal>
         <Configurations>Release;Debug</Configurations>
         <Platforms>x64</Platforms>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="FakeItEasy" Version="9.0.1"/>
