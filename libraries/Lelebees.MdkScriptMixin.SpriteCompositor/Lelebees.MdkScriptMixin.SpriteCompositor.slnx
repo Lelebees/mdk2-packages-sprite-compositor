@@ -1,0 +1,14 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Lelebees.MdkScriptMixin.SpriteCompositor/Lelebees.MdkScriptMixin.SpriteCompositor.shproj">
+    <Build />
+  </Project>
+  <Project Path="SpriteCompositor.Demo/SpriteCompositor.Demo.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="SpriteCompositor.Test/SpriteCompositor.Test.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>
