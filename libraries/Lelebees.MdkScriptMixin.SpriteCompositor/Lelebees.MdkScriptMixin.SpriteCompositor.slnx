@@ -1,6 +1,9 @@
 <Solution>
-  <Project Path="Lelebees.MdkScriptMixin.SpriteCompositor/Lelebees.MdkScriptMixin.SpriteCompositor.shproj" />
+  <Project Path="Lelebees.MdkScriptMixin.SpriteCompositor/Lelebees.MdkScriptMixin.SpriteCompositor.shproj"/>
   <Project Path="SpriteCompositor.Demo/SpriteCompositor.Demo.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="SpriteCompositor.Test/SpriteCompositor.Test.csproj">
     <Platform Project="x64" />
   </Project>
 </Solution>
